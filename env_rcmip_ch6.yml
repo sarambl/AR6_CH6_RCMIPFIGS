@@ -1,0 +1,42 @@
+name: rcmip_ch6
+
+channels:
+  - conda-forge
+  - default
+  - pip
+dependencies:
+  - python=3.7
+  - pip>19
+  - ipywidgets==7.5.1
+  - nb_black==1.0.6
+  - iris
+  - scmdata==0.2.1
+  - numpy >=1.11.0
+  - xarray >=0.10.8
+  - pandas >=0.22.0
+  - seaborn >=0.8.1
+  - netcdf4
+  - jupyter
+  - jupytext
+  - nodejs
+  - notebook >=5.6.0
+  - jupyter
+  - ipykernel
+  - pyam
+  - pip:
+    - netcdf-scm==2.0.0b5
+    - pymagicc==2.0.0b10
+    - pyam-iamc==0.3.0
+    - pandas==0.25.2
+    - seaborn==0.9.0
+    - statsmodels==0.9.0
+    - git+https://github.com/znicholls/nbflow.git@b3f58bfcb6adb24b522f51481c49c03d54795ff1
+    - scons==3.0.5
+    - black==19.3b0
+    - notebook==5.7.8
+    - nbconvert==5.5.0
+    - jupyter_contrib_nbextensions==0.5.1
+    - nbdime==1.0.6
+    - nbresuse==0.3.2
+    - tqdm==4.32.2
+
