@@ -7,7 +7,7 @@ import tqdm
 import numpy as np
 from matplotlib import pyplot as plt
 from scmdata import df_append, ScmDataFrame
-
+from ar6_ch6_rcmipfigs.constants import BASE_DIR
 import matplotlib.pyplot as plt
 
 climatemodel='climatemodel'
@@ -344,7 +344,8 @@ def get_scenario_c_dic(new=True):
     colormap_dic = {}
 
     if new:
-        rgb_data_in_the_txt_file = np.loadtxt("misc/ssp_cat_2.txt")
+        path_cf = BASE_DIR + '/misc/ssp_cat_2.txt'
+        rgb_data_in_the_txt_file = np.loadtxt(path_cf)
         colormap_dic = {}
         for scn, col in zip(scenario_list, rgb_data_in_the_txt_file):
             colormap_dic[scn] = tuple([a/255. for a in col])#col/255.
@@ -384,3 +385,16 @@ def prep_str_for_filename(ins):
         .replace(")", "")
         .lower()
     )
+
+
+def new_varname(var, nname):
+    """
+    var:str
+        Old variable of format varname|bla|bla
+    nname:str
+        name for the resulting variable, based on var
+    Returns
+    -------
+    new variable name with nname|bla|bla
+    """
+    return nname + '|' + '|'.join(var.split('|')[1:])
