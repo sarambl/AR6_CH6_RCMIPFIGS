@@ -140,7 +140,7 @@ def setup_table3(scenario_n=''):
 
 
 
-setup_table()
+
 
 # %% [markdown]
 # ## Open dataset:
@@ -159,12 +159,6 @@ setup_table()
 
 # %%
 ds_DT = xr.open_dataset(PATH_DT)
-
-
-# %%
-
-# %%
-
 
 
 # %% [markdown]
@@ -217,6 +211,8 @@ def table_of_sts(ds_DT, scenarios_nhist, variables, tab_vars, years, ref_year, s
                 _tab_da =ds_DT[dtvar].sel(scenario=scn, time=slice(year,year))-  ds_DT[dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
                 if sts=='mean':
                     tab_tot.loc[(year, tabvar),tabscn]=_tab_da.mean('climatemodel').values[0]
+                if sts=='median':
+                    tab_tot.loc[(year, tabvar),tabscn]=_tab_da.median('climatemodel').values[0]
                 elif sts=='std':
                     tab_tot.loc[(year, tabvar),tabscn]=_tab_da.std('climatemodel').values[0]
 
@@ -227,64 +223,13 @@ tab_tot_sd = table_of_sts(ds_DT, scenarios_nhist, ['Delta T|Anthropogenic'], ['T
 
 tab = table_of_sts(ds_DT, scenarios_nhist, variables_dt_comp, [var.split('|')[-1] for var in variables_dt_comp], years, ref_year)
 tab_sd = table_of_sts(ds_DT, scenarios_nhist, variables_dt_comp, [var.split('|')[-1] for var in variables_dt_comp], years, ref_year, sts='std')
-    #scntab_dic[scn]=tab.copy()
-_ds = ds_DT.copy()
 # Compute sum of SLCFs
+_ds = ds_DT.copy()
 vall = 'Delta T|Anthropogenic|All'
 _ds[vall] =_ds[vall].sum('variable')
 tab_slcf_sum = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year)
 tab_slcf_sum_sd = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year, sts='std')
 
-
-# %%
-ref_year='2021'
-scntab_dic = {}
-tab = setup_table()
-tab_sd = setup_table()
-for scn in scenarios_nhist:
-    tabscn =scn# trans_scen2plotlabel(scn)
-
-    for var in variables_erf_comp:
-        tabvar = var.split('|')[-1]
-        dtvar = new_varname(var, name_deltaT)
-        for year in years: 
-            _tab_da =ds_DT[dtvar].sel(scenario=scn, time=slice(year,year))-  ds_DT[dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
-            #print(_tab_da)
-            #print(_tab_da.mean('climatemodel').values[0])
-
-            
-            tab.loc[(year, tabvar),tabscn]=_tab_da.mean('climatemodel').values[0]
-            tab_sd.loc[(year, tabvar),tabscn]=_tab_da.std('climatemodel').values[0]
-    #scntab_dic[scn]=tab.copy()
-tab
-
-# %%
-from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
-import matplotlib.pyplot as plt
-fig, axs = plt.subplots(1,len(years), figsize=[12,8], sharey=False)
-tits = ['Near Term surface temperature change (2040 relative to 2021)',
-       'Long Term surface T change 2100 relatie to 2021)']
-for yr, ax, tit in zip(years, axs, tits):
-    tot_yr = tab_tot.loc[yr].rename({'Total':'Scenario total'})
-    tot_yr.transpose().plot(kind='bar',  ax=ax, color='w', alpha=.3, edgecolor='k')#, grid=True)#stac)
-    tab.loc[yr].transpose().plot(kind='bar', stacked=True, ax=ax)#, grid=True)#stac)
-    ax.axhline(0, linestyle='--', color='k', alpha=0.4)
-    ax.set_title(tit)
-    ax.set_ylabel('($^\circ$ C)')
-fn = RESULTS_DIR+'/figures/stack_bar_influence_years.png'
-plt.tight_layout()
-plt.savefig(fn, dpi=300)
-
-# %%
-tot_yr = tab_tot.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
-tot_sd_yr = tab_tot_sd.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
-    
-
-plt.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tot_sd_yr.transpose()[ntot].values)
-plt.show()
-
-# %%
-sum_sd_yr.transpose()['Sum SLCFs']
 
 # %%
 from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
@@ -304,8 +249,15 @@ for yr, ax, tit in zip(years, axs, tits):
     ax.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tot_sd_yr.transpose()[ntot].values, 
            error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
     ntot = 'Sum SLCFs'
-    ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
-          error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+    #ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
+    #      error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+    
+    
+    s_x = sum_yr.transpose().index
+    s_y =  sum_yr.transpose()[ntot].values
+    s_err= sum_sd_yr.transpose()[ntot].values
+    ax.errorbar(s_x,s_y, color='k',fmt='d', label=ntot, yerr=s_err, linestyle="None")#,
+          #error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
 
     _tab = tab.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
     
@@ -325,6 +277,209 @@ ax = plt.gca()
 
 ax.tick_params(axis='y',which='minor')#,bottom='off')
 plt.savefig(fn, dpi=300)
+
+# %%
+from matplotlib import transforms
+from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
+from matplotlib.ticker import (MultipleLocator)
+import matplotlib.pyplot as plt
+fig, axs = plt.subplots(1,len(years), figsize=[12,6], sharex=False, sharey=True)
+tits = ['Near Term surface temperature change (2040 relative to 2021)',
+       'Long Term surface T change 2100 relatie to 2021)']
+tits = ['Change in GMST in 2040 relative to 2021', 'Change in GMST in 2100 relative to 2021']
+for yr, ax, tit in zip(years, axs, tits):
+    ntot = 'Scenario total'
+    tot_yr = tab_tot.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    tot_sd_yr = tab_tot_sd.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    #l =ax.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tab_tot_sd)
+    sum_yr = tab_slcf_sum.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    sum_sd_yr = tab_slcf_sum_sd.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, xerr=tot_sd_yr.transpose()[ntot].values, 
+           error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
+    ntot = 'Sum SLCFs'
+    #ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
+    #      error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+    
+    
+    s_x = sum_yr.transpose().index
+    s_y =  sum_yr.transpose()[ntot].values
+    s_err= sum_sd_yr.transpose()[ntot].values
+    ax.errorbar(s_y,s_x, xerr=s_err,label=ntot, color='k',fmt='d',  linestyle="None")#,
+          #error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+
+    _tab = tab.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    
+    a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr!='2040'))#, grid=True)#stac)
+    if not yr=='2040':
+        ax.legend()#[l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+    
+    ax.axvline(0, linestyle='--', color='k', alpha=0.4)
+    ax.set_title(tit)
+    ax.set_xlabel('$\Delta$ GMST ($^\circ$C)')
+    ax.xaxis.set_minor_locator(MultipleLocator(.1))
+    ax.grid(axis='y', which='major')
+    
+fn = RESULTS_DIR+'/figures/stack_bar_influence_years.png'
+plt.tight_layout()
+ax = plt.gca()
+
+ax.tick_params(axis='y',which='minor')#,bottom='off') 
+ax.tick_params( labelright=True, right=True, left=False)
+plt.savefig(fn, dpi=300)
+
+
+# %% [markdown]
+# ## Test combined error bars: 
+
+# %%
+def sigma_DT(dT, sig_alpha, mu_alpha, dim='climatemodel'):
+    sig_DT = dT.std(dim)
+    mu_DT = dT.mean(dim)
+    return ((sig_DT + mu_DT)*(sig_alpha+mu_alpha)- mu_DT*mu_alpha)/mu_alpha
+def sigma_com(sig_DT, mu_DT, sig_alpha, mu_alpha, dim='climatemodel'):
+    return (((sig_DT**2 + mu_DT**2)*(sig_alpha**2+mu_alpha**2)- mu_DT**2*mu_alpha**2)/mu_alpha**2)**(.5)
+sum_DT_std = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year, sts='std')
+sum_DT_mean = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year, sts='mean')
+tot_DT_std = table_of_sts(ds_DT, scenarios_nhist, ['Delta T|Anthropogenic'],['Total'], years, ref_year, sts='std')
+tot_DT_mean = table_of_sts(ds_DT, scenarios_nhist, ['Delta T|Anthropogenic'], ['Total'],years, ref_year, sts='mean')
+
+yerr_sum = sigma_com(sum_DT_std, sum_DT_mean, .24, .885 )
+yerr_tot = sigma_com(tot_DT_std, tot_DT_mean, .24, .885)#.rename('')
+
+#tab_sig_DT = setup_table_prop()
+
+# %%
+tot_DT_std
+
+# %%
+tot_DT_mean
+
+# %%
+yerr_tot
+
+# %%
+yerr_tot
+
+# %%
+yerr_sum
+
+# %%
+tot_DT 
+
+# %%
+sig_DT = 0.094
+mu_DT = 0.40
+sig_alph=0.14
+mu_alph = 0.885
+((sig_DT + mu_DT)*(sig_alph +mu_alph)- mu_DT*mu_alph)/mu_alph
+
+# %%
+from matplotlib import transforms
+from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
+from matplotlib.ticker import (MultipleLocator)
+import matplotlib.pyplot as plt
+fig, axs = plt.subplots(1,len(years), figsize=[12,6], sharex=False, sharey=True)
+tits = ['Near Term surface temperature change (2040 relative to 2021)',
+       'Long Term surface T change 2100 relatie to 2021)']
+tits = ['Change in GMST in 2040 relative to 2021', 'Change in GMST in 2100 relative to 2021']
+for yr, ax, tit in zip(years, axs, tits):
+    ntot = 'Scenario total'
+    tot_yr = tab_tot.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    tot_sd_yr = yerr_tot.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    #l =ax.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tab_tot_sd)
+    sum_yr = tab_slcf_sum.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    sum_sd_yr = yerr_sum.loc[yr].rename({'Total':ntot, 'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, xerr=tot_sd_yr.transpose()[ntot].values, 
+           error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
+    ntot = 'Sum SLCFs'
+    #ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
+    #      error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+    
+    
+    s_x = sum_yr.transpose().index
+    s_y =  sum_yr.transpose()[ntot].values
+    s_err= sum_sd_yr.transpose()[ntot].values
+    ax.errorbar(s_y,s_x, xerr=s_err,label=ntot, color='k',fmt='d',  linestyle="None")#,
+          #error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
+
+    _tab = tab.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip':'ssp370-lowNTCF\n-aerchemmip'})
+    
+    a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr!='2040'))#, grid=True)#stac)
+    if not yr=='2040':
+        ax.legend()#[l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+    
+    ax.axvline(0, linestyle='--', color='k', alpha=0.4)
+    ax.set_title(tit)
+    ax.set_xlabel('$\Delta$ GMST ($^\circ$C)')
+    ax.xaxis.set_minor_locator(MultipleLocator(.1))
+    ax.grid(axis='y', which='major')
+    
+fn = RESULTS_DIR+'/figures/stack_bar_influence_years.png'
+plt.tight_layout()
+ax = plt.gca()
+
+ax.tick_params(axis='y',which='minor')#,bottom='off') 
+ax.tick_params( labelright=True, right=True, left=False)
+plt.savefig(fn, dpi=300)
+
+# %%
+txts = 11
+xpos = -0.8
+axs[0].text(xpos, 5.1, 'Strong climate \nmitigation \nStrong air pollution \ncontrol',
+         {'color': 'black', 'fontsize': txts, 'ha': 'center', 'va': 'center',
+          'bbox': dict(boxstyle="rarrow", fc="white", ec="blue", pad=0.5)})
+#axs[0].text(xpos, 4.6, 'Strong air pollution \ncontrol',
+#         {'color': 'black', 'fontsize': txts, 'ha': 'center', 'va': 'center',
+#          'bbox': dict(boxstyle="rarrow", fc="white", ec="orange", pad=0.2)})
+axs[0].annotate("",
+            xy=(-.2, 0.2), xycoords='data',
+            xytext=(-.01, 0.8), textcoords='data',
+            arrowprops=dict(arrowstyle="-",
+                            connectionstyle= "bar,fraction=0.3"),
+            )
+strings = [ 'Strong climate \nmitigation \n','Strong air pollution \ncontrol']
+colors = ['blue', 'orange']
+t = axs[0].transData
+for s, c in zip(strings, colors):
+        text = axs[0].text(xpos, 4, s + " ", color=c, transform=t)#, **kwargs)
+        canvas = axs[0].figure.canvas
+        orientation='horizontalas'
+        # Need to draw to update the text position.
+        text.draw(canvas.get_renderer())
+        ex = text.get_window_extent()
+        if orientation == 'horizontal':
+            t = transforms.offset_copy(
+                text.get_transform(), x=ex.width, units='dots')
+        else:
+            t = transforms.offset_copy(
+                text.get_transform(), y=ex.height, units='dots')
+axs[0].annotate("Test", xy=(-0.5, 0.5), xycoords="axes fraction")
+plt.savefig(fn, dpi=300)
+
+
+# %%
+def demo_con_style(ax, connectionstyle):
+    x1, y1 = 0.3, 0.2
+    x2, y2 = 0.8, 0.6
+
+    ax.plot([x1, x2], [y1, y2], ".")
+    ax.annotate("",
+                xy=(x1, y1), xycoords='data',
+                xytext=(x2, y2), textcoords='data',
+                arrowprops=dict(arrowstyle="->", color="0.5",
+                                shrinkA=5, shrinkB=5,
+                                patchA=None, patchB=None,
+                                connectionstyle=connectionstyle,
+                                ),
+                )
+
+    ax.text(.05, .95, connectionstyle.replace(",", ",\n"),
+            transform=ax.transAxes, ha="left", va="top")
+
+
+
+# %%
+ax.get_xticks()
 
 # %% [markdown]
 # - De vi allerede har.
@@ -365,379 +520,3 @@ ax = plt.gca()
 
 ax.tick_params(axis='y',which='minor')#,bottom='off')
 plt.savefig(fn, dpi=300)
-
-# %%
-ax.get_axes_locator()
-
-# %%
-from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
-import matplotlib.pyplot as plt
-fig, axs = plt.subplots(1,len(years), figsize=[12,8], sharey=True)
-for yr, ax in zip(years, axs):
-    tab_tot.loc[yr].transpose().plot(kind='bar',  ax=ax, color='k', alpha=.3)#, grid=True)#stac)
-    tab.loc[yr].transpose().plot(kind='bar', stacked=True, ax=ax)#, grid=True)#stac)
-    ax.axhline(0, linestyle='--', color='k', alpha=0.4)
-    ax.set_title(yr+' - 2021' )
-    ax.set_ylabel('($^\circ$ C)')
-fn = RESULTS_DIR+'/figures/stack_bar_influence_years_same_y.png'
-plt.tight_layout()
-plt.savefig(fn, dpi=300)
-
-# %%
-ref_year='2021'
-scntab_dic = {}
-tab_to = setup_table()
-for scn in scenarios_rel:
-    for var in ['Delta T|Anthropogenic']:
-        tabvar = var.split('|')[-1]
-        dtvar = new_varname(var, name_deltaT)
-        for year in years: 
-            _tab_da =ds_DT[dtvar].sel(scenario=scn, time=slice(year,year))-  ds_DT[dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
-            #print(_tab_da)
-            #print(_tab_da.mean('climatemodel').values[0])
-            tab_tot.loc[(scn, tabvar),year]=_tab_da.mean('climatemodel').values[0]
-    #scntab_dic[scn]=tab.copy()
-tab
-
-# %%
-#scntab_dic = {}
-tab = setup_table2()#scenario_n=scn)
-
-for scn in scenarios_fl:
-    for var in variables_erf_comp:
-        tabvar = var.split('|')[-1]
-        dtvar = new_varname(var, name_deltaT)
-        print(dtvar)
-        for key in ECS2ecsf:
-            for year in years: 
-                
-                _tab_da = dic_ds[key][dtvar].sel(scenario=scn, time=slice(year,year))-  dic_ds[key][dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
-                #print(_tab_da)
-
-                #_tab_da = dic_ds[key][var].sel(scenario=scn, time=slice(year,year))
-                #print(_tab_da['climatemodel'])
-                tab.loc[(scn, tabvar), (key,year)] =_tab_da.mean('climatemodel').values[0]
-    #scntab_dic[scn]=tab.copy()
-
-
-#tab
-
-# %%
-ds_diff = ds_DT.sel(time='2100').squeeze()-ds_DT.sel(time='2021').squeeze()
-
-# %% [markdown]
-# # Plot
-
-# %%
-SMALL_SIZE = 12
-MEDIUM_SIZE = 12
-BIGGER_SIZE = 14
-
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-s_y = '2021'
-s_y2 = '2000'
-e_y = '2100'
-e_y2 = '2100'
-
-scenarios_ss = ['ssp126','ssp245', 'ssp585']
-ref_var_erf = 'Effective Radiative Forcing|Anthropogenic'
-ref_var_dt = new_varname(ref_var_erf, name_deltaT)
-# make subset and ref to year s_y:
-_ds = ds_DT.sel(scenario=scenarios_ss, time=slice(s_y2, e_y2)) - ds_DT.sel(scenario=scenarios_ss,
-                                                                           time=slice(s_y, s_y)).squeeze()
-cdic1 = get_cmap_dic(variables_erf_comp, palette='bright')
-cdic2 = get_cmap_dic(variables_dt_comp, palette='bright')
-cdic = dict(**cdic1, **cdic2)
-first=True
-for ref_var, varl in zip([ref_var_dt],
-                             [variables_dt_comp, variables_erf_comp]):
-    fig, ax = plt.subplots(1, figsize=[7, 4.5])
-    ax.plot(_ds['time'], np.zeros(len(_ds['time'])), c='k', alpha=0.5, linestyle='dashed')
-    # print(ref_var)
-    for scn in scenarios_ss[:]:
-        # print(scn)
-        # subtract year 
-        _base = _ds[ref_var]  # _ds.sel(scenario=scn)
-        _base = _base.sel(scenario=scn,
-                          time=slice(s_y2, e_y2))  # -_base.sel(scenario=scn, time=slice(s_y, s_y)).squeeze()
-        # .mean(climatemodel)
-        base_keep = _base.mean(climatemodel)
-        basep = _base.mean(climatemodel)
-        basem = _base.mean(climatemodel)
-        # print(base)
-        if first:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='Scenario total ')
-            first=False
-        else:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='_nolegend_')
-            
-        scen_ds = _ds[varl] - base_keep
-        test_df = scen_ds.sel(scenario=scn).mean(climatemodel).to_dataframe()
-        for var in varl:
-            if scn == scenarios_ss[0]:
-                #label = '$\Delta$T ' + var.split('|')[-1]
-                label = ' ' + var.split('|')[-1]
-            else:
-                label = '_nolegend_'
-
-            _pl_da = (_ds[var].sel(scenario=scn, time=slice(s_y2, e_y2)).mean(climatemodel))  # -base_keep)
-            if _pl_da.mean() <= 0:
-                # print(var)
-
-                ax.fill_between(base_keep['time'].values, basep, -_pl_da + basep, alpha=0.5,
-                                color=cdic[var], label=label)
-                basep = basep - _pl_da
-            else:
-                ax.fill_between(base_keep['time'].values, basem, basem - _pl_da, alpha=0.5,
-                                color=cdic[var], label=label)
-                basem = basem - _pl_da
-        if 'Delta T' in ref_var:
-            x_val = '2100'
-            y_val = base_keep.sel(time=x_val)
-            if scn == 'ssp585':
-                kwargs = {'xy': (x_val, y_val )}#, 'rotation': 28.6}
-            else:
-                kwargs = {'xy': (x_val, y_val )}
-            #ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
-
-    ax.legend(frameon=False, loc=2)
-    
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
-    
-    ax.set_xlim([s_y2, e_y2])
-    #ax.set_ylabel('$\Delta$T (C$^\circ$)')
-    ax.set_ylabel('($^\circ$C)')
-    ax.set_xlabel('')
-    plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
-    plt.tight_layout()
-    plt.savefig(FIGURE_DIR +'/ssp858_126_relative_contrib.png', dpi=300)
-    plt.show()
-
-# %%
-SMALL_SIZE = 12
-MEDIUM_SIZE = 12
-BIGGER_SIZE = 14
-
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-s_y = '2021'
-s_y2 = '2000'
-e_y = '2100'
-e_y2 = '2100'
-
-scenarios_ss = ['ssp126','ssp245', 'ssp585']
-ref_var_erf = 'Effective Radiative Forcing|Anthropogenic'
-ref_var_dt = new_varname(ref_var_erf, name_deltaT)
-# make subset and ref to year s_y:
-_ds = ds_DT.sel(scenario=scenarios_ss, time=slice(s_y2, e_y2)) - ds_DT.sel(scenario=scenarios_ss,
-                                                                           time=slice(s_y, s_y)).squeeze()
-cdic1 = get_cmap_dic(variables_erf_comp, palette='bright')
-cdic2 = get_cmap_dic(variables_dt_comp, palette='bright')
-cdic = dict(**cdic1, **cdic2)
-first=True
-for ref_var, varl in zip([ref_var_dt],
-                             [variables_dt_comp, variables_erf_comp]):
-    fig, ax = plt.subplots(1, figsize=[7, 4.5])
-    ax.plot(_ds['time'], np.zeros(len(_ds['time'])), c='k', alpha=0.5, linestyle='dashed')
-    # print(ref_var)
-    for scn in scenarios_ss[:]:
-        # print(scn)
-        # subtract year 
-        _base = _ds[ref_var]  # _ds.sel(scenario=scn)
-        _base = _base.sel(scenario=scn,
-                          time=slice(s_y2, e_y2))  # -_base.sel(scenario=scn, time=slice(s_y, s_y)).squeeze()
-        
-        base_keep = _base.mean(climatemodel)
-        basep = _base.mean(climatemodel)
-        basem = _base.mean(climatemodel)
-        if first:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='Scenario total ')
-            first=False
-        else:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='_nolegend_')
-            
-        #scen_ds = _ds[varl] - base_keep
-        #test_df = scen_ds.sel(scenario=scn).mean(climatemodel).to_dataframe()
-        for var in varl:
-            if scn == scenarios_ss[0]:
-                #label = '$\Delta$T ' + var.split('|')[-1]
-                label = ' ' + var.split('|')[-1]
-            else:
-                label = '_nolegend_'
-
-            _pl_da = (_ds[var].sel(scenario=scn, time=slice(s_y2, e_y2)).mean(climatemodel))  # -base_keep)
-            if _pl_da.mean() <= 0:
-                # print(var)
-
-                ax.fill_between(base_keep['time'].values, basep+_pl_da, basep, alpha=0.5,
-                                color=cdic[var], label=label)
-                basep = basep + _pl_da
-            else:
-                ax.fill_between(base_keep['time'].values, basem, basem + _pl_da, alpha=0.5,
-                                color=cdic[var], label=label)
-                basem = basem + _pl_da
-        if 'Delta T' in ref_var:
-            x_val = '2100'
-            y_val = base_keep.sel(time=x_val)
-            if scn == 'ssp585':
-                kwargs = {'xy': (x_val, y_val ), 'rotation': 0}#28.6}
-            else:
-                kwargs = {'xy': (x_val, y_val )}
-            #ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
-
-    ax.legend(frameon=False, loc=2)
-    
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
-    
-    ax.set_xlim([s_y2, e_y2])
-    #ax.set_ylabel('$\Delta$T (C$^\circ$)')
-    ax.set_ylabel('($^\circ$C)')
-    ax.set_xlabel('')
-    plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
-    plt.tight_layout()
-    plt.savefig(FIGURE_DIR +'/ssp858_126_relative_contrib_rev.png', dpi=300)
-    plt.show()
-
-# %%
-scenarios_fl
-
-
-# %%
-SMALL_SIZE = 12
-MEDIUM_SIZE = 12
-BIGGER_SIZE = 14
-
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
-
-s_y = '2021'
-s_y2 = '2000'
-e_y = '2100'
-e_y2 = '2100'
-
-scenarios_ss = list(set( scenarios_fl) - {'historical','ssp370-lowNTCF-aerchemmip'})# 'ssp'#['ssp126','ssp245', 'ssp585']
-ref_var_erf = 'Effective Radiative Forcing|Anthropogenic'
-ref_var_dt = new_varname(ref_var_erf, name_deltaT)
-# make subset and ref to year s_y:
-_ds = ds_DT.sel(scenario=scenarios_ss, time=slice(s_y2, e_y2)) - ds_DT.sel(scenario=scenarios_ss,
-                                                                           time=slice(s_y, s_y)).squeeze()
-cdic1 = get_cmap_dic(variables_erf_comp, palette='bright')
-cdic2 = get_cmap_dic(variables_dt_comp, palette='bright')
-cdic = dict(**cdic1, **cdic2)
-first=True
-for ref_var, varl in zip([ref_var_dt],
-                             [variables_dt_comp, variables_erf_comp]):
-    fig, ax = plt.subplots(1, figsize=[7, 4.5])
-    ax.plot(_ds['time'], np.zeros(len(_ds['time'])), c='k', alpha=0.5, linestyle='dashed')
-    # print(ref_var)
-    for scn in scenarios_ss[:]:
-        # print(scn)
-        # subtract year 
-        _base = _ds[ref_var]  # _ds.sel(scenario=scn)
-        _base = _base.sel(scenario=scn,
-                          time=slice(s_y2, e_y2))  # -_base.sel(scenario=scn, time=slice(s_y, s_y)).squeeze()
-        
-        base_keep = _base.mean(climatemodel)
-        basep = _base.mean(climatemodel)
-        basem = _base.mean(climatemodel)
-        if first:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='Scenario total ')
-            first=False
-        else:
-            base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='_nolegend_')
-            
-        #scen_ds = _ds[varl] - base_keep
-        #test_df = scen_ds.sel(scenario=scn).mean(climatemodel).to_dataframe()
-        for var in varl:
-            if scn == scenarios_ss[0]:
-                #label = '$\Delta$T ' + var.split('|')[-1]
-                label = ' ' + var.split('|')[-1]
-            else:
-                label = '_nolegend_'
-
-            _pl_da = (_ds[var].sel(scenario=scn, time=slice(s_y2, e_y2)).mean(climatemodel))  # -base_keep)
-            if _pl_da.mean() <= 0:
-                # print(var)
-
-                ax.fill_between(base_keep['time'].values, basep+_pl_da, basep, alpha=0.5,
-                                color=cdic[var], label=label)
-                basep = basep + _pl_da
-            else:
-                ax.fill_between(base_keep['time'].values, basem, basem + _pl_da, alpha=0.5,
-                                color=cdic[var], label=label)
-                basem = basem + _pl_da
-        if 'Delta T' in ref_var:
-            x_val = '2100'
-            y_val = base_keep.sel(time=x_val)
-            if scn == 'ssp585':
-                kwargs = {'xy': (x_val, y_val ), 'rotation': 0}#28.6}
-            else:
-                kwargs = {'xy': (x_val, y_val )}
-            #ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
-
-    ax.legend(frameon=False, loc=2)
-    
-    ax.spines['right'].set_visible(False)
-    ax.spines['top'].set_visible(False)
-    
-    ax.set_xlim([s_y2, e_y2])
-    #ax.set_ylabel('$\Delta$T (C$^\circ$)')
-    ax.set_ylabel('($^\circ$C)')
-    ax.set_xlabel('')
-    plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
-    plt.tight_layout()
-    plt.savefig(FIGURE_DIR +'/ssp858_126_relative_contrib_rev.png', dpi=300)
-    plt.show()
-
-# %%
-_pl_da
-
-# %% [markdown]
-# # Alternative: Do one graph for each component AND the total? 
-
-# %% [markdown]
-# ## What question does the graph answer?
-# - What are the relative contributions of SLCFs?
-#     - The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios (black line) relative to year 2021. The area signifies the warming (below the total) or cooling (above the stipled line) introduced by changes in the SLCFer in the specific scenario. Note that in the in the businiss as usual scenario, all the SLCFers except BC on snow add to the warming, while in the 126 scenario, the emission control acts to reduce methane, ozone and BC, and these are thus contributing to cooling. Both scenarios include emission controls which act to reduce aerosols relative 2021 and thus the aerosols give warming. However, the warming from aerosols is much stronger in ssp126 because of stricter emission control in this scenario. 
-#
-# - 
-#
-
-# %% [markdown]
-# ## What question does the graph answer?
-# - How much can we gain by implementing addtional SLCF cuts?
-#     - The answer to the question depends on the emission scenario we follow, because the effect of additional cuts naturally depend on how much has already been cut of a specific SLCFer. If we take scenario 119 as a baseline for the feasible cuts to SLCFs, we can calculate how much heating/cooling each component contributes with relative to this scenario. This underlines a more general point: SLCFs like ADD EXAMPLES are highly coupled to CO$_2$ emissions, which imply that strict emission control on these will automatically also control emissions of the SLCFs.  
-# The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios. The area signifies the added/ $\Delta$T by the component. 
-#
-
-# %% [markdown]
-# ## What question does the graph answer?
-# - What are the relative contributions of SLCFs?
-#     - The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios. The area signifies the additional (above the stipled line) warming and reductions (below the stipled line) by changes in the component in the specific scenario. Note that in the in the businiss as usual scenario, all components act to add to the warming, while in the 126 scenario, the emission control acts to reduce methane, ozone and BC, and these are thus contributing to cooling. 
-#
