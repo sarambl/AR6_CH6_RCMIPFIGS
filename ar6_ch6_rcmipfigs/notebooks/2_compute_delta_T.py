@@ -25,9 +25,6 @@
 # \end{align*}
 # with $\alpha = 0.885$, $c_1=0.587$, $\tau_1=4.1$, $c_2=0.413$ and $\tau_2 = 249$.
 
-# %% **TERJE: hvorfor er det en alpha(??) eller noe foran her? Ser ikke det i andre framstillinger av [markdown]
-# IRF.** Hvorfor skriver vi ikke bare $IRF(t) =  \sum_{i=1}^2\alpha_i\cdot exp\big(\frac{-t}{\tau_1}\big)$ 
-
 # %% Thus we can estimate the mean surface temperature change from some referance year (here 0) by using [markdown]
 # the estimated ERF$_x$ for some forcing agent $x$ as follows: 
 
@@ -122,7 +119,9 @@ variables_erf_comp = [
 variables_erf_tot = ['Effective Radiative Forcing|Anthropogenic',
                      'Effective Radiative Forcing']
 # Scenarios to plot:
-scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
+scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  
+                'ssp370-lowNTCF-gidden',
+                # 'ssp370-lowNTCF', Due to mistake here
                 'ssp585', 'historical']
 
 # %% [markdown]

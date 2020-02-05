@@ -186,7 +186,8 @@ scenarios_fl=['ssp119',
  'ssp585']
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import get_scenario_ls_dic, get_scenario_c_dic, get_ls_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic
+
 lsdic = get_scenario_ls_dic()#get_ls_dic(ds_DT[climatemodel].values)
 s_y = '2021'
 e_y = '2100'
@@ -218,7 +219,7 @@ for var in variables_erf_comp:
     plt.show()
 
 # %%
-
+from ar6_ch6_rcmipfigs.utils.plot import get_ls_dic
 lsdic = get_ls_dic(ds_DT[climatemodel].values)
 s_y = '2021'
 e_y = '2100'
@@ -289,7 +290,7 @@ for var in variables_erf_comp:
     plt.show()
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import get_scenario_ls_dic
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 
 cdic = get_scenario_c_dic()# get_cmap_dic(ds_DT[scenario].values)
 lsdic = get_scenario_ls_dic()# _scget_ls_dic(ds_DT[climatemodel].values)
@@ -432,8 +433,8 @@ plt.show()
 # %%
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from ar6_ch6_rcmipfigs.utils.misc import make_folders
-from ar6_ch6_rcmipfigs.utils.misc_func import trans_scen2plotlabel, get_cmap_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, get_ls_dic, trans_scen2plotlabel, get_scenario_c_dic, \
+    get_scenario_ls_dic
 
 figsize = [7, 4.5]
 s_y = '2021'
@@ -551,7 +552,7 @@ plt.savefig(FIGURE_DIR + '/total_ref2021_from2015_all_.png', dpi=200)
 plt.show()
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import trans_scen2plotlabel
+from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 def get_fig_ax_tot(figsize=[13,12]):
     fig2 = plt.figure(constrained_layout=False, figsize=figsize)
     spec2 = gridspec.GridSpec(ncols=12, nrows=4, figure=fig2)
@@ -564,11 +565,10 @@ def get_fig_ax_tot(figsize=[13,12]):
     return fig2, com_axs, all_ax
 
 
-#get_fig_ax_tot
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from ar6_ch6_rcmipfigs.utils.misc import make_folders
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 
 figsize = [6, 4]
 s_y = '2021'

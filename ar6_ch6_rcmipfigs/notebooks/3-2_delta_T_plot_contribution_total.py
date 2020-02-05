@@ -153,8 +153,8 @@ variables_dt_comp = [new_varname(var, name_deltaT) for var in variables_erf_comp
 # ## Compute sum of all SLCF forcers
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc import make_folders
-from ar6_ch6_rcmipfigs.utils.misc_func import trans_scen2plotlabel, get_cmap_dic, get_scenario_ls_dic, get_scenario_c_dic
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, trans_scen2plotlabel, get_scenario_c_dic, get_scenario_ls_dic
 
 # %%
 

@@ -156,8 +156,8 @@ variables_dt_comp = [new_varname(var, name_deltaT) for var in variables_erf_comp
 # ## Compute sum of all SLCF forcers
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc import make_folders
-from ar6_ch6_rcmipfigs.utils.misc_func import trans_scen2plotlabel, get_cmap_dic, get_scenario_ls_dic, get_scenario_c_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, get_ls_dic, trans_scen2plotlabel, get_scenario_c_dic, \
+    get_scenario_ls_dic
 
 # %%
 
@@ -193,7 +193,10 @@ ds_DT[dt_all] = xr.concat(_lst_dt, pd.Index(variables_erf_comp, name='variable')
 # ### Final figures:
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import trans_scen2plotlabel
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
+from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
+
+
 def get_fig_ax_tot(figsize=[13,12]):
     fig2 = plt.figure(constrained_layout=False, figsize=figsize)
     spec2 = gridspec.GridSpec(ncols=12, nrows=4, figure=fig2)
@@ -210,7 +213,7 @@ def get_fig_ax_tot(figsize=[13,12]):
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from ar6_ch6_rcmipfigs.utils.misc import make_folders
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 
 figsize = [6, 4]
 s_y = '2021'
@@ -469,7 +472,8 @@ plt.show()
 # # Supplementary plots:
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import get_scenario_ls_dic, get_scenario_c_dic, get_ls_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic
+
 lsdic = get_scenario_ls_dic()#get_ls_dic(ds_DT[climatemodel].values)
 s_y = '2021'
 e_y = '2100'
@@ -572,7 +576,7 @@ for var in variables_erf_comp:
     plt.show()
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import get_scenario_ls_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic
 
 cdic = get_scenario_c_dic()# get_cmap_dic(ds_DT[scenario].values)
 lsdic = get_scenario_ls_dic()# _scget_ls_dic(ds_DT[climatemodel].values)
