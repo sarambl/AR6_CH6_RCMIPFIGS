@@ -17,14 +17,6 @@
 # # Convert effective radiative forcings from RCMIP model output (csv/xlsx) to xarray Dataset:
 
 # %% [markdown]
-# ## Data availability:
-
-# %% [markdown]
-# Input data is available on [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip).
-#
-# Please contact: Zebedee Nicholls, email: zebedee.nicholls@climate-energy-college.org
-
-# %% [markdown]
 # ## Imports:
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
@@ -55,10 +47,6 @@ climatemodel = 'climatemodel'
 scenario = 'scenario'
 variable = 'variable'
 time = 'time'
-
-# %% [markdown]
-# ## ERF:
-# Read ERF from file
 
 # %% [markdown]
 # ### Define variables to look at:
@@ -377,7 +365,6 @@ ds
 
 
 # %%
-
 ds_save.to_netcdf(SAVEPATH_DATASET)
 
 # %%

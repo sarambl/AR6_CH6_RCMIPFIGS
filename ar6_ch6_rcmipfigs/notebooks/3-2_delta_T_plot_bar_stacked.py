@@ -250,7 +250,7 @@ import matplotlib.pyplot as plt
 fig, axs = plt.subplots(1, len(years), figsize=[10, 8], sharey=False)
 tits = ['Near Term surface temperature change (2040 relative to 2021)',
         'Long Term surface T change 2100 relatie to 2021)']
-tits = ['Change in GMST in 2040 relative to 2021', 'Change in GMST in 2100 relative to 2021']
+tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GMST in 2100 relative to 2021']
 for yr, ax, tit in zip(years, axs, tits):
     ntot = 'Scenario total'
     tot_yr = tabel_dT_anthrop.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})

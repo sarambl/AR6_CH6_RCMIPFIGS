@@ -37,12 +37,12 @@
 # The ERFs are taken from models in the RCMIP [https://www.rcmip.org/](https://www.rcmip.org/)
 
 # %% [markdown]
-# # Data availability:
+# ## Input data:
+# See [README.md](../../README.md)
 
 # %% [markdown]
 # The data is available on request from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip). 
 #
-# Please contact: Zebedee Nicholls, email: zebedee.nicholls@climate-energy-college.org
 
 # %% [markdown]
 # # Code + figures

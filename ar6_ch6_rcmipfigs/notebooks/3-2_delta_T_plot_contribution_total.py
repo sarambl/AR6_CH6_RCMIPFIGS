@@ -17,44 +17,6 @@
 # # Plot temperature response over time
 
 # %% [markdown]
-# ## Method: 
-#
-
-# %%
-#TODO Describe method
-
-# %% [markdown]
-# ## IRF:
-# Using forcings from RCMIP models and the impulse response function:
-# \begin{align*}
-# \text{IRF}(t)=& 0.885\cdot (\frac{0.587}{4.1}\cdot exp(\frac{-t}{4.1}) + \frac{0.413}{249} \cdot exp(\frac{-t}{249}))\\
-# \text{IRF}(t)= &  \sum_{i=1}^2\frac{\alpha \cdot c_i}{\tau_i}\cdot exp\big(\frac{-t}{\tau_1}\big) 
-# \end{align*}
-# with $\alpha = 0.885$, $c_1=0.587$, $\tau_1=4.1$, $c_2=0.413$ and $\tau_2 = 249$.
-
-# %% Thus we can estimate the mean surface temperature change from some referance year (here 0) by using [markdown]
-# the estimated ERF$_x$ for some forcing agent $x$ as follows: 
-
-# %% [markdown]
-# \begin{align*} 
-# \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
-# \end{align*}
-
-# %% [markdown]
-# The ERFs are taken from models in the RCMIP [https://www.rcmip.org/](https://www.rcmip.org/)
-
-# %% [markdown]
-# # Data availability:
-
-# %% [markdown]
-# The data is available on request from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip). 
-#
-# Please contact: Zebedee Nicholls, email: zebedee.nicholls@climate-energy-college.org
-
-# %% [markdown]
-# # Code + figures
-
-# %% [markdown]
 # ## Imports:
 
 # %%
@@ -380,10 +342,6 @@ for ref_var, varl in zip([ref_var_dt],
     plt.show()
 
 # %%
-scenarios_fl
-
-
-# %%
 SMALL_SIZE = 12
 MEDIUM_SIZE = 12
 BIGGER_SIZE = 14
@@ -477,11 +435,8 @@ for ref_var, varl in zip([ref_var_dt],
     plt.savefig(FIGURE_DIR +'/ssp858_126_relative_contrib_rev.png', dpi=300)
     plt.show()
 
-# %%
-_pl_da
-
 # %% [markdown]
-# # Alternative: Do one graph for each component AND the total? 
+# TODO:  Alternative: Do one graph for each component AND the total? 
 
 # %% [markdown]
 # ## What question does the graph answer?
@@ -489,17 +444,4 @@ _pl_da
 #     - The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios (black line) relative to year 2021. The area signifies the warming (below the total) or cooling (above the stipled line) introduced by changes in the SLCFer in the specific scenario. Note that in the in the businiss as usual scenario, all the SLCFers except BC on snow add to the warming, while in the 126 scenario, the emission control acts to reduce methane, ozone and BC, and these are thus contributing to cooling. Both scenarios include emission controls which act to reduce aerosols relative 2021 and thus the aerosols give warming. However, the warming from aerosols is much stronger in ssp126 because of stricter emission control in this scenario. 
 #
 # - 
-#
-
-# %% [markdown]
-# ## What question does the graph answer?
-# - How much can we gain by implementing addtional SLCF cuts?
-#     - The answer to the question depends on the emission scenario we follow, because the effect of additional cuts naturally depend on how much has already been cut of a specific SLCFer. If we take scenario 119 as a baseline for the feasible cuts to SLCFs, we can calculate how much heating/cooling each component contributes with relative to this scenario. This underlines a more general point: SLCFs like ADD EXAMPLES are highly coupled to CO$_2$ emissions, which imply that strict emission control on these will automatically also control emissions of the SLCFs.  
-# The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios. The area signifies the added/ $\Delta$T by the component. 
-#
-
-# %% [markdown]
-# ## What question does the graph answer?
-# - What are the relative contributions of SLCFs?
-#     - The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios. The area signifies the additional (above the stipled line) warming and reductions (below the stipled line) by changes in the component in the specific scenario. Note that in the in the businiss as usual scenario, all components act to add to the warming, while in the 126 scenario, the emission control acts to reduce methane, ozone and BC, and these are thus contributing to cooling. 
 #

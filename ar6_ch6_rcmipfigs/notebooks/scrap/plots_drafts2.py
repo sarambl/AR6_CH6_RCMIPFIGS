@@ -21,7 +21,6 @@
 #
 
 # %%
-#TODO Describe method
 
 # %% [markdown]
 # ## IRF:

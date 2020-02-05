@@ -79,7 +79,10 @@ color_map_scenarios_base = {
     # "historical-cmip5": "tab:gray",
 }
 
+# %%
+from ar6_ch6_rcmipfigs.constants import BASE_DIR
 
+# %%
 def get_scenario_c_dic(new=True):
     colormap_dic = {}
 

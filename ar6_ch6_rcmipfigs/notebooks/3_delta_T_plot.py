@@ -17,44 +17,6 @@
 # # Plot temperature response over time
 
 # %% [markdown]
-# ## Method: 
-#
-
-# %%
-#TODO Describe method
-
-# %% [markdown]
-# ## IRF:
-# Using forcings from RCMIP models and the impulse response function:
-# \begin{align*}
-# \text{IRF}(t)=& 0.885\cdot (\frac{0.587}{4.1}\cdot exp(\frac{-t}{4.1}) + \frac{0.413}{249} \cdot exp(\frac{-t}{249}))\\
-# \text{IRF}(t)= &  \sum_{i=1}^2\frac{\alpha \cdot c_i}{\tau_i}\cdot exp\big(\frac{-t}{\tau_1}\big) 
-# \end{align*}
-# with $\alpha = 0.885$, $c_1=0.587$, $\tau_1=4.1$, $c_2=0.413$ and $\tau_2 = 249$.
-
-# %% Thus we can estimate the mean surface temperature change from some referance year (here 0) by using [markdown]
-# the estimated ERF$_x$ for some forcing agent $x$ as follows: 
-
-# %% [markdown]
-# \begin{align*} 
-# \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
-# \end{align*}
-
-# %% [markdown]
-# The ERFs are taken from models in the RCMIP [https://www.rcmip.org/](https://www.rcmip.org/)
-
-# %% [markdown]
-# # Data availability:
-
-# %% [markdown]
-# The data is available on request from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip). 
-#
-# Please contact: Zebedee Nicholls, email: zebedee.nicholls@climate-energy-college.org
-
-# %% [markdown]
-# # Code + figures
-
-# %% [markdown]
 # ## Imports:
 
 # %%

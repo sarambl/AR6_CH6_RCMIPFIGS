@@ -12,6 +12,10 @@
 #     name: python3
 # ---
 
+# %% [markdown]
+# ## OBS:
+# This notebook is only slightly edited from Zebedee Nicholls notebook, see [here](https://gitlab.com/rcmip/rcmip/-/blob/master/notebooks/results/phase-1/database-generation.ipynb)
+
 # %%
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 
@@ -24,12 +28,9 @@ __dest__ = [INPUT_DATA_DIR+
 # %%
 # %load_ext nb_black
 
-# %%
-#TODO: clean up more
-
-
 # %% [markdown]
 # # Database generation
+#
 #
 # In this notebook we process the data into a database we can later query to make plots/do analysis etc.
 
@@ -78,10 +79,6 @@ if not os.path.isdir(OBS_DATABASE_PATH):
 
 
 # %% [markdown]
-#
-
-
-# %% [markdown]
 # ## Protocol
 
 # %%
@@ -115,38 +112,6 @@ protocol_scenarios.columns = protocol_scenarios.columns.str.lower()
 protocol_scenarios.head()
 
 # %% [markdown]
-# ## Observations
-
-# %% [markdown]
-# ### tas observations
-#
-# These come from Chris Smith (personal email). TODO: get details from Chris about what these are.
-
-# %%
-TAS_OBS_PATH = os.path.join(
-    INPUT_DATA_DIR, "data", "priestley-centre", "observations", "tas_obs.txt"
-)
-
-# %%
-tas_obs_df = pd.read_csv(TAS_OBS_PATH, header=None, delim_whitespace=True)
-tas_obs_df.columns = ["year", "value"]
-tas_obs_df["model"] = "unspecified"
-tas_obs_df["climatemodel"] = "Observations (Priestley Centre)"
-tas_obs_df["scenario"] = "historical"
-tas_obs_df["variable"] = "Surface Air Temperature Change"
-tas_obs_df["unit"] = "K"
-tas_obs_df["region"] = "World"
-tas_obs_df = pyam.IamDataFrame(tas_obs_df)
-tas_obs_df.head()
-
-# %%
-db_obs = pyam.concat([tas_obs_df])
-db_obs.head()
-
-# %%
-save_into_database(db_obs, OBS_DATABASE_PATH, "rcmip-observations")
-
-# %% [markdown]
 # ## Model output
 
 # %%
@@ -158,26 +123,6 @@ _results_files = list(Path(RESULTS_PATH).rglob("*.csv")) + list(
 )
 print(len(_results_files))
 sorted(_results_files)
-
-# %%
-
-
-# %% [raw]
-# model_of_interest = [
-#     ".*acc2.*v2-0-1.*",
-#     #     ".*ar5ir.*v2-0-0.*",
-#     #     ".*rcmip_phase-1_cicero-scm.*v5-0-0.*",
-#     #     ".*escimo.*v2-0-1.*",
-#     #     ".*fair-1.5.*v1-0-1.*",
-#     #     ".*rcmip_phase-1_gir.*",
-#     #     ".*greb.*v2-0-0.*",
-#     #     ".*hector.*v2-0-0.*",
-#     #     ".*held-two-layer-uom.*v1-0-1.*",
-#     #     ".*magicc7.1.0.beta.*v1-0-0.*",
-#     #     ".*mce.*v3-0-0.*",
-#     #     ".*oscar.*v1-0-1.*",
-#     #     ".*wasp.*v1-0-2.*",
-# ]
 
 # %%
 model_of_interest = [
@@ -269,7 +214,7 @@ assert "esm-ssp370-lowNTCF" not in db["scenario"].unique().tolist()
 assert "esm-ssp370-lowNTCF-allGHG" not in db["scenario"].unique().tolist()
 
 # %% [markdown]
-# The Hector and MCE data is mislabelled so we do a quick fix here. I also have changed my mind about how to format the quantiles so tweak the FaIR and WASP data too. TODO: email modelling groups so they can fix it for phase 2.
+# The Hector and MCE data is mislabelled so we do a quick fix here. I also have changed my mind about how to format the quantiles so tweak the FaIR and WASP data too.
 
 # %%
 mce_prob_data = db.filter(climatemodel="MCE*PROB*")
