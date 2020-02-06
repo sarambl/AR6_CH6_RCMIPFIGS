@@ -45,7 +45,6 @@ from pathlib import Path
 from distutils.util import strtobool
 
 import pandas as pd
-import pyam
 import tqdm
 from scmdata import ScmDataFrame, df_append
 
