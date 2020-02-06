@@ -3,7 +3,6 @@ import pyam
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
 from ar6_ch6_rcmipfigs.utils.misc_func import climatemodel
 
 

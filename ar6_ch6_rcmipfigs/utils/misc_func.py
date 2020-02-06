@@ -4,7 +4,7 @@ import os
 import pandas as pd
 from scmdata import ScmDataFrame
 
-climatemodel='climatemodel'
+climatemodel = 'climatemodel'
 logger = logging.getLogger()
 
 
@@ -28,23 +28,22 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
     _db = db_in.filter(variable='*quantile', keep=False).filter(climatemodel=cmodel)
     # Check if variable already there -- if so, keeps original and does not overwrite
     for cm in _db[climatemodel].unique():
-        if len(_db.filter(variable=v_to_agg, climatemodel=cm)['scenario'].unique())>0:
-            print('Model %s already has variable, returns unchanged'%cmodel)
+        if len(_db.filter(variable=v_to_agg, climatemodel=cm)['scenario'].unique()) > 0:
+            print('Model %s already has variable, returns unchanged' % cmodel)
             return db_in
-
 
     # The variables to aggregate:
     v_to_agg_df = (
-        _db.filter(variable=v_to_agg, keep=False) # remove v_to_agg
+        _db.filter(variable=v_to_agg, keep=False)  # remove v_to_agg
             .filter(
-            variable="{}|*".format(v_to_agg), # pick out subgroups.
+            variable="{}|*".format(v_to_agg),  # pick out subgroups.
             level=0,  # make sure we don't pick up e.g. HFC23|50th Percentile by accident
         )
             .timeseries()
     )
     # Check if variables found:
-    if len(v_to_agg_df)==0:
-        print('No variables to aggregate found in model %s. Returns unchanged'%cmodel)
+    if len(v_to_agg_df) == 0:
+        print('No variables to aggregate found in model %s. Returns unchanged' % cmodel)
         return db_in
 
     # Group by index except 'variable'
@@ -52,7 +51,7 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
     groups = v_to_agg_df.groupby(group_idx).groups
 
     for g in groups.keys():
-        print('Aggragating for model %s:*'%cmodel)
+        print('Aggragating for model %s:*' % cmodel)
         print('Group:')
         print(g)
         print('Aggregates:')
@@ -66,9 +65,9 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
 
 
 def fix_BC_name(db_in,
-                from_v = 'Effective Radiative Forcing|Anthropogenic|Albedo Change|Other|Deposition of Black Carbon on Snow',
-                to_v = 'Effective Radiative Forcing|Anthropogenic|Other|BC on Snow',
-                model= "*OSCAR*"):
+                from_v='Effective Radiative Forcing|Anthropogenic|Albedo Change|Other|Deposition of Black Carbon on Snow',
+                to_v='Effective Radiative Forcing|Anthropogenic|Other|BC on Snow',
+                model="*OSCAR*"):
     """
     Changes variable name in db
     :param db_in:
@@ -86,7 +85,7 @@ def fix_BC_name(db_in,
     return db
 
 
-def get_protocol_vars(DATA_PROTOCOL,  sheet_name="variable_definitions"):
+def get_protocol_vars(DATA_PROTOCOL, sheet_name="variable_definitions"):
     """
     Based on Zebedee Nicholls  (zebedee.nicholls@climate-energy-college.org) code https://gitlab.com/rcmip/rcmip
     """
@@ -94,6 +93,7 @@ def get_protocol_vars(DATA_PROTOCOL,  sheet_name="variable_definitions"):
     protocol_variables.columns = protocol_variables.columns.str.lower()
     protocol_variables.head()
     return protocol_variables
+
 
 def get_protocol_scenarios(DATA_PROTOCOL, sheet_name='scenario_info'):
     """
@@ -109,11 +109,11 @@ def get_protocol_scenarios(DATA_PROTOCOL, sheet_name='scenario_info'):
 def prep_str_for_filename(ins):
     return (
         ins.replace("_", "-")
-        .replace("|", "-")
-        .replace(" ", "-")
-        .replace("(", "")
-        .replace(")", "")
-        .lower()
+            .replace("|", "-")
+            .replace(" ", "-")
+            .replace("(", "")
+            .replace(")", "")
+            .lower()
     )
 
 
@@ -147,7 +147,7 @@ def make_folders(path):
         path_inc = '/'
     else:
         path_inc = ''
-    for ii in range(0,len(split_path)):
+    for ii in range(0, len(split_path)):
         # if ii==0: path_inc=path_inc+split_path[ii]
         path_inc = path_inc + split_path[ii]
         if not os.path.exists(path_inc):
@@ -164,6 +164,6 @@ def extract_path_from_filepath(file_path):
     :return:
     """
 
-    st_ind=file_path.rfind('/')
-    foldern = file_path[0:st_ind]+'/'
+    st_ind = file_path.rfind('/')
+    foldern = file_path[0:st_ind] + '/'
     return foldern

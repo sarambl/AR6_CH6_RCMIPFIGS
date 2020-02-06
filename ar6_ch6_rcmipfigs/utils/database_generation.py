@@ -6,14 +6,15 @@ import logging
 import pyam
 import tqdm
 from scmdata import ScmDataFrame
+
 """
 All code is based on or directly copied from Zebedee Nicholls (zebedee.nicholls@climate-energy-college.org)
  code https://gitlab.com/rcmip/rcmip
 """
 
-
-
 logger = logging.getLogger()
+
+
 def strip_quantile(inv):
     if inv.endswith("mean"):
         return "|".join(inv.split("|")[:-1])
@@ -71,32 +72,32 @@ def unify_units(in_df, protocol_variables, exc_info=False):
             target_unit = protocol_variables[
                 protocol_variables["variable"]
                 == "Radiative Forcing|Anthropogenic|Albedo Change"
-            ]["unit"].iloc[0]
+                ]["unit"].iloc[0]
 
         elif variable.startswith(
-            "Effective Radiative Forcing|Anthropogenic|Albedo Change"
+                "Effective Radiative Forcing|Anthropogenic|Albedo Change"
         ):
             target_unit = protocol_variables[
                 protocol_variables["variable"]
                 == "Effective Radiative Forcing|Anthropogenic|Albedo Change"
-            ]["unit"].iloc[0]
+                ]["unit"].iloc[0]
 
         elif variable.startswith("Carbon Pool"):
             target_unit = protocol_variables[
                 protocol_variables["variable"] == "Carbon Pool|Atmosphere"
-            ]["unit"].iloc[0]
+                ]["unit"].iloc[0]
 
         elif "Other" in variable:
             target_unit = protocol_variables[
                 protocol_variables["variable"]
                 == "{}".format(variable.split("|Other")[0])
-            ]["unit"].iloc[0]
+                ]["unit"].iloc[0]
 
         elif any([variable.endswith(suf) for suf in ["quantile", "mean", "stddev"]]):
             try:
                 target_unit = protocol_variables[
                     protocol_variables["variable"] == "|".join(variable.split("|")[:-1])
-                ]["unit"].iloc[0]
+                    ]["unit"].iloc[0]
             except:
                 logger.exception(
                     f"Failed to find unit for {variable}", exc_info=exc_info
@@ -106,7 +107,7 @@ def unify_units(in_df, protocol_variables, exc_info=False):
             try:
                 target_unit = protocol_variables[
                     protocol_variables["variable"] == variable
-                ]["unit"].iloc[0]
+                    ]["unit"].iloc[0]
             except:
                 logger.exception(
                     f"Failed to find unit for {variable}", exc_info=exc_info
@@ -145,11 +146,11 @@ def unify_units(in_df, protocol_variables, exc_info=False):
 def prep_str_for_filename(ins):
     return (
         ins.replace("_", "-")
-        .replace("|", "-")
-        .replace(" ", "-")
-        .replace("(", "")
-        .replace(")", "")
-        .lower()
+            .replace("|", "-")
+            .replace(" ", "-")
+            .replace("(", "")
+            .replace(")", "")
+            .lower()
     )
 
 
@@ -174,15 +175,15 @@ def convert_scmdf_to_pyamdf_year_only(iscmdf):
 
 def save_into_database(db, db_path, filename_leader):
     for cm in tqdm.tqdm_notebook(
-        db["climatemodel"].unique(), leave=False, desc="Climate models"
+            db["climatemodel"].unique(), leave=False, desc="Climate models"
     ):
         db_cm = db.filter(climatemodel=cm)
         for r in tqdm.tqdm_notebook(
-            db_cm["region"].unique(), leave=False, desc="Regions"
+                db_cm["region"].unique(), leave=False, desc="Regions"
         ):
             db_cm_r = db_cm.filter(region=r)
             for v in tqdm.tqdm_notebook(
-                db_cm_r["variable"].unique(), leave=False, desc="Variables"
+                    db_cm_r["variable"].unique(), leave=False, desc="Variables"
             ):
                 db_cm_r_v = ScmDataFrame(db_cm_r.filter(variable=v))
                 filename = get_filename(db_cm_r_v, leader=filename_leader)
