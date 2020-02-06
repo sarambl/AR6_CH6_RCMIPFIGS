@@ -41,7 +41,7 @@ Create a symbolic link to the input data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch
 
 In project base do:
 ```bash
-ln -s /path/to/data/ ar6_ch6_rcmipfigs/data_in/
+ln -s /path/to/download_data/rcmip-tmp/data ar6_ch6_rcmipfigs/data_in/
 ```            
   
 ### Preprocess data
@@ -62,7 +62,7 @@ OR:
 
 1. Simply run [00-02_shortcut.ipynb](./ar6_ch6_rcmipfigs/notebooks/00-02_shortcut.ipynb)
 
-### Plot figures:
+## Plot figures:
 The figures are produced in notebooks:
 - [3_delta_T_plot.ipynb](./ar6_ch6_rcmipfigs/notebooks/3_delta_T_plot.ipynb)
 - [3-1_delta_T_plot_SLCF_sum.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-1_delta_T_plot_SLCF_sum.ipynb)
@@ -84,5 +84,7 @@ Extra:
     - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and tables 
     - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities  
     
-    to reproduce the results and figures go to [run_me](./notebooks/run_me.ipynb)
 
+
+
+## 
