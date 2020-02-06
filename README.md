@@ -3,12 +3,11 @@ Contact: Sara Marie Blichner, University of Oslo [s.m.blichner@geo.uio.no](s.m.b
 
 
 Code for analyzing and plotting RCMIP data for AR6 IPCC. 
-The model data used in these figures are available here:
-[https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip). 
-For questions about this data, please contact  Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)).
+
 
 OBS: Some of the code is based on or copied directly with permission from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip) 
  Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)). 
+
 
 ## Installation
 
@@ -19,21 +18,33 @@ conda env create env_rcmip_ch6.yml
 conda activate rcmip_ch6
 pip install -e .
 ``` 
+
+## Input data: 
+The input data for these figures is RCMIP phase 1 model data:
+ 
+Nicholls, Zebedee, & Gieseke, Robert. (2019). RCMIP Phase 1 Data (Version v1.0.0)
+ [Data set]. Zenodo. http://doi.org/10.5281/zenodo.3593570
+
+For more detail on the dataset, see:
+
+Nicholls, Z. R. J., Meinshausen, M., Lewis, J., Gieseke, R., Dommenget, D., Dorheim, K., Fan, C.-S., Fuglestvedt, J. S., Gasser, T., Golüke, U., Goodwin, P., Kriegler, E., Leach, N. J., Marchegiani, D., Quilcaille, Y., Samset, B. H., Sandstad, M., Shiklomanov, A. N., Skeie, R. B., Smith, C. J., Tanaka, K., Tsutsui, J., and Xie, Z.: Reduced complexity model intercomparison project phase 1: Protocol, results and initial observations, Geosci. Model Dev. Discuss., https://doi.org/10.5194/gmd-2019-375, in review, 2020.
+ Nicholls Z. et al (2020), "Reduced complexity model intercomparison project phase 1: Protocol, results and initial observations", '
+ https://www.geosci-model-dev-discuss.net/gmd-2019-375/
+
+
 ## Usage:  
 
 ### Get input data:
-   - input data is [here](./ar6_ch6_rcmipfigs/data_in) 
+Download the data from http://doi.org/10.5281/zenodo.3593570
 
-        The input data for these plots can be found [here](https://gitlab.com/rcmip/rcmip/-/tree/master/data/)
-        Download this data to some location /path/to/data and make a symbolic link in ar6_ch6_rcmipfigs.
-            In project base do:
-            
-            ln -s /path/to/data/ ar6_ch6_rcmipfigs/data_in/
-            
+Create a symbolic link to the input data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in):
 
-   - output data is [here](ar6_ch6_rcmipfigs/data_out)
+In project base do:
+```bash
+ln -s /path/to/data/ ar6_ch6_rcmipfigs/data_in/
+```            
   
-### Postprocess data
+### Preprocess data
 Follow the below steps. 
 0. **Create a nicely formatted dataset:**: 
 Run notebook [0_database-generation.ipynb](./ar6_ch6_rcmipfigs/notebooks/0_database-generation.ipynb)
