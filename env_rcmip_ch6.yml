@@ -16,6 +16,7 @@ dependencies:
   - seaborn >=0.8.1
   - netcdf4
   - jupyter
+  - jupyterlab
   - jupytext
   - nodejs
   - notebook >=5.6.0

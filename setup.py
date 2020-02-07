@@ -9,6 +9,6 @@ setup(
     license='MIT',
     author='sarambl',
     author_email='s.m.blichner@geo.uio.no',
-    description='', install_requires=['xarray', 'pandas', 'pyam', 'scmdata', 'numpy', 'seaborn', 'matplotlib', 'tqdm',
+    description='', install_requires=['xarray', 'pandas', 'scmdata', 'numpy', 'seaborn', 'matplotlib', 'tqdm',
                                       'cftime', 'IPython']
 )
