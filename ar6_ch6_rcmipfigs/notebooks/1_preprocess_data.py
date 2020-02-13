@@ -18,26 +18,24 @@
 
 # %% [markdown]
 # ## Imports:
-
+#
+# import os
+# import re
+# from pathlib import Path
+#
+# import numpy as np
+# import pandas as pd
+# import tqdm
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 import xarray as xr
 from IPython.display import clear_output
-import numpy as np
-import os
-import re
-from pathlib import Path
-import pandas as pd
-import tqdm
 from scmdata import df_append, ScmDataFrame
 
+# %%
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR
 
 # %load_ext autoreload
 # %autoreload 2
-
-
-# %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR
 
 SAVEPATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 

@@ -19,26 +19,20 @@
 # %% [markdown]
 # ## Imports:
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 # %%
 import xarray as xr
-from IPython.display import clear_output
-import numpy as np
-import os
-import re
-from pathlib import Path
-import pandas as pd
-import tqdm
-from scmdata import df_append, ScmDataFrame
-import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 
 # %load_ext autoreload
 # %autoreload 2
 
 # %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 #PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 PATH_DT = OUTPUT_DATA_DIR + '/dT_data_rcmip_models.nc'
@@ -115,8 +109,7 @@ variables_dt_comp = [new_varname(var, name_deltaT) for var in variables_erf_comp
 # ## Compute sum of all SLCF forcers
 
 # %%
-from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
-from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, trans_scen2plotlabel, get_scenario_c_dic, get_scenario_ls_dic
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, get_scenario_c_dic, get_scenario_ls_dic
 
 # %%
 

@@ -1,5 +1,6 @@
 import os
 import ar6_ch6_rcmipfigs
+
 BASE_DIR = os.path.dirname(ar6_ch6_rcmipfigs.__file__)
 print(BASE_DIR)
 

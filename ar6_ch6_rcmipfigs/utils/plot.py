@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from ar6_ch6_rcmipfigs.utils.misc_func import climatemodel
 
 
-def plot_available_out(db, variables, scenarios, figsize = [30, 30]):
+def plot_available_out(db, variables, scenarios, figsize=[30, 30]):
     """
     Plots specified variables and scenarios to get overview over available data
     :param db: scmdata.dataframe input data
@@ -15,7 +15,8 @@ def plot_available_out(db, variables, scenarios, figsize = [30, 30]):
     :param figsize: figure size
     :return:
     """
-    fig, axs = plt.subplots(len(variables), len(scenarios), figsize=figsize, sharex = True)
+    # noinspection PyTypeChecker
+    fig, axs = plt.subplots(len(variables), len(scenarios), figsize=figsize, sharex=True)
     j = -1
     for var in variables:
         j += 1
@@ -45,7 +46,7 @@ def get_cmap_dic(keys, palette='colorblind'):
 
 
 def get_ls_dic(keys):
-    linestyles = ['solid', 'dotted', 'dashed', 'dashdot',(0, (1, 1))]
+    linestyles = ['solid', 'dotted', 'dashed', 'dashdot', 'solid']#(0, (1, 1))]
     odic = {}
     if len(keys) > len(linestyles):
         print('Warning: too many keys')
@@ -55,8 +56,10 @@ def get_ls_dic(keys):
 
 
 def trans_scen2plotlabel(label):
-    if label==ssp370low_nn: return ssp370low_on
-    else: return label
+    if label == ssp370low_nn:
+        return ssp370low_on
+    else:
+        return label
 
 
 color_map_scenarios_base = {
@@ -81,27 +84,23 @@ color_map_scenarios_base = {
 # %%
 from ar6_ch6_rcmipfigs.constants import BASE_DIR
 
+
 # %%
 def get_scenario_c_dic(new=True):
-    colormap_dic = {}
-
     if new:
         path_cf = BASE_DIR + '/misc/ssp_cat_2.txt'
         rgb_data_in_the_txt_file = np.loadtxt(path_cf)
         colormap_dic = {}
         for scn, col in zip(scenario_list, rgb_data_in_the_txt_file):
-            colormap_dic[scn] = tuple([a/255. for a in col])#col/255.
-        colormap_dic[ssp370low_nn] = colormap_dic[ssp370low_on]#'ssp370-lowNTCF']
+            colormap_dic[scn] = tuple([a / 255. for a in col])
+        colormap_dic[ssp370low_nn] = colormap_dic[ssp370low_on]
         colormap_dic['historical'] = 'black'
-        return  colormap_dic
-
-
+        return colormap_dic
 
     colormap_dic = {}
     ipccdic = pyam.plotting.PYAM_COLORS
     # print(ipccdic)
     for each in color_map_scenarios_base:
-        key = color_map_scenarios_base[each]
         # print(key)
         colormap_dic[each] = ipccdic[color_map_scenarios_base[each]]
     colormap_dic['historical'] = 'black'
@@ -113,12 +112,12 @@ def get_scenario_ls_dic():
     c_dic = get_scenario_c_dic()
     ls_dic = {}
     for key in c_dic:
-        ls_dic[key]='solid'
+        ls_dic[key] = 'solid'
     ls_dic[ssp370low_nn] = 'dashed'
     return ls_dic
 
 
-scenario_list = ['ssp119', 'ssp126','ssp245','ssp370', 'ssp370-LowNTCF',
-                 'ssp435','ssp460','ssp534os','ssp585']
+scenario_list = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-LowNTCF',
+                 'ssp435', 'ssp460', 'ssp534os', 'ssp585']
 ssp370low_nn = "ssp370-lowNTCF-aerchemmip"
 ssp370low_on = 'ssp370-LowNTCF'

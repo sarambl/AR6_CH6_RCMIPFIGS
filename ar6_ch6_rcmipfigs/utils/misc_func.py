@@ -66,14 +66,12 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
 
 def fix_BC_name(db_in,
                 from_v='Effective Radiative Forcing|Anthropogenic|Albedo Change|Other|Deposition of Black Carbon on Snow',
-                to_v='Effective Radiative Forcing|Anthropogenic|Other|BC on Snow',
-                model="*OSCAR*"):
+                to_v='Effective Radiative Forcing|Anthropogenic|Other|BC on Snow'):
     """
     Changes variable name in db
     :param db_in:
     :param from_v: Original name
     :param to_v: output name
-    :param model:
     :return: db with from_v changed to to_v
     """
     # Convert to dataframe:
@@ -142,7 +140,7 @@ def make_folders(path):
     """
     path = extract_path_from_filepath(path)
     split_path = path.split('/')
-    if (path[0] == '/'):
+    if path[0] == '/':
 
         path_inc = '/'
     else:

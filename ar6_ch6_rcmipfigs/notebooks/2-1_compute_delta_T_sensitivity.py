@@ -53,24 +53,17 @@
 # %% [markdown]
 # ## Imports:
 
+import numpy as np
+import pandas as pd
 # %%
 import xarray as xr
 from IPython.display import clear_output
-import numpy as np
-import os
-import re
-from pathlib import Path
-import pandas as pd
-import tqdm
-from scmdata import df_append, ScmDataFrame
-import matplotlib.pyplot as plt
+
+# %%
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 # %load_ext autoreload
 # %autoreload 2
-
-# %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
 
 PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 PATH_DT_OUTPUT = RESULTS_DIR + '/tables/table_sens_dT_cs.csv'
@@ -234,7 +227,6 @@ def integrate_to_dT(ds, from_t, to_t, variables, csfac=0.885):
     ds_DT = ds_sl.copy()
 
     # lets define the vars of the ds
-    vars = variables  # variables_erf_comp+ variables_erf_tot #['EFR']
     for var in variables:
         namevar = new_varname(var, name_deltaT)
         # set all values to zero for results dataarray:

@@ -230,15 +230,6 @@ fn = RESULTS_DIR+ '/figures/stack_bar_influence_years_horiz_errTot.png'
 Image(filename=fn) 
 
 # %% [markdown]
-# # Using percentiles from RCMIP:
-#
-# We have percentiles from at least two models. The distribution is unknown. To combine the percentiles from these these models, we can e.g.:
-#
-# - Calculate the percentwise deviation from the median of all models. For a model $i$, calculate $q_{1,i} = Q_{1,i}/Q_{2,i}$ and $q_{3,i}=Q_{3,i}/Q_{2,i}$
-# - Take average over models: $\overline{q_1}$, $\overline{q_3}$
-# - Visualize interval: ($\overline{q_1}\overline{X}, \overline{q_3}\overline{X}$) where $\overline{X}$ is the mean over ALL the models. 
-
-# %% [markdown]
 # # Referances: 
 # - Geoffroy, O., Saint-Martin, D., Olivié, D. J. L., Voldoire, A., Bellon, G., and Tytéca, S. (2013). Transient Climate Response in a Two-Layer Energy-Balance Model. Part I: Analytical Solution and Parameter Calibration Using CMIP5 AOGCM Experiments. J. Clim. 26, 1841–1857. doi:10.1175/JCLI-D-12-00195.1.
 #
