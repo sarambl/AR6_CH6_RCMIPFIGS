@@ -13,8 +13,15 @@
 # ---
 
 # %% [markdown]
-# ## OBS:
+# # Database generation
+#
+#
+# In this notebook we process the data into a database we can later query to make plots/do analysis etc.
+# ### OBS:
 # This notebook is only slightly edited from Zebedee Nicholls notebook, see [here](https://gitlab.com/rcmip/rcmip/-/blob/master/notebooks/results/phase-1/database-generation.ipynb)
+
+# %% [markdown]
+# ## Imports
 
 # %%
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
@@ -27,15 +34,6 @@ __dest__ = [INPUT_DATA_DIR+
 
 # %%
 # %load_ext nb_black
-
-# %% [markdown]
-# # Database generation
-#
-#
-# In this notebook we process the data into a database we can later query to make plots/do analysis etc.
-
-# %% [markdown]
-# ## Imports
 
 # %%
 import logging
@@ -366,5 +364,3 @@ clean_db.head()
 
 # %%
 save_into_database(clean_db, OUTPUT_DATABASE_PATH, "rcmip-phase-1")
-
-# %%

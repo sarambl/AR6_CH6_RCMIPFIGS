@@ -14,41 +14,57 @@
 # ---
 
 # %% [markdown]
-# # Plot temperature response over time
+# # Compute change in temperature since 1850 ($\Delta$ T) from RCMIP Effective radiative forcings (ERFs)
 
 # %% [markdown]
-# ## IRF:
-# Using forcings from RCMIP models and the impulse response function:
-# \begin{align*}
-# \text{IRF}(t)=& 0.885\cdot (\frac{0.587}{4.1}\cdot exp(\frac{-t}{4.1}) + \frac{0.413}{249} \cdot exp(\frac{-t}{249}))\\
-# \text{IRF}(t)= &  \sum_{i=1}^2\frac{\alpha \cdot c_i}{\tau_i}\cdot exp\big(\frac{-t}{\tau_1}\big) 
-# \end{align*}
-# with $\alpha = 0.885$, $c_1=0.587$, $\tau_1=4.1$, $c_2=0.413$ and $\tau_2 = 249$.
+# ## General about computing $\Delta T$: 
 
-# %% Thus we can estimate the mean surface temperature change from some referance year (here 0) by using [markdown]
-# the estimated ERF$_x$ for some forcing agent $x$ as follows: 
+# %% [markdown]
+# We compute the change in GSAT temperature ($\Delta T$) from the effective radiative forcing (ERF) estimated from the RCMIP models (Nicholls et al 2020), by integrating with the impulse response function (IRF(t-t')) (Geoffroy at al 2013). See Nicholls et al (2020) for description of the RCMIP models and output. 
+#
+# For any forcing agent $x$, with estimated ERF$_x$, the change in temperature $\Delta T$ is calculated as:
+#
 
 # %% [markdown]
 # \begin{align*} 
-# \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
+# \Delta T_x (t) &= \int_0^t ERF_x(t') IRF(t-t') dt' \\
 # \end{align*}
 
 # %% [markdown]
-# The ERFs are taken from models in the RCMIP [https://www.rcmip.org/](https://www.rcmip.org/)
+# ### The Impulse response function (IRF):
+# In these calculations we use the impulse response function (Geoffroy et al 2013):
+# \begin{align*}
+# \text{IRF}(t)=& 0.885\cdot (\frac{0.587}{4.1}\cdot exp(\frac{-t}{4.1}) + \frac{0.413}{249} \cdot exp(\frac{-t}{249}))\\
+# \text{IRF}(t)= &  \frac{1}{\lambda}\sum_{i=1}^2\frac{a_i}{\tau_i}\cdot exp\big(\frac{-t}{\tau_i}\big) 
+# \end{align*}
+# with $\frac{1}{\lambda} = 0.885$ (K/Wm$^{-2}$), $a_1=0.587$, $\tau_1=4.1$(yr), $a_2=0.413$ and $\tau_2 = 249$(yr) (note that $i=1$ is the fast response and $i=2$ is the slow response and that $a_1+a_2=1$)
+#
 
 # %% [markdown]
 # ## Input data:
 # See [README.md](../../README.md)
 
 # %% [markdown]
-# The data is available on request from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip). 
-#
+# ## Set values:
 
 # %% [markdown]
-# # Code + figures
+# ECS parameter:
+
+# %%
+csf = 0.884
 
 # %% [markdown]
-# ## Imports:
+# Year to integrate from (i.e. reference for $\Delta T$) and to:
+
+# %%
+first_y ='1850'
+last_y = '2100'
+
+# %% [markdown]
+# ## Code + figures
+
+# %% [markdown]
+# ### Imports:
 
 # %%
 import xarray as xr
@@ -72,9 +88,16 @@ from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR
 PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 PATH_DT_OUTPUT = OUTPUT_DATA_DIR + '/dT_data_rcmip_models.nc'
 
+# %%
+
+climatemodel = 'climatemodel'
+scenario = 'scenario'
+variable = 'variable'
+time = 'time'
+
 
 # %% [markdown]
-# ## IRF:
+# ### IRF:
 
 # %%
 
@@ -93,19 +116,12 @@ def IRF(t, l=0.885, alpha1=0.587 / 4.1, alpha2=0.413 / 249, tau1=4.1, tau2=249):
     return l * (alpha1 * np.exp(-t / tau1) + alpha2 * np.exp(-t / tau2))
 
 
-# %%
-
-climatemodel = 'climatemodel'
-scenario = 'scenario'
-variable = 'variable'
-time = 'time'
-
 # %% [markdown]
-# ## ERF:
+# ### ERF:
 # Read ERF from file
 
 # %% [markdown]
-# ### Define variables to look at:
+# #### Define variables to look at:
 
 # %%
 # variables to plot:
@@ -125,13 +141,13 @@ scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemm
                 'ssp585', 'historical']
 
 # %% [markdown]
-# ## Open dataset:
+# #### Open dataset:
 
 # %%
 ds = xr.open_dataset(PATH_DATASET)
 
 # %% [markdown]
-# # Integrate:
+# ## Integrate:
 # The code below integrates the read in ERFs with the pre defined impulse response function (IRF).
 
 # %% [markdown]
@@ -140,20 +156,11 @@ ds = xr.open_dataset(PATH_DATASET)
 # \end{align*}
 
 # %%
+from ar6_ch6_rcmipfigs.utils.misc_func import new_varname
+
+# %%
+# Name of equivalent delta T to ERF
 name_deltaT = 'Delta T'
-
-
-def new_varname(var, nname):
-    """
-    var:str
-        Old variable of format varname|bla|bla
-    nname:str
-        name for the resulting variable, based on var
-    Returns
-    -------
-    new variable name with nname|bla|bla
-    """
-    return nname + '|' + '|'.join(var.split('|')[1:])
 
 
 def integrate_(i, var, nvar, ds, ds_DT, csfac=0.885):
@@ -257,24 +264,20 @@ def integrate_to_dT(ds, from_t, to_t, variables, csfac=0.885):
     fname = 'DT_%s-%s.nc' % (from_t, to_t)
     # save dataset.
     ds_DT.to_netcdf(fname)
-    #for var in variables:
-    #    ds_DT[var].plot(alpha=0.3)
-    # plt.show()
-    #plt.show()
     return ds_DT
 
 
-csfs = [0.884, 0.526, 1.136]
-csf = 0.884  # csfs[0]
-# dic_ds = {}
-# for csf in csfs:
+# %%
 _vars = variables_erf_comp + variables_erf_tot
-ds_DT = integrate_to_dT(ds, '1850', '2100', _vars, csfac=csf)
+ds_DT = integrate_to_dT(ds, first_y, last_y, _vars, csfac=csf)
 # list of computed delta T variables:
 variables_dt_comp = [new_varname(var, name_deltaT) for var in variables_erf_comp]
 
 # %%
 ds_DT
+
+# %% [markdown]
+# ## Save dataset to netCDF:
 
 # %%
 ds_DT.to_netcdf(PATH_DT_OUTPUT)

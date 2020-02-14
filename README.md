@@ -67,12 +67,11 @@ This creates at netcdf file in [ar6_ch6_rcmipfigs/data_out/dT_data_rcmip_models.
 
 OR: 
 
-1. Simply run [00-02_shortcut.ipynb](./ar6_ch6_rcmipfigs/notebooks/00-02_shortcut.ipynb)
+1. Simply run [00-02_shortcut.ipynb](ar6_ch6_rcmipfigs/notebooks/X-shortcut.ipynb)
 
 ## Plot figures:
 The figures are produced in notebooks:
 - [3_delta_T_plot.ipynb](./ar6_ch6_rcmipfigs/notebooks/3_delta_T_plot.ipynb)
-- [3-1_delta_T_plot_SLCF_sum.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-1_delta_T_plot_SLCF_sum.ipynb)
 - [3-2_delta_T_plot_bar_stacked.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-2_delta_T_plot_bar_stacked.ipynb)
 Table (sensitivity to ECS):
 - [2-1_compute_delta_T_sensitivity.ipynb](./ar6_ch6_rcmipfigs/notebooks/2-1_compute_delta_T_sensitivity.ipynb)
@@ -84,12 +83,16 @@ Extra:
 ## Directory overview: 
  - [ar6_ch6_rcmipfigs](./ar6_ch6_rcmipfigs)
  
-    - [data_in](./ar6_ch6_rcmipfigs/data_in) Input data
-    - [data_out](./ar6_ch6_rcmipfigs/data_out) Output data
-    - [misc](./ar6_ch6_rcmipfigs/misc) Various non-code utils
-    - [notebooks](./ar6_ch6_rcmipfigs/data_out) Notebooks
+    - [data_in](./ar6_ch6_rcmipfigs/data_in) Input data 
+        - Downloaded or generated big datasets (see section above on Input data)
+    - [data_out](./ar6_ch6_rcmipfigs/data_out) Output data 
+        - Data produced from the data_in but also provided in this repository for convenience 
+    - [notebooks](./ar6_ch6_rcmipfigs/data_out) Notebooks 
+        - Run these to produce the figures. 
     - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and tables 
-    - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities  
+    - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities
+    - [misc](./ar6_ch6_rcmipfigs/misc) Various non-code utils
+  
     
 
 ## Libraries, software etc:
@@ -98,3 +101,19 @@ A list of the required packages for these figures can be found in [env_rcmip_ch6
 ## RESULTS:
 
 The resulting figures can be found in [/ar6_ch6_rcmipfigs/results](./ar6_ch6_rcmipfigs/results)
+
+
+Delta_T-Anthropogenic-Aerosols_refy2021_fy2015.png
+Delta_T-Anthropogenic-CH4_refy2021_fy2015.png
+Delta_T-Anthropogenic-F-Gases-HFC_refy2021_fy2015.png
+Delta_T-Anthropogenic-Other-BC_on_Snow_refy2021_fy2015.png
+Delta_T-Anthropogenic-Tropospheric_Ozone_refy2021_fy2015.png
+ssp858_126_relative_contrib.png
+ssp858_126_relative_contrib_2.png
+ssp858_126_relative_contrib_rev.png
+ssp858_126_relative_contrib_v2.png
+stack_bar_influence_years.png
+stack_bar_influence_years_same_y.png
+total_ref2021_from2015_.png
+total_ref2021_from2015_all_.png
+total_ref2021_from2015_all_2.png

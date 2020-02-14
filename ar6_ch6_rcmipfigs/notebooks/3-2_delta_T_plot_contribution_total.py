@@ -17,6 +17,9 @@
 # # Plot temperature response over time
 
 # %% [markdown]
+# This notebook plots temperature respons to SLCFs AND the total scenario forcing. 
+
+# %% [markdown]
 # ## Imports:
 
 # %%
@@ -42,6 +45,19 @@ from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS
 
 #PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 PATH_DT = OUTPUT_DATA_DIR + '/dT_data_rcmip_models.nc'
+
+# %% [markdown]
+# ## Set values:
+
+# %%
+first_y ='1850'
+last_y = '2100'
+
+# %% [markdown]
+# **Set reference year for temperature change:**
+
+# %%
+ref_year = '2021'
 
 # %%
 FIGURE_DIR = RESULTS_DIR + '/figures/'
@@ -70,6 +86,10 @@ variables_erf_tot = ['Effective Radiative Forcing|Anthropogenic',
 # Scenarios to plot:
 scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
                 'ssp585', 'historical']
+
+scenarios_fl_370 = ['ssp370', 'ssp370-lowNTCF-aerchemmip','ssp370-lowNTCF-gidden'# Due to mistake here
+                ]
+
 climatemodels_fl = ['Cicero-SCM', 'Cicero-SCM-ECS3', 'FaIR-1.5-DEFAULT', 'MAGICC7.1.0.beta-rcmip-phase-1', 'OSCARv3.0']
 
 # %% [markdown]
@@ -91,19 +111,20 @@ climatemodels_fl = ['Cicero-SCM', 'Cicero-SCM-ECS3', 'FaIR-1.5-DEFAULT', 'MAGICC
 ds_DT = xr.open_dataset(PATH_DT)
 
 # %%
-name_deltaT = 'Delta T'
+ds_DT#.climatemodel
 
-def new_varname(var, nname):
-    """
-    var:str
-        Old variable of format varname|bla|bla
-    nname:str
-        name for the resulting variable, based on var
-    Returns
-    -------
-    new variable name with nname|bla|bla
-    """
-    return nname + '|' + '|'.join(var.split('|')[1:])
+# %% [markdown]
+# ### Define stuff:
+
+# %%
+from ar6_ch6_rcmipfigs.utils.misc_func import new_varname
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, get_ls_dic, trans_scen2plotlabel, get_scenario_c_dic, \
+    get_scenario_ls_dic
+name_deltaT = 'Delta T'
+# scenario colors and linestyle
+cdic = get_scenario_c_dic()
+lsdic = get_scenario_ls_dic()
+
 
 
 
@@ -114,43 +135,39 @@ variables_dt_comp = [new_varname(var, name_deltaT) for var in variables_erf_comp
 # %% [markdown]
 # ## Compute sum of all SLCF forcers
 
-# %%
-from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
-from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, trans_scen2plotlabel, get_scenario_c_dic, get_scenario_ls_dic
+# %% [markdown]
+# ### Concatinate SLCFs along new dimension:
 
 # %%
 
-# ds_DT = dic_ds[0.885]
-s_y = '1850'
-# cdic = get_scenario_c_dic()
-
-cdic = get_scenario_c_dic()# get_cmap_dic(ds_DT[scenario].values)
-lsdic = get_scenario_ls_dic()# _scget_ls_dic(ds_DT[climatemodel].values)
+s_y = first_y
 
 
-def sum_name(var): return '|'.join(var.split('|')[0:2]) + '|' + 'All'
+def sum_name(var):
+    """
+    Returns the name off the sum o
+    """
+    return '|'.join(var.split('|')[0:2]) + '|' + 'All'
 
 
-var = variables_erf_comp[0]
-f_totn = sum_name(var)
-dt_totn = sum_name(new_varname(var, name_deltaT))
 
 # make xarray with variable as new dimension:
 _lst_f = []
 _lst_dt = []
+# Make list of dataArrays to be concatinated:
 for var in variables_erf_comp:
     _lst_f.append(ds_DT[var])
     _lst_dt.append(ds_DT[new_varname(var, name_deltaT)])
+# Name of new var:
 erf_all = sum_name('Effective Radiative Forcing|Anthropogenic|all')
+# Name of new var:
 dt_all = sum_name(new_varname('Effective Radiative Forcing|Anthropogenic|all', name_deltaT))
 ds_DT[erf_all] = xr.concat(_lst_f, pd.Index(variables_erf_comp, name='variable'))
 ds_DT[dt_all] = xr.concat(_lst_dt, pd.Index(variables_erf_comp, name='variable'))
-
-# %%
-ds_diff = ds_DT.sel(time='2100').squeeze()-ds_DT.sel(time='2021').squeeze()
-
+dt_totn = dt_all
 # %% [markdown]
-# # Plot
+# ## Plot total $\Delta T$ together with SLCF contribution
+# In the following plot, the total anthropogenic temperature change in a scenario is showed by the black stipled line, while the contribution of each SLCFer is showed as an shaded area either (cooling) over or under (warming).
 
 # %%
 SMALL_SIZE = 12
@@ -166,11 +183,11 @@ plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
-s_y = '2021'
+s_y = ref_year
 s_y2 = '2000'
-e_y = '2100'
-e_y2 = '2100'
-
+e_y = last_y
+e_y2 = last_y
+# Scenarios to plot:
 scenarios_ss = ['ssp126','ssp245', 'ssp585']
 ref_var_erf = 'Effective Radiative Forcing|Anthropogenic'
 ref_var_dt = new_varname(ref_var_erf, name_deltaT)
@@ -184,19 +201,17 @@ first=True
 for ref_var, varl in zip([ref_var_dt],
                              [variables_dt_comp, variables_erf_comp]):
     fig, ax = plt.subplots(1, figsize=[7, 4.5])
+    # Plot zero line:
     ax.plot(_ds['time'], np.zeros(len(_ds['time'])), c='k', alpha=0.5, linestyle='dashed')
     # print(ref_var)
     for scn in scenarios_ss[:]:
-        # print(scn)
         # subtract year 
         _base = _ds[ref_var]  # _ds.sel(scenario=scn)
         _base = _base.sel(scenario=scn,
                           time=slice(s_y2, e_y2))  # -_base.sel(scenario=scn, time=slice(s_y, s_y)).squeeze()
-        # .mean(climatemodel)
         base_keep = _base.mean(climatemodel)
         basep = _base.mean(climatemodel)
         basem = _base.mean(climatemodel)
-        # print(base)
         if first:
             base_keep.plot(c='k', linewidth=2, linestyle='dashed', ax=ax, label='Scenario total ')
             first=False
@@ -207,7 +222,6 @@ for ref_var, varl in zip([ref_var_dt],
         test_df = scen_ds.sel(scenario=scn).mean(climatemodel).to_dataframe()
         for var in varl:
             if scn == scenarios_ss[0]:
-                #label = '$\Delta$T ' + var.split('|')[-1]
                 label = ' ' + var.split('|')[-1]
             else:
                 label = '_nolegend_'
@@ -239,13 +253,16 @@ for ref_var, varl in zip([ref_var_dt],
     ax.spines['top'].set_visible(False)
     
     ax.set_xlim([s_y2, e_y2])
-    #ax.set_ylabel('$\Delta$T (C$^\circ$)')
     ax.set_ylabel('($^\circ$C)')
     ax.set_xlabel('')
     plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
     plt.tight_layout()
     plt.savefig(FIGURE_DIR +'/ssp858_126_relative_contrib.png', dpi=300)
     plt.show()
+
+# %% [markdown]
+# ## Plot total $\Delta T$ together with SLCF contribution -- reversed
+# In the following plot, the total anthropogenic temperature change in a scenario is showed by the black stipled line, while the contribution of each SLCFer is showed as an shaded area either (**warming**) over or under (**cooling**).
 
 # %%
 SMALL_SIZE = 12
@@ -436,12 +453,8 @@ for ref_var, varl in zip([ref_var_dt],
     plt.show()
 
 # %% [markdown]
-# TODO:  Alternative: Do one graph for each component AND the total? 
-
-# %% [markdown]
 # ## What question does the graph answer?
 # - What are the relative contributions of SLCFs?
 #     - The figure above shows the contributions of 5 SLCFs and the total anthropogenic forcing in two scenarios (black line) relative to year 2021. The area signifies the warming (below the total) or cooling (above the stipled line) introduced by changes in the SLCFer in the specific scenario. Note that in the in the businiss as usual scenario, all the SLCFers except BC on snow add to the warming, while in the 126 scenario, the emission control acts to reduce methane, ozone and BC, and these are thus contributing to cooling. Both scenarios include emission controls which act to reduce aerosols relative 2021 and thus the aerosols give warming. However, the warming from aerosols is much stronger in ssp126 because of stricter emission control in this scenario. 
 #
-# - 
 #

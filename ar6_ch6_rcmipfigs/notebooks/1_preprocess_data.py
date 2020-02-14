@@ -17,6 +17,12 @@
 # # Convert effective radiative forcings from RCMIP model output (csv/xlsx) to xarray Dataset:
 
 # %% [markdown]
+# This notebooks imports the data from the generated database and then selects the subset of variables needed and converts them into an  [xarray](http://xarray.pydata.org/en/stable/) Dataframe before saving as a [netCDF](https://www.unidata.ucar.edu/software/netcdf/) file. 
+
+# %% [markdown]
+# This step is purely to make pick out a subset of the data and make further computations simpler. 
+
+# %% [markdown]
 # ## Imports:
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
@@ -363,6 +369,9 @@ ds_save = ds.copy()
 # %%
 ds
 
+
+# %% [markdown]
+# ### Save dataset:
 
 # %%
 ds_save.to_netcdf(SAVEPATH_DATASET)
