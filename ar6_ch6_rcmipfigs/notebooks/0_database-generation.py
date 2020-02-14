@@ -48,12 +48,12 @@ import pandas as pd
 import tqdm
 from scmdata import ScmDataFrame, df_append
 
-# %%
-from ar6_ch6_rcmipfigs.utils.database_generation import check_all_variables_and_units_as_in_protocol, \
-    check_all_scenarios_as_in_protocol, unify_units, save_into_database, mce_get_quantile, hector_get_quantile
-
-TEST_RUN = strtobool(os.getenv("CI", "False")) or False
-TEST_RUN
+# %% [markdown]
+# from ar6_ch6_rcmipfigs.utils.database_generation import check_all_variables_and_units_as_in_protocol, \
+#     check_all_scenarios_as_in_protocol, unify_units, save_into_database, mce_get_quantile, hector_get_quantile
+#
+# TEST_RUN = strtobool(os.getenv("CI", "False")) or False
+# TEST_RUN
 
 # %%
 logger = logging.getLogger()
@@ -140,6 +140,11 @@ model_of_interest = [
     ".*oscar-v3-0.*v1-0-1.*"
 #    ".*wasp.*v1-0-1.*",
 ]
+extra = [
+    ".*escimo-phase-1-v2-0-1.*",
+    
+]
+model_of_interest = model_of_interest + extra
 
 # %%
 if TEST_RUN:
@@ -179,9 +184,6 @@ db["unit"] = db["unit"].apply(
 )
 db = ScmDataFrame(db)
 db.head()
-
-# %%
-db.filter(climatemodel="*cicero*").head()
 
 # %%
 db["climatemodel"].unique()
@@ -368,3 +370,4 @@ clean_db.head()
 save_into_database(clean_db, OUTPUT_DATABASE_PATH, "rcmip-phase-1")
 
 # %%
+clean_db

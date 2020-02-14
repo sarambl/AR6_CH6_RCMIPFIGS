@@ -182,9 +182,14 @@ def save_into_database(db, db_path, filename_leader):
                 db_cm["region"].unique(), leave=False, desc="Regions"
         ):
             db_cm_r = db_cm.filter(region=r)
+            n_vars = len(db_cm_r["variable"].unique())
+            cnt = 0
             for v in tqdm.tqdm_notebook(
                     db_cm_r["variable"].unique(), leave=False, desc="Variables"
             ):
+                cnt+=1
+                if cnt%(int(n_vars/10))==0:
+                    print('%s of %s vars done for %s, region %s'%(cnt, n_vars, cm, r))
                 db_cm_r_v = ScmDataFrame(db_cm_r.filter(variable=v))
                 filename = get_filename(db_cm_r_v, leader=filename_leader)
                 outfile = os.path.join(db_path, filename)

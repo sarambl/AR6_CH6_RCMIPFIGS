@@ -14,6 +14,220 @@
 # ---
 
 # %% [markdown]
+# ## Overview variables
+
+# %% [markdown]
+# We have quantiles for 
+# - FaiR: 0, 10, 17, 33, 50, 67, 83,90,95,100
+# - OSCAR: 16, 50(? not explicit), 84
+
+# %% [markdown]
+# MAGICC has runs for all the climate models (emulating?) -- could also be used as uncertainty.
+#
+
+# %% [markdown]
+# Other models have only one run.
+
+# %% [markdown]
+# ## Proposed solutions
+
+# %% [markdown]
+# ### Solution 1:
+# **Assumptions**:
+# 1. Assume all distributions are approximately gaussian
+# 2. Assume models without variance reported can be assumed to have the same standard deviation (should it be relative to the mean??) 
+# 3. Assume equal weight to all models
+#
+# **Procedure**:
+# 1. Estimate standard deviation for OSCAR and FaIR with 83/17 (FaIR) and 84/16 (OSCAR) quantiles ($(Q_{84}-Q_{16})/2\approx \sigma$
+# 2. Calculate the deviation from the mean of each model $i$:
+# $$ f_{\sigma,i} = \sigma_i/\mu_i$$
+# where $i\in \{\text{FaIR}, \text{OSCAR}\}$
+# 3. Calculate $$\overline{f_\sigma}=0.5(f_{\sigma,\text{FaIR}} + f_{\sigma, \text{OSCAR}}$$
+# 4. Assume the other models can be assumed to have $\mu_i$, for model $i$, equal to the reported value and standard deviation:
+# $$\sigma_i = \mu_i \cdot \overline{f_\sigma}$$
+# 5. **Treat all distributions as equally weighted sub-groups and calculate the total distribution**: Now treat all models as equally weighted and calculate the combined distribution.
+# 6. Combine this with uncertainty in ECS estimates??
+
+# %% [markdown]
+# **Unresolved questions**:
+#
+# What do we do with the ensamble runs from MAGICC? These runs I assume emulate different ESMs. See plots.
+
+# %% [markdown]
+# ## Solution 2:
+
+# %% [markdown]
+# 1. Fit FaIR data to distribution 
+#     - Assume OSCAR has same distribution and use 16 and 84 to estimate parameters? 
+# 2. Assume same distribution for all models (only change the median?) 
+# 3. Find the combined distribution --> percentiles. 
+# 4. Propagate uncertainty in ECS (if hard, do some monte carlo?)
+
+# %% [markdown]
+# - Question: 
+#     - What do we do with the different MAGICC runs? 
+#         - Potential solution -- treat these as individual models? 
+
+# %%
+import xarray as xr
+from IPython.display import clear_output
+
+# %%
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR
+
+# %load_ext autoreload
+# %autoreload 2
+PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models_quant.nc'
+#PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
+#PATH_DT_OUTPUT = OUTPUT_DATA_DIR + '/dT_data_rcmip_models.nc'
+
+# %%
+
+climatemodel = 'climatemodel'
+scenario = 'scenario'
+variable = 'variable'
+time = 'time'
+
+# %%
+# variables to plot:
+variables_erf_comp = [
+    'Effective Radiative Forcing|Anthropogenic|CH4',
+    'Effective Radiative Forcing|Anthropogenic|Aerosols',
+    'Effective Radiative Forcing|Anthropogenic|Tropospheric Ozone',
+    'Effective Radiative Forcing|Anthropogenic|F-Gases|HFC',
+    'Effective Radiative Forcing|Anthropogenic|Other|BC on Snow']
+# total ERFs for anthropogenic and total:
+variables_erf_tot = ['Effective Radiative Forcing|Anthropogenic',
+                     'Effective Radiative Forcing']
+# Scenarios to plot:
+scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  
+                'ssp370-lowNTCF-gidden',
+                # 'ssp370-lowNTCF', Due to mistake here
+                'ssp585', 'historical']
+
+# %% [markdown]
+# ## Open dataset:
+
+# %%
+ds = xr.open_dataset(PATH_DATASET)
+
+# %%
+import matplotlib.pyplot as plt
+
+# %%
+
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
+
+# %%
+magic_mods = []
+for cm in ds[climatemodel].values:
+    if 'MAGICC' in cm and 'rcmip' not in cm:
+        magic_mods.append(cm)
+ds_magic_mods = ds.sel(climatemodel=magic_mods)
+
+
+# %% [markdown]
+# ## Plots distributions $\pm$ one standard deviation
+
+# %%
+fig, axs = plt.subplots(3,2, figsize=[20,10])
+
+for var,ax in zip(variables_erf_comp, axs.flatten()):
+#var = 'Effective Radiative Forcing|Anthropogenic|Tropospheric Ozone'
+    scn = 'ssp370'
+    cmap = get_cmap_dic(ds.coords[climatemodel].values)
+    for cm in ds.coords['climatemodel'].values:
+        if 'MAGICC' in cm and 'rcmip' not in cm:
+            continue
+        if cm=='FaIR-1.5-ENS':
+            vq1 = var + '|17th quantile'
+            vq2 = var + '|83th quantile'
+            try:
+                ds[var+'|50th quantile'].sel(scenario=scn,climatemodel=cm).squeeze().plot(label=cm, 
+                                                                                          color = cmap[cm], ax=ax)
+            except KeyError:
+                print()
+                
+        
+        else:
+            try:
+                ds[var].sel(scenario=scn,climatemodel=cm).squeeze().plot(label=cm, color = cmap[cm], ax= ax)
+            except ValueError:
+                print()
+            vq1 = var + '|16th quantile'
+            vq2 = var + '|84th quantile'
+        try:
+            _da1 = ds[vq1].sel(scenario=scn, climatemodel=cm).squeeze()#, climatemodel=cm)#.plot()
+            _da2 = ds[vq2].sel(scenario=scn, climatemodel=cm).squeeze()#, climatemodel=cm)#.plot()
+            ax.fill_between(_da1.time, _da1, _da2, color=cmap[cm], alpha=.3)
+        except KeyError:
+            print()
+    
+    
+
+    da_m_mean = ds_magic_mods[var].sel(scenario=scn).mean(climatemodel).squeeze()
+    da_m_std = ds_magic_mods[var].sel(scenario=scn).std(climatemodel).squeeze()
+    #if not np.all(_da.sel(climatemodel=cm).isnull())
+    da_m_mean.plot(label=r'MAGICC-esm $\pm2\sigma$', color='m', ax=ax)
+    ax.fill_between(da_m_mean.time, da_m_mean-da_m_std, da_m_mean+da_m_std, color='m', alpha=0.3)
+    ax.legend()   
+plt.show()
+
+
+# %% [markdown]
+# ## Quantile vs. normal distribution quantile FaIR:
+
+# %%
+q_l_fair = [0,5, 10, 17, 33, 50, 67, 83,90,95,100]
+tq_l_fair = ['|%sth quantile'%q for q in q_l_fair]
+
+# %%
+ds_fair = ds.sel(climatemodel='FaIR-1.5-ENS')
+
+# %% [markdown]
+# ### Quantile vs quantile plot for estimated $\sigma$ from 83th and 17th percentile: FaIR:
+
+# %%
+from scipy.stats import norm#.cdf#(x, loc=0, scale=1)
+import numpy as np
+scn='ssp370'
+quantile='quantile'
+ds_f_s = ds_fair.sel(scenario=scn)
+fig,axs = plt.subplots(3,2, figsize=[15,10])
+for var, ax in zip(variables_erf_comp, axs.flatten()):
+    varl = [var+tq for tq in tq_l_fair]
+    try:
+        da = ds_f_s[varl].squeeze().to_array(dim=quantile)#['aad']
+        da[quantile]=q_l_fair
+        
+        for t,i in zip(da.time, range(len(da.time))):
+            _da = da.sel(time=t)
+            med = _da.sel(quantile=50)
+            sig = _da.sel(quantile=83, method='nearest')-_da.sel(quantile=50)#/2
+            sig = (_da.sel(quantile=83)-_da.sel(quantile=17))/2
+            dis=[]
+            for q in q_l_fair:
+                dis.append(norm.ppf(q/100., med, sig))
+            dis=np.array(dis)
+
+            ax.scatter(dis, _da, alpha=.3)#, c=da['time'])
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        ax.plot(xlim,xlim,c='k')
+        ax.set_title(var)
+        ax.set_xlabel('Quantiles: Normal distribution')
+        ax.set_ylabel('Quantiles: ERF distribution')
+
+    except KeyError:
+        print(var)
+    #das = [ds_f_s[v].squeeze() for v in varl ]
+    #for t in ds_f_s['time']:
+    #    _ds = ds_f_s.sel(time=t, )
+fig.tight_layout()
+
+
+# %% [markdown]
 # # Error bars in $\Delta T$ calculations with RCMIP data:
 
 # %% [markdown]
