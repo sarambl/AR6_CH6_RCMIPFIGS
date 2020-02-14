@@ -5,9 +5,8 @@ Contact: Sara Marie Blichner, University of Oslo [s.m.blichner@geo.uio.no](s.m.b
 Code for analyzing and plotting RCMIP data for AR6 IPCC. 
 
 
-OBS: Some of the code is based on or copied directly with permission from [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip) 
- Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)). 
-
+Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)) who allowed some of the code to be based on or copied directly [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip) 
+ 
 
 ## Installation
 
@@ -36,9 +35,15 @@ Nicholls, Z. R. J., Meinshausen, M., Lewis, J., Gieseke, R., Dommenget, D., Dorh
 
 ### Get input data:
 Download the data from http://doi.org/10.5281/zenodo.3593570
-
-Create a symbolic link to the input data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in):
-
+E.g. do:
+```bash
+wget https://zenodo.org/record/3593570/files/rcmip-phase-1-submission.tar.gz
+```
+Unpack the data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in):
+```bash 
+cd ar6_ch6_rcmipfigs/data_in; tar zxf ../../rcmip-phase-1-submission.tar.gz; mv rcmip-tmp/data/* .;
+```
+OR: Create a symbolic link to the downloaded input data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in).
 In project base do:
 ```bash
 ln -s /path/to/download_data/rcmip-tmp/data ar6_ch6_rcmipfigs/data_in/
@@ -85,6 +90,9 @@ Extra:
     - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities  
     
 
+## Libraries, software etc:
+A list of the required packages for these figures can be found in [env_rcmip_ch6.yml](env_rcmip_ch6.yml)
 
+## RESULTS:
 
-## 
+The resulting figures can be found in [/ar6_ch6_rcmipfigs/results](./ar6_ch6_rcmipfigs/results)
