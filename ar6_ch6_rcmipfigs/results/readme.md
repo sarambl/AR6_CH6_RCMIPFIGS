@@ -1,0 +1,16 @@
+## Figures
+
+![](figures/Delta_T-Anthropogenic-Aerosols_refy2021_fy2015.png)
+![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.png)
+![](figures/Delta_T-Anthropogenic-F-Gases-HFC_refy2021_fy2015.png)
+![](figures/Delta_T-Anthropogenic-Other-BC_on_Snow_refy2021_fy2015.png)
+![](figures/Delta_T-Anthropogenic-Tropospheric_Ozone_refy2021_fy2015.png)
+![](figures/ssp858_126_relative_contrib.png)
+![](figures/ssp858_126_relative_contrib_2.png)
+![](figures/ssp858_126_relative_contrib_rev.png)
+![](figures/ssp858_126_relative_contrib_v2.png)
+![](figures/stack_bar_influence_years.png)
+![](figures/stack_bar_influence_years_same_y.png)
+![](figures/total_ref2021_from2015_.png)
+![](figures/total_ref2021_from2015_all_.png)
+![](figures/total_ref2021_from2015_all_2.png)

@@ -8,6 +8,12 @@ Code for analyzing and plotting RCMIP data for AR6 IPCC.
 Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)) who allowed some of the code to be based on or copied directly [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip) 
  
 
+## RESULTS:
+
+The resulting figures can be found in [/ar6_ch6_rcmipfigs/results](./ar6_ch6_rcmipfigs/results)
+
+
+
 ## Installation
 
 ```bash
@@ -95,6 +101,7 @@ Extra:
 ## Libraries, software etc:
 A list of the required packages for these figures can be found in [env_rcmip_ch6.yml](env_rcmip_ch6.yml)
 
-## RESULTS:
 
-The resulting figures can be found in [/ar6_ch6_rcmipfigs/results](./ar6_ch6_rcmipfigs/results)
+
+
+
