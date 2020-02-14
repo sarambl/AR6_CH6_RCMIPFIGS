@@ -12,7 +12,7 @@ OBS: Some of the code is based on or copied directly with permission from [https
 ## Installation
 
 ```bash
-git clone  git@github.com:sarambl/AR6_CH6_RCMIPFIGS.git
+git clone https://github.com/sarambl/AR6_CH6_RCMIPFIGS.git
 cd AR6_CH6_RCMIPFIGS
 conda env create -f env_rcmip_ch6.yml
 conda activate rcmip_ch6

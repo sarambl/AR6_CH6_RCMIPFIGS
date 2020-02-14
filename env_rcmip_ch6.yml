@@ -26,6 +26,7 @@ dependencies:
   - pip:
     - netcdf-scm==2.0.0b5
     - pyam-iamc==0.3.0
+    - git+https://github.com/sarambl/AR6_CH6_RCMIPFIGS
     - git+https://github.com/znicholls/nbflow.git@b3f58bfcb6adb24b522f51481c49c03d54795ff1
     - scons==3.0.5
     - black==19.3b0
