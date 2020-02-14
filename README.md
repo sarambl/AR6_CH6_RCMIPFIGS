@@ -51,11 +51,13 @@ ln -s /path/to/download_data/rcmip-tmp/data ar6_ch6_rcmipfigs/data_in/
   
 ### Preprocess data
 Follow the below steps. 
-0. **Create a nicely formatted dataset:**: 
+
+
+1. **Create a nicely formatted dataset:**: 
 Run notebook [0_database-generation.ipynb](./ar6_ch6_rcmipfigs/notebooks/0_database-generation.ipynb)
 This will create the folder [data_in/database-results](./ar6_ch6_rcmipfigs/data_in/database-results) and the
 data there. 
-1. **Do various fixes and save relevant data as netcdf**: Run notebook 
+2. **Do various fixes and save relevant data as netcdf**: Run notebook 
 [1_preprocess_data.ipynb](./ar6_ch6_rcmipfigs/notebooks/1_preprocess_data.ipynb)
 This creates the dataset as a netcdf file in 
 [ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc](ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc)
