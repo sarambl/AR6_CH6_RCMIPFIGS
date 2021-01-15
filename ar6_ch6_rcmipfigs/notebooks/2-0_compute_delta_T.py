@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -23,8 +22,8 @@
 from ar6_ch6_rcmipfigs.constants import BASE_DIR
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
 
-PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
-PATH_DT_OUTPUT = RESULTS_DIR + '/tables/table_sens_dT_cs.csv'
+PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
+PATH_DT_OUTPUT = RESULTS_DIR / 'tables'/'table_sens_dT_cs.csv'
 
 # %% [markdown]
 # **Output table found in:**
@@ -36,7 +35,9 @@ print(PATH_DT_OUTPUT)
 # ### General about computing $\Delta T$: 
 
 # %% [markdown]
-# We compute the change in GSAT temperature ($\Delta T$) from the effective radiative forcing (ERF) estimated from the RCMIP models (Nicholls et al 2020), by integrating with the impulse response function (IRF(t-t')) (Geoffroy at al 2013). See Nicholls et al (2020) for description of the RCMIP models and output. 
+# We compute the change in GSAT temperature ($\Delta T$) from the effective radiative forcing (ERF) estimated from [Smith 2020](https://zenodo.org/record/3973015), by integrating with the impulse response function (IRF(t-t'))
+# #todo: check for ref for IRF
+# (Geoffroy at al 2013).
 #
 # For any forcing agent $x$, with estimated ERF$_x$, the change in temperature $\Delta T$ is calculated as:
 #
@@ -48,13 +49,12 @@ print(PATH_DT_OUTPUT)
 
 # %% [markdown]
 # #### The Impulse response function (IRF):
-# In these calculations we use the impulse response function (Geoffroy et al 2013):
+# In these calculations we use:
 # \begin{align*}
-# \text{IRF}(t)=& 0.885\cdot (\frac{0.587}{4.1}\cdot exp(\frac{-t}{4.1}) + \frac{0.413}{249} \cdot exp(\frac{-t}{249}))\\
-# \text{IRF}(t)= &  \frac{1}{\lambda}\sum_{i=1}^2\frac{a_i}{\tau_i}\cdot exp\big(\frac{-t}{\tau_i}\big) 
+# IRF(t) = \frac{q_1}{d_1} \exp\Big(\frac{-t}{d_1}\Big) + \frac{q_2}{d_2} \exp\Big(\frac{-t}{d_2}\Big)
 # \end{align*}
-# with $\frac{1}{\lambda} = 0.885$ (K/Wm$^{-2}$), $a_1=0.587$, $\tau_1=4.1$(yr), $a_2=0.413$ and $\tau_2 = 249$(yr) (note that $i=1$ is the fast response and $i=2$ is the slow response and that $a_1+a_2=1$)
 #
+# Where the constants, $q_i$ and $d_i$ are from XXXXXX????
 
 # %% [markdown]
 # ## Input data:
@@ -64,16 +64,31 @@ print(PATH_DT_OUTPUT)
 # # Code + figures
 
 # %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
+import pandas as pd
+import xarray as xr
+fn_IRF_constants = INPUT_DATA_DIR/'irf_from_2xCO2_2020_12_02_050025-1.csv'
+irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
 
-PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
-PATH_DT_OUTPUT = RESULTS_DIR + '/tables/table_sens_dT_cs.csv'
+ld1 = 'd1 (yr)'
+ld2 = 'd2 (yr)'
+lq1 = 'q1 (K / (W / m^2))'
+lq2 = 'q2 (K / (W / m^2))'
+median = 'median'
+perc5 = '5th percentile'
+perc95 = '95th percentile'
+irf_consts#[d1]
+
+# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
+PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
+ 
+PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables'/'table_sens_dT_cs.csv'
+PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP.nc'
 
 # %% [markdown]
 # **Output table found in:**
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 print(PATH_DT_OUTPUT)
 
 # %% [markdown]
@@ -100,6 +115,7 @@ climatemodel = 'climatemodel'
 scenario = 'scenario'
 variable = 'variable'
 time = 'time'
+percentile = 'percentile'
 
 # %% [markdown]
 # ## Set values:
@@ -108,7 +124,8 @@ time = 'time'
 # ECS parameters:
 
 # %%
-ECS2ecsf = {'ECS = 2K':0.526, 'ECS = 3.4K':0.884, 'ECS = 5K': 1.136 }
+IRFconstants = [perc5, median, perc95]
+#{'ECS = 2K':0.526, 'ECS = 3.4K':0.884, 'ECS = 5K': 1.136 }
 
 # %% [markdown]
 # Year to integrate from and to:
@@ -135,19 +152,20 @@ years= ['2040', '2100']
 
 # %%
 
-def IRF(t, l=0.885, alpha1=0.587 / 4.1, alpha2=0.413 / 249, tau1=4.1, tau2=249):
+def IRF(t, d1, q1, d2, q2):
     """
     Returns the IRF function for:
+    :param q2:
+    :param d2:
+    :param q1:
+    :param d1:
     :param t: Time in years
-    :param l: climate sensitivity factor
-    :param alpha1:
-    :param alpha2:
-    :param tau1:
-    :param tau2:
     :return:
     IRF
     """
-    return l * (alpha1 * np.exp(-t / tau1) + alpha2 * np.exp(-t / tau2))
+    irf = q1/d1*np.exp(-t/d1) + q2/d2*np.exp(-t/d2)
+    return irf
+        #l * (alpha1 * np.exp(-t / tau1) + alpha2 * np.exp(-t / tau2))
 
 
 # %% [markdown]
@@ -160,23 +178,34 @@ def IRF(t, l=0.885, alpha1=0.587 / 4.1, alpha2=0.413 / 249, tau1=4.1, tau2=249):
 # %%
 # variables to plot:
 variables_erf_comp = [
-    'Effective Radiative Forcing|Anthropogenic|CH4',
-    'Effective Radiative Forcing|Anthropogenic|Aerosols',
-    'Effective Radiative Forcing|Anthropogenic|Tropospheric Ozone',
-    'Effective Radiative Forcing|Anthropogenic|F-Gases|HFC',
-    'Effective Radiative Forcing|Anthropogenic|Other|BC on Snow']
+    'ch4',
+    'aerosol-radiation_interactions',
+    'aerosol-cloud_interactions',
+    'o3_tropospheric',
+    #'F-Gases|HFC',
+    'bc_on_snow']
 # total ERFs for anthropogenic and total:
-variables_erf_tot = ['Effective Radiative Forcing|Anthropogenic',
-                     'Effective Radiative Forcing']
+variables_erf_tot = ['total_anthropogenic',
+                     'total']
+variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
 scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
-                'ssp585', 'historical']
+                'ssp585']#, 'historical']
 
 # %% [markdown]
 # ### Open dataset:
 
 # %%
-ds = xr.open_dataset(PATH_DATASET)
+ds = xr.open_dataset(PATH_DATASET).sel(year=slice(1700,2200)) # we need only years until 1700
+da_ERF = ds['ERF']
+
+#ds['time'] = \
+#ds['year'].to_pandas().index.map('{}-01-01'.format)
+ds['time'] = pd.to_datetime(ds['year'].to_pandas().index.map(str), format = '%Y')
+
+# delta_t is 1 (year)
+ds['delta_t'] = xr.DataArray(np.ones(len(ds['year'])), dims='year', coords={'year': ds['year']})
+
 
 # %% [markdown]
 # ## Integrate:
@@ -201,10 +230,10 @@ def new_varname(var, nname):
     -------
     new variable name with nname|bla|bla
     """
-    return nname + '|' + '|'.join(var.split('|')[1:])
+    return nname #+ '|' + '|'.join(var.split('|')[1:])
 
 
-def integrate_(i, var, nvar, ds, ds_DT, csfac=0.885):
+def integrate_(i, var, nvar, ds, ds_DT, irf_consts):
     """
     
     Parameters
@@ -217,9 +246,9 @@ def integrate_(i, var, nvar, ds, ds_DT, csfac=0.885):
         the name of output integrated value
 
     ds:xr.Dataset
-        the ds with the intput data
+        the ds with the input data
     ds_DT: xr.Dataset
-        the ouptut ds with the integrated results
+        the output ds with the integrated results
     csfac: climate sensitivity factor (for IRF)
     Returns
     -------
@@ -227,18 +256,22 @@ def integrate_(i, var, nvar, ds, ds_DT, csfac=0.885):
     
     """
     # lets create a ds that goes from 0 to i inclusive
-    ds_short = ds[{'time': slice(0, i + 1)}].copy()
+    ds_short = ds[{'year': slice(0, i + 1)}].copy()
     # lets get the current year
-    current_year = ds_short['time'][{'time': i}].dt.year
+    current_year = ds_short['year'][{'year': i}]#.dt.year
     # lets get a list of years
-    years = ds_short['time'].dt.year
+    years = ds_short['year']#.dt.year
     # lets get the year delta until current year(i)
     ds_short['end_year_delta'] = current_year - years
 
     # lets get the irf values from 0 until i
+    d1 = irf_consts[ld1]
+    d2 = irf_consts[ld2]
+    q1 = irf_consts[lq1]
+    q2 = irf_consts[lq2]
+
     ds_short['irf'] = IRF(
-        ds_short['end_year_delta'] * ds_short['delta_t'], l=csfac
-    )
+        ds_short['end_year_delta'] * ds_short['delta_t'], d1, q1, d2, q2)
 
     # lets do the famous integral
     ds_short['to_integrate'] = \
@@ -254,36 +287,36 @@ def integrate_(i, var, nvar, ds, ds_DT, csfac=0.885):
     else:
         # 
 
-        _ds_int = ds_short['to_integrate'].sum(['time'])
+        _ds_int = ds_short['to_integrate'].sum(['year'])
         # mask where last value is null (in order to not get intgral 
-        _ds_m1 = ds_short['to_integrate'].isel(time=-1)
+        _ds_m1 = ds_short['to_integrate'].isel(year=-1)
         # where no forcing data)
         _val = _ds_int.where(_ds_m1.notnull())
     # set value in dataframe:
-    ds_DT[nvar][{'time': i}] = _val
+    ds_DT[nvar][{'year': i}] = _val
 
 
-def integrate_to_dT(ds, from_t, to_t, variables, csfac=0.885):
+def integrate_to_dT(ds, from_t, to_t, variables, irf_consts):
     """
     Integrate forcing to temperature change.
 
     :param ds: dataset containing the focings
-    :param from_t: start time
-    :param to_t: end time
+    :param from_t: start year
+    :param to_t: end year
     :param variables: variables to integrate
     :param csfac: climate sensitivity factor
     :return:
     """
     # slice dataset
-    ds_sl = ds.sel(time=slice(from_t, to_t))
-    len_time = len(ds_sl['time'])
+    ds_sl = ds.sel(year=slice(from_t, to_t))
+    len_time = len(ds_sl['year'])
     # lets create a result DS
     ds_DT = ds_sl.copy()
 
     # lets define the vars of the ds
-    vars = variables  # variables_erf_comp+ variables_erf_tot #['EFR']
+    #vars = variables  # variables_erf_comp+ variables_erf_tot #['EFR']
     for var in variables:
-        namevar = new_varname(var, name_deltaT)
+        namevar = name_deltaT
         # set all values to zero for results dataarray:
         ds_DT[namevar] = ds_DT[var] * 0
         # Units Kelvin:
@@ -299,10 +332,10 @@ def integrate_to_dT(ds, from_t, to_t, variables, csfac=0.885):
             namevar = new_varname(var, name_deltaT)  # 'Delta T|' + '|'.join(var.split('|')[1:])
 
             # print(var)
-            integrate_(i, var, namevar, ds_sl, ds_DT, csfac=csfac)
+            integrate_(i, var, namevar, ds_sl, ds_DT, irf_consts)
     clear_output()
-
-    fname = 'DT_%s-%s.nc' % (from_t, to_t)
+    fn ='DT_%s-%s.nc' % (from_t, to_t)
+    fname = OUTPUT_DATA_DIR/ fn#'DT_%s-%s.nc' % (from_t, to_t)
     # save dataset.
     ds_DT.to_netcdf(fname)
     return ds_DT
@@ -313,9 +346,35 @@ def integrate_to_dT(ds, from_t, to_t, variables, csfac=0.885):
 # ## Compute $\Delta T$ with 3 different climate sensitivities
 
 # %%
+ds
+
+# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+irf_consts.loc[median][ld1]
+
+# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 dic_ds = {}
-for key  in ECS2ecsf:
-    dic_ds[key] = integrate_to_dT(ds, first_y, last_y,(variables_erf_comp+variables_erf_tot), csfac=ECS2ecsf[key])
+for key  in IRFconstants:
+    dic_ds[key] = integrate_to_dT(ds, first_y, last_y,('ERF',), irf_consts.loc[key])
+
+# %% [markdown]
+# ## check:
+
+# %%
+for per in IRFconstants:
+    dic_ds[per].isel(scenario=0,variable=0)[name_deltaT].plot()
+
+# %% [markdown]
+# ### Make datset with percentile as dimension:
+
+# %%
+ds_tmp = xr.Dataset( coords = dic_ds[key].coords)
+ds_tmp
+for key in IRFconstants:
+    ds_tmp[key] = dic_ds[key]['Delta T']#.dims,dic_ds[key],)
+ds['Delta T'] = ds_tmp.to_array('percentile')
+ds.sel(year=slice(first_y,last_y)).to_netcdf(PATH_DT_OUTPUT)
+#ds_DT.to_array('percentile')
+#dic_ds[key]['Delta T']
 
 # %% [markdown]
 # ## Table
@@ -325,15 +384,17 @@ for key  in ECS2ecsf:
 
 # %%
 
-iterables = [list(ECS2ecsf.keys()), years]
+iterables = [list(IRFconstants), years]
 
 def setup_table(scenario_n=''):
     _i = pd.MultiIndex.from_product(iterables, names=['', ''])
-    table = pd.DataFrame(columns=[var.split('|')[-1] for var in variables_erf_comp], index = _i).transpose()
+    table = pd.DataFrame(columns=[var.split('|')[-1] for var in variables_all], index = _i).transpose()
     table.index.name=scenario_n
     return table
 
 
+# %%
+ 
 
 # %%
 # Dicitonary of tables with different ESC:
@@ -345,11 +406,12 @@ for scn in scenarios_fl:
         # Loop over variables
         tabvar = var.split('|')[-1]
         dtvar = new_varname(var, name_deltaT)
-        for key in ECS2ecsf:
+        for key in IRFconstants:
             # Loop over ESC parameters
             for year in years: 
-                _tab_da = dic_ds[key][dtvar].sel(scenario=scn, time=slice(year,year))-  dic_ds[key][dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
-                tab.loc[tabvar,key][year]=_tab_da.squeeze().mean('climatemodel').values
+                _tab_da = dic_ds[key][dtvar].sel(scenario=scn, year=slice(year,year))-  dic_ds[key][dtvar].sel(scenario=scn, year=slice(ref_year,ref_year)).squeeze()
+                a = float(_tab_da.loc[var].squeeze().values)
+                tab.loc[tabvar,(key,year)] = a
     scntab_dic[scn]=tab.copy()
 
 
@@ -363,8 +425,8 @@ for key in scntab_dic:
 # ### Make table with all scenarios:
 
 # %%
-iterables = [list(ECS2ecsf.keys()), years]
-iterables2 = [scenarios_fl, [var.split('|')[-1] for var in variables_erf_comp]]
+iterables = [list(IRFconstants), years]
+iterables2 = [scenarios_fl, [var.split('|')[-1] for var in variables_all]]
 
 def setup_table2():#scenario_n=''):
     _i = pd.MultiIndex.from_product(iterables, names=['', ''])
@@ -382,16 +444,15 @@ for scn in scenarios_fl:
     for var in variables_erf_comp:
         tabvar = var.split('|')[-1]
         dtvar = new_varname(var,name_deltaT)
-        print(dtvar)
-        for key in ECS2ecsf:
+        for key in IRFconstants:
             for year in years: 
                 # compute difference between year and ref year
-                _da_y = dic_ds[key][dtvar].sel(scenario=scn, time=slice(year,year))#.squeeze()
-                _da_refy = dic_ds[key][dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
+                _da_y = dic_ds[key][dtvar].sel(scenario=scn, year=slice(year,year), variable=var)#.squeeze()
+                _da_refy = dic_ds[key][dtvar].sel(scenario=scn, year=slice(ref_year,ref_year), variable=var).squeeze()
                 #_tab_da = dic_ds[key][dtvar].sel(scenario=scn, time=slice(year,year))-  dic_ds[key][dtvar].sel(scenario=scn, time=slice(ref_year,ref_year)).squeeze()
                 _tab_da = _da_y - _da_refy
 
-                tab.loc[(scn, tabvar), (key,year)] =_tab_da.squeeze().mean('climatemodel').values#[0]
+                tab.loc[(scn, tabvar), (key,year)] =_tab_da.squeeze().values#[0]
 
 
 
@@ -402,4 +463,9 @@ tab
 # ## Save output
 
 # %%
-tab.to_csv(PATH_DT_OUTPUT)
+tab.to_csv(PATH_DT_TAB_OUTPUT)
+
+# %%
+PATH_DT_TAB_OUTPUT
+
+# %%
