@@ -1,20 +1,9 @@
 ## Figures
-![](figures/aerosol-cloud_interactions_refy2021_fy2015.pdf)
-
-![](figures/aerosol-cloud_interactions_refy2021_fy2015.pdf)
-
-![](figures/aerosol-radiation_interactions_refy2021_fy2015.pdf)       
-
-![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.pdf)  
-
-![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.pdf)               
-![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.png)               
-![](figures/Delta_T-Anthropogenic-F-Gases-HFC_refy2021_fy2015.pdf)       
-![](figures/Delta_T-Anthropogenic-F-Gases-HFC_refy2021_fy2015.png)       
-![](figures/Delta_T-Anthropogenic-Other-BC_on_Snow_refy2021_fy2015.pdf)  
-![](figures/Delta_T-Anthropogenic-Other-BC_on_Snow_refy2021_fy2015.png)  
-![](figures/Delta_T-Anthropogenic-Tropospheric_Ozone_refy2021_fy2015.pdf)
-![](figures/Delta_T-Anthropogenic-Tropospheric_Ozone_refy2021_fy2015.png)
+![](figures/aerosol-cloud_interactions_refy2021_fy2015.png)
+![](figures/aerosol-radiation_interactions_refy2021_fy2015.png)
+![](figures/ch4_refy2021_fy2015.png)
+![](figures/bc_on_snow_refy2021_fy2015.png)               
+![](figures/o3_tropospheric_refy2021_fy2015.png)               
 ![](figures/ssp858_126_relative_contrib.png)                             
 ![](figures/ssp858_126_relative_contrib_rev.png)                         
 ![](figures/stack_bar_influence_years_horiz_errTot.png)                  
