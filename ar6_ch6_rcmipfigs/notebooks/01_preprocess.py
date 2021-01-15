@@ -22,7 +22,7 @@ import pandas as pd
 # %% [markdown]
 # Load data:
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 path_ssps = constants.INPUT_DATA_DIR /'SSPs'
 paths = path_ssps.glob('*')
 files = [x for x in paths if x.is_file()]
@@ -31,13 +31,13 @@ files
 
 
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR
 
 SAVEPATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 SAVEPATH_DATASET
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 ERFs = {}
 nms = []
 for file in files:
@@ -57,7 +57,7 @@ for scn in ERFs.keys():
     ERFs[scn].set_index('year')['total_anthropogenic'].plot(label=scn)
 plt.legend( bbox_to_anchor=(1.05, 1), loc='upper left',)
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 import xarray as xr
 das = []
 for nm in nms:
@@ -66,14 +66,14 @@ for nm in nms:
     da = da.rename(nm)
     das.append(da)
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 da_tot = xr.merge(das).to_array('scenario')
 da_tot = da_tot.rename('ERF')
 
 da_tot.to_netcdf(SAVEPATH_DATASET)
 da_tot.to_dataset()
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 da_check = xr.open_dataset(SAVEPATH_DATASET)
 da_check
 

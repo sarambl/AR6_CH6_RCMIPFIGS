@@ -1,6 +1,12 @@
 ## Figures
-![](figures/Delta_T-Anthropogenic-Aerosols_refy2021_fy2015.pdf)          
-![](figures/Delta_T-Anthropogenic-Aerosols_refy2021_fy2015.png)          
+![](figures/aerosol-cloud_interactions_refy2021_fy2015.pdf)
+
+![](figures/aerosol-cloud_interactions_refy2021_fy2015.pdf)
+
+![](figures/aerosol-radiation_interactions_refy2021_fy2015.pdf)       
+
+![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.pdf)  
+
 ![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.pdf)               
 ![](figures/Delta_T-Anthropogenic-CH4_refy2021_fy2015.png)               
 ![](figures/Delta_T-Anthropogenic-F-Gases-HFC_refy2021_fy2015.pdf)       

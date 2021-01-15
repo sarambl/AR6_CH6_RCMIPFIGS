@@ -363,9 +363,9 @@ ax.set_xlabel('')
 ax.legend(frameon=False, loc=2)
 fix_ax(ax)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
-#plt.tight_layout()
-#plt.savefig(FIGURE_DIR+ '/total_ref2021_from2015_all_2.png', dpi=300)
-#plt.savefig(FIGURE_DIR+ '/total_ref2021_from2015_all_2.pdf')#, dpi=300)
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_2.png', dpi=300)
+plt.savefig(FIGURE_DIR /  'total_ref2021_from2015_all_2.pdf')#, dpi=300)
 plt.show()
 
 # %%
@@ -506,24 +506,13 @@ fn = FIGURE_DIR / fign_dt('total', s_y,s_y2 )
 plt.savefig(fn, dpi=200)
 plt.savefig(fn.with_suffix('.pdf'))#, dpi=200)
 plt.show()
-    
+
 
 # %% [markdown]
 # # Supplementary plots:
 
 # %% [markdown]
 # ## Plot $\Delta$ T and ERF with reference year +/- 1 standard deviation of the models
-# %%
-_pl_da
-
-# %%
-_da#.sel(percentile='median')
-
-# %%
-name_deltaT
-
-# %%
-
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic
 
