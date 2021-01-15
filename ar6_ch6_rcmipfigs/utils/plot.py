@@ -58,6 +58,19 @@ def trans_scen2plotlabel(label):
     if label==ssp370low_nn: return ssp370low_on
     else: return label
 
+nice_name_var = {
+    'ch4':'CH$_4$',
+    'aerosol-radiation_interactions':'Aerosols-radiation',
+    'aerosol-cloud_interactions':'Aerosols-cloud',
+    'o3_tropospheric':'O$_3$',
+    #'F-Gases|HFC',
+    'bc_on_snow':'BC on snow'
+
+}
+def get_var_nicename(var):
+    if var in nice_name_var:
+        return nice_name_var[var]
+    else: return var
 
 color_map_scenarios_base = {
     "ssp119": "AR6-SSP1-1.9",
@@ -86,7 +99,7 @@ def get_scenario_c_dic(new=True):
     colormap_dic = {}
 
     if new:
-        path_cf = BASE_DIR + '/misc/ssp_cat_2.txt'
+        path_cf = BASE_DIR / 'misc/ssp_cat_2.txt'
         rgb_data_in_the_txt_file = np.loadtxt(path_cf)
         colormap_dic = {}
         for scn, col in zip(scenario_list, rgb_data_in_the_txt_file):

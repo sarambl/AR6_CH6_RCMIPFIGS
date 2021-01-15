@@ -278,7 +278,7 @@ plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
-s_y = '2021'
+s_y = ref_year
 s_y2 = '2000'
 e_y = '2100'
 e_y2 = '2100'
