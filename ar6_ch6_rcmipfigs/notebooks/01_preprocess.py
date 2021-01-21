@@ -16,6 +16,7 @@
 import glob
 from ar6_ch6_rcmipfigs import constants
 import pandas as pd
+import matplotlib.pyplot as plt
 # %load_ext autoreload
 # %autoreload 2
 
