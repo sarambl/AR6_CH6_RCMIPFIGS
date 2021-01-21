@@ -62,7 +62,9 @@ nice_name_var = {
     'ch4':'CH$_4$',
     'aerosol-radiation_interactions':'Aerosols-radiation',
     'aerosol-cloud_interactions':'Aerosols-cloud',
+    'aerosol-total':'Aerosols',
     'o3_tropospheric':'O$_3$',
+    'o3':'O$_3$',
     #'F-Gases|HFC',
     'bc_on_snow':'BC on snow'
 

@@ -71,14 +71,13 @@ time = 'time'
 # ### Define variables to look at:
 
 # %%
-
-# %%
 # variables to plot:
 variables_erf_comp = [
     'ch4',
-    'aerosol-radiation_interactions',
-    'aerosol-cloud_interactions',
-    'o3_tropospheric',
+    #'aerosol-radiation_interactions',
+    #'aerosol-cloud_interactions',
+    'aerosol-total',
+    'o3',
     #'F-Gases|HFC',
     'bc_on_snow']
 # total ERFs for anthropogenic and total:
@@ -198,7 +197,50 @@ from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic, get_ls_dic, trans_scen2pl
 from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 
-def get_fig_ax_tot(figsize=[13,12]):
+def get_fig_ax_tot(figsize=[11,4.4], nrows=2, ncols=2, rows_tot = 0, cols_tot=2, tot_first = True, orientation='horizontal'):
+    """
+    Makes figure for total plot
+    :param figsize:
+    :return:
+    """
+    fig2 = plt.figure(constrained_layout=False, figsize=figsize)
+    if orientation=='horizontal':
+        _cols = ncols + cols_tot
+        _rows = nrows
+    else:
+        _cols = ncols# + cols_tot
+        _rows = nrows + rows_tot
+        
+    spec2 = gridspec.GridSpec(ncols=_cols, nrows=_rows, figure=fig2)
+    com_axs = []
+    if tot_first:
+        if orientation=='horizontal':
+            all_ax = fig2.add_subplot(spec2[:, 0:cols_tot])
+            for i in np.arange(nrows):
+                for j in np.arange(ncols):
+                    com_axs.append(fig2.add_subplot(spec2[i,cols_tot + j]))
+        else:
+
+            all_ax = fig2.add_subplot(spec2[0:rows_tot,:])
+            for i in np.arange(nrows):
+                for j in np.arange(ncols):
+                    com_axs.append(fig2.add_subplot(spec2[rows_tot + i, j]))
+    else:
+        if orientation=='horizontal':
+            all_ax = fig2.add_subplot(spec2[:, (-cols_tot):])
+            for i in np.arange(nrows):
+                for j in np.arange(ncols):
+                    com_axs.append(fig2.add_subplot(spec2[i, j]))
+        else:
+
+            all_ax = fig2.add_subplot(spec2[(-rows_tot):,:])
+            for i in np.arange(nrows):
+                for j in np.arange(ncols):
+                    com_axs.append(fig2.add_subplot(spec2[ i, j]))
+
+    return fig2, com_axs, all_ax
+
+def get_fig_ax_tot_old(figsize=[13,12]):
     """
     Makes figure for total plot
     :param figsize:
@@ -213,8 +255,6 @@ def get_fig_ax_tot(figsize=[13,12]):
             com_axs.append(fig2.add_subplot(spec2[i, j*4:(j+1)*4]))
     all_ax = fig2.add_subplot(spec2[2:, 2:10])
     return fig2, com_axs, all_ax
-
-
 
 def fix_ax(ax):
     #ls = pd.date_range('2010-1-1', periods=100, freq='Y')[0::10]
@@ -247,17 +287,17 @@ e_y2 = last_y
 cdic = get_scenario_c_dic()
 lsdic = get_scenario_ls_dic()#get_ls_dic(ds_DT[climatemodel].values)
 
-
+linewidth=2
 SMALL_SIZE = 11
 MEDIUM_SIZE = 11
 BIGGER_SIZE = 16
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+#plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+#plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+#plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+#plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+#plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+#plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+#plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 
 fig2, axs, ax_tot = get_fig_ax_tot()#fig3 = plt.figure(constrained_layout=True)
@@ -272,30 +312,14 @@ for var, ax in zip(variables_erf_comp, axs):
         _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2)) 
         _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn,year=slice(s_y, s_y)).squeeze()
         _da = _da_ally - _da_refy
-        #_da = ds_DT[var].sel(scenario=scn, time=slice(s_y2, e_y2)) - ds_DT[new_varname(var, name_deltaT)].sel(
-        #    scenario=scn,
-        #    time=slice(s_y,
-        #               s_y)).squeeze()
         # Choose median: 
         _pl_da = _da.sel(percentile='median')
         # Plot mean: 
-        _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle = lsdic[scn])
-        #_pl_da.plot( c=cdic[scn], label=scn, linestyle = lsdic[scn])
-        # compute standard deviation:
-        #_std = _da.std(climatemodel)
-        # plot +/- 1 standard deviation
-        da_perc5 =  _da.sel(percentile=perc5)
-        da_perc95 =  _da.sel(percentile=perc95)
-        ax.fill_between(_pl_da['year'].values, 
-                        da_perc5, 
-                        da_perc95, 
-                        alpha=0.3,
-                        color=cdic[scn], 
-                        label='_nolegen_'
-                       )
+        _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle = lsdic[scn], linewidth=linewidth)
 
     # various labels:
     ax.set_title('%s' % get_var_nicename(var))
+
     ax.set_ylabel('')
     ax.set_xlabel('')
     fix_ax(ax)
@@ -304,23 +328,11 @@ for var, ax in zip(variables_erf_comp, axs):
     
 
     
-axs[0].set_ylabel('($^\circ$C)')
-for ax in axs:
+#axs[0].set_ylabel('($^\circ$C)')
+#for ax in axs:
     #ax.set_ylabel('Change in temperature (C$^\circ$)')
-    ax.set_ylabel('($^\circ$C)')
+    #ax.set_ylabel('($^\circ$C)')
 # Total:
-
-SMALL_SIZE = 14
-MEDIUM_SIZE = 14
-BIGGER_SIZE = 18
-
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 ax = ax_tot
 
@@ -333,34 +345,115 @@ for scn in list(set(scenarios_fl) - {'historical'}):
     _da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel( scenario=scn, year=slice(s_y2, e_y2)) - ds_DT_sy
     # Take median::
     _pl_da = _da.sel(percentile='median')
-    # Sum up the variables:
-    #print(_pl_da)
-    #_pl_da = _pl_da.sel(variable=variables_erf_comp).sum(variable)
-    # plot :
-    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), xticks=[], linestyle = lsdic[scn])
-    # calculate standard deviation over the models:
-    #_std = _da.sum(variable).std(climatemodel)
-    # Fill between +/- 1 std
-    #ax.fill_between(_pl_da['time'].values, _pl_da - _std, _pl_da + _std, alpha=0.3,
-    #                color=cdic[scn], label='_nolegend_')
-    da_perc5 =  _da.sel(percentile=perc5)#.sel(variable=variables_erf_comp).sum(variable)
-    da_perc95 =  _da.sel(percentile=perc95)#.sel(variable=variables_erf_comp).sum(variable)
-    #ax.fill_between(_pl_da['year'].values, da_perc5, da_perc95, alpha=0.3,
-    #                color=cdic[scn], label='_nolegen_')
+    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle = lsdic[scn], linewidth=linewidth)
+
 
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
-plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14)
+plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
 # adjust plot visuals:
 _str = ''
 for var in ds_DT.sel(variable=variables_erf_comp)[variable].values: _str += f'{get_var_nicename(var)}, '
 #ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
-ax.set_title('Sum SLCF  (%s)' % _str[:-2])
+ax.set_title('Sum SLCF (%s)' % _str[:-2])
 #ax.set_ylabel('$\Delta$ T ($^\circ$C)')
 ax.set_ylabel('($^\circ$C)')
 ax.set_xlabel('')
 
-ax.legend(frameon=False, loc=2)
+ax.legend(frameon=False, loc='upper left')
+fix_ax(ax)
+plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_v1.png', dpi=300)
+plt.savefig(FIGURE_DIR /  'total_ref2021_from2015_all_v1.pdf')#, dpi=300)
+plt.show()
+
+# %%
+from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
+
+
+#get_fig_ax_tot
+
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
+
+figsize = [6, 4]
+s_y = ref_year
+s_y2 = '2015'
+e_y = last_y
+e_y2 = last_y
+# scenario colors and linestyle
+cdic = get_scenario_c_dic()
+lsdic = get_scenario_ls_dic()#get_ls_dic(ds_DT[climatemodel].values)
+
+
+linewidth= 2
+
+fig2, axs, ax_tot = get_fig_ax_tot(figsize=[7,8], rows_tot=2, cols_tot=0, 
+                                   orientation='vertical',
+                                  tot_first=False)
+#fig3 = plt.figure(constrained_layout=True)
+_ds = ds_DT.sel(year=slice(s_y2, e_y2))
+for var, ax in zip(variables_erf_comp, axs):
+
+    print(var)
+
+    #fig, ax = plt.subplots(1, 1, figsize=figsize)
+    for scn in list(set(scenarios_fl) - {'historical'}):
+        # compute difference from ref year:
+        _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2)) 
+        _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn,year=slice(s_y, s_y)).squeeze()
+        _da = _da_ally - _da_refy
+        # Choose median: 
+        _pl_da = _da.sel(percentile='median')
+        # Plot mean: 
+        _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle = lsdic[scn], linewidth=linewidth)
+
+    # various labels:
+    ax.set_title('%s' % get_var_nicename(var))
+
+    ax.set_ylabel('')
+    ax.set_xlabel('')
+    fix_ax(ax)
+    # Plot zero line:
+    ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+    
+
+    
+#axs[0].set_ylabel('($^\circ$C)')
+#for ax in axs:
+    #ax.set_ylabel('Change in temperature (C$^\circ$)')
+    #ax.set_ylabel('($^\circ$C)')
+# Total:
+
+ax = ax_tot
+
+cdic = get_scenario_c_dic()
+#for var in variables_erf_tot:  # , f_totn]:
+for scn in list(set(scenarios_fl) - {'historical'}):
+    # Plot dataset difference to first year, i.e.
+    ds_DT_sy = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel( scenario=scn,
+                   year=slice(s_y, s_y)).squeeze()
+    _da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel( scenario=scn, year=slice(s_y2, e_y2)) - ds_DT_sy
+    # Take median::
+    _pl_da = _da.sel(percentile='median')
+    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle = lsdic[scn], linewidth=linewidth)
+
+
+_ds = ds_DT.sel(year=slice(s_y2, e_y2))
+ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
+# adjust plot visuals:
+_str = ''
+for var in ds_DT.sel(variable=variables_erf_comp)[variable].values: _str += f'{get_var_nicename(var)}, '
+#ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
+ax.set_title('Sum SLCF (%s)' % _str[:-2])
+#ax.set_ylabel('$\Delta$ T ($^\circ$C)')
+ax.set_ylabel('($^\circ$C)')
+ax.set_xlabel('')
+
+ax.legend(frameon=False, loc='upper left')
 fix_ax(ax)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
 plt.tight_layout()
@@ -379,7 +472,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 
-figsize = [6, 4]
+figsize = [4.5, 3]
 s_y = ref_year
 s_y2 = '2015'
 e_y = last_y
@@ -388,18 +481,7 @@ e_y2 = last_y
 cdic = get_scenario_c_dic()
 lsdic = get_scenario_ls_dic()#get_ls_dic(ds_DT[climatemodel].values)
 
-
-SMALL_SIZE = 11
-MEDIUM_SIZE = 11
-BIGGER_SIZE = 16
-plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
-plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
-plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
-plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
-plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
-plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
-
+linewidth = 2
 
 #fig2, axs, ax_tot = get_fig_ax_tot()#fig3 = plt.figure(constrained_layout=True)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
@@ -413,31 +495,14 @@ for var in variables_erf_comp:#, axs):
         _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2)) 
         _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn,year=slice(s_y, s_y)).squeeze()
         _da = _da_ally - _da_refy
-        #_da = ds_DT[var].sel(scenario=scn, time=slice(s_y2, e_y2)) - ds_DT[new_varname(var, name_deltaT)].sel(
-        #    scenario=scn,
-        #    time=slice(s_y,
-        #               s_y)).squeeze()
         # Choose median: 
         _pl_da = _da.sel(percentile='median')
         # Plot mean: 
-        _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle = lsdic[scn], linewidth=3)
-        #_pl_da.plot( c=cdic[scn], label=scn, linestyle = lsdic[scn])
-        # compute standard deviation:
-        #_std = _da.std(climatemodel)
-        # plot +/- 1 standard deviation
-        da_perc5 =  _da.sel(percentile=perc5)
-        da_perc95 =  _da.sel(percentile=perc95)
-        ax.fill_between(_pl_da['year'].values, 
-                        da_perc5, 
-                        da_perc95, 
-                        alpha=0.3,
-                        color=cdic[scn], 
-                        label='_nolegen_'
-                       )
+        _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle = lsdic[scn], linewidth=linewidth)
 
     # various labels:
     ax.set_title('%s' % get_var_nicename(var))
-    ax.set_ylabel('')
+    ax.set_ylabel('$^\circ$C')
     ax.set_xlabel('')
     fix_ax(ax)
     # Plot zero line:
@@ -470,20 +535,7 @@ for scn in list(set(scenarios_fl) - {'historical'}):
     _da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel( scenario=scn, year=slice(s_y2, e_y2)) - ds_DT_sy
     # Take median::
     _pl_da = _da.sel(percentile='median')
-    # Sum up the variables:
-    #print(_pl_da)
-    #_pl_da = _pl_da.sel(variable=variables_erf_comp).sum(variable)
-    # plot :
-    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), xticks=[], linestyle = lsdic[scn], linewidth=3)
-    # calculate standard deviation over the models:
-    #_std = _da.sum(variable).std(climatemodel)
-    # Fill between +/- 1 std
-    #ax.fill_between(_pl_da['time'].values, _pl_da - _std, _pl_da + _std, alpha=0.3,
-    #                color=cdic[scn], label='_nolegend_')
-    da_perc5 =  _da.sel(percentile=perc5)#.sel(variable=variables_erf_comp).sum(variable)
-    da_perc95 =  _da.sel(percentile=perc95)#.sel(variable=variables_erf_comp).sum(variable)
-    #ax.fill_between(_pl_da['year'].values, da_perc5, da_perc95, alpha=0.3,
-    #                color=cdic[scn], label='_nolegen_')
+    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), xticks=[], linestyle = lsdic[scn], linewidth=linewidth)
     
 
     
@@ -600,3 +652,9 @@ for var in variables_erf_comp:
     axs[1].legend(frameon=False)#, loc=2)
 
     plt.show()
+
+# %%
+
+# %%
+
+# %%

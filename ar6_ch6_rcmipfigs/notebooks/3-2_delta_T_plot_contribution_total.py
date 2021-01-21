@@ -40,6 +40,9 @@ register_matplotlib_converters()
 # %autoreload 2
 
 # %%
+from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
+
+# %%
 from ar6_ch6_rcmipfigs.constants import BASE_DIR
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
 
@@ -81,10 +84,8 @@ name_deltaT = 'Delta T'
 # variables to plot:
 variables_erf_comp = [
     'ch4',
-    'aerosol-radiation_interactions',
-    'aerosol-cloud_interactions',
-    'o3_tropospheric',
-    #'F-Gases|HFC',
+    'aerosol-total',
+    'o3',
     'bc_on_snow']
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
@@ -138,6 +139,7 @@ name_deltaT = 'Delta T'
 # scenario colors and linestyle
 cdic = get_scenario_c_dic()
 lsdic = get_scenario_ls_dic()
+
 
 
 
@@ -239,12 +241,6 @@ total_varname = 'total_anthropogenic'
 # In the following plot, the total anthropogenic temperature change in a scenario is showed by the black stipled line, while the contribution of each SLCFer is showed as an shaded area either (cooling) over or under (warming).
 
 # %%
-_ds
-
-# %%
-x_val
-
-# %%
 SMALL_SIZE = 12
 MEDIUM_SIZE = 12
 BIGGER_SIZE = 14
@@ -299,7 +295,7 @@ for ref_var, varl in zip([ref_var_dt],
         test_df = scen_ds.sel( percentile='median').to_dataframe()
         for var in varl:
             if scn == scenarios_ss[0]:
-                label = ' ' + var.split('|')[-1]
+                label = get_var_nicename(var)
             else:
                 label = '_nolegend_'
 
@@ -336,6 +332,7 @@ for ref_var, varl in zip([ref_var_dt],
     plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
     plt.tight_layout()
     plt.savefig(FIGURE_DIR /'ssp858_126_relative_contrib.png', dpi=300)
+    plt.savefig(FIGURE_DIR /'ssp858_126_relative_contrib.pdf', dpi=300)
     plt.show()
 
 # %%
@@ -400,7 +397,7 @@ for ref_var, varl in zip([ref_var_dt],
         test_df = scen_ds.sel( percentile='median').to_dataframe()
         for var in varl:
             if scn == scenarios_ss[0]:
-                label =  var#' ' + var.split('|')[-1]
+                label =  get_var_nicename(var)#' ' + var.split('|')[-1]
             else:
                 label = '_nolegend_'
 
@@ -437,6 +434,7 @@ for ref_var, varl in zip([ref_var_dt],
     plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
     plt.tight_layout()
     plt.savefig(FIGURE_DIR /'ssp858_126_relative_contrib_rev.png', dpi=300)
+    plt.savefig(FIGURE_DIR /'ssp858_126_relative_contrib_rev.pdf', dpi=300)
     plt.show()
 
 # %%
@@ -501,6 +499,8 @@ for ref_var, varl in zip([ref_var_dt],
         for var in varl:
             if scn == scenarios_ss[0]:
                 label =  var#' ' + var.split('|')[-1]
+                label =  get_var_nicename(var)#' ' + var.split('|')[-1]
+
             else:
                 label = '_nolegend_'
 

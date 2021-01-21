@@ -83,9 +83,8 @@ name_deltaT = 'Delta T'
 # variables to plot:
 variables_erf_comp = [
     'ch4',
-    'aerosol-radiation_interactions',
-    'aerosol-cloud_interactions',
-    'o3_tropospheric',
+    'aerosol-total',
+    'o3',
     #'F-Gases|HFC',
     'bc_on_snow']
 # total ERFs for anthropogenic and total:
@@ -129,7 +128,7 @@ variables_sum = ['Sum SLCFs']
 
 def setup_table_prop(scenario_n='', years=None, variabs=None, scens=None):
     if variabs is None:
-        variabs = [var.split('|')[-1] for var in variables_erf_comp]
+        variabs = variables_erf_comp
     if years is None:
         years = ['2040', '2100']
     if scens is None:
@@ -164,6 +163,9 @@ ds_DT = xr.open_dataset(PATH_DT)
 # ## Compute sum of all SLCF forcers
 
 # %%
+from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
+
+# %%
 from ar6_ch6_rcmipfigs.utils.plot import get_scenario_c_dic, get_scenario_ls_dic
 
 # %%
@@ -196,11 +198,15 @@ dt_all = sum_name( name_deltaT)
 #ds_DT[dt_all] = xr.concat(_lst_dt, pd.Index(variables_erf_comp, name='variable'))
 dt_totn = dt_all
 
+# %% [markdown]
+# ### compute sum: 
+
 # %%
 sum_name = 'Sum SLCFs'
 ds_sub = ds_DT.sel(variable=variables_erf_comp)
 ds_sum = ds_sub.sum(variable)
 ds_sum = ds_sum.assign_coords(coords={variable:sum_name})
+# add sum to variable coordinate
 
 ds_sum = xr.concat([ds_sum,ds_DT.sel(variable=variables_erf_comp)], dim=variable )
 
@@ -299,8 +305,6 @@ ds_DT.percentile
 ds_DT.variable.values
 
 # %%
-
-# %%
 # Statistics on Delta T anthropogenic
 # Mean
 tabel_dT_anthrop = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year)
@@ -334,6 +338,14 @@ tabel_dT_sum_slcf_5 = table_of_stats_varsums(ds_sum, scenarios_fl, 'Sum SLCFs', 
 tabel_dT_sum_slcf_95 = table_of_stats_varsums(ds_sum, scenarios_fl, 'Sum SLCFs', 'Sum SLCFs', years, ref_year, sts='95th percentile')
 tabel_dT_sum_slcf
 
+# %%
+rn_dic = {}
+for v in variables_all:
+    rn_dic[v]= get_var_nicename(v)
+
+# %%
+tabel_dT_slcfs = tabel_dT_slcfs.rename(rn_dic)
+
 # %% [markdown]
 # ## Error bars only from model uncertainty
 # The following uncertainties assume the ECS has a standard deviation of
@@ -343,7 +355,7 @@ from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from matplotlib.ticker import (MultipleLocator)
 import matplotlib.pyplot as plt
 
-fig, axs = plt.subplots(1, len(years), figsize=[12, 6], sharex=False, sharey=True)
+fig, axs = plt.subplots(1, len(years), figsize=[10, 4], sharex=False, sharey=True)
 tits = ['Near Term surface temperature change (2040 relative to 2021)',
         'Long Term surface T change 2100 relatie to 2021)']
 tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GSAT in 2100 relative to 2021']
@@ -352,120 +364,56 @@ for yr, ax, tit in zip(years, axs, tits):
     # Pick out year and do various renames:
     # Total antropogenic
     tot_yr = tabel_dT_anthrop.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    tot_sd_yr = tabel_dT_anthrop_SD.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Sum SLCFs
     sum_yr = tabel_dT_sum_slcf.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    #sum_sd_yr = tabel_dT_sum_slcf_SD.loc[yr].rename(
-    #    {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Plot bars for anthropopogenic total:
     ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
-            #xerr=tot_sd_yr.transpose()[ntot].values,
-           )#error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
+           )
     # Plot bars for SLCFs total:
     ntot = 'Sum SLCFs'
     s_x = sum_yr.transpose().index
     s_y = sum_yr.transpose()[ntot].values
-    #s_err = sum_sd_yr.transpose()[ntot].values
-    #ax.errorbar(s_y, s_x, xerr=s_err, label=ntot, color='k', fmt='d', linestyle="None")  # ,
 
     # Plot stacked plot of components:
     _tab = tabel_dT_slcfs.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
 
     a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
-        ax.legend()  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+        ax.legend(frameon=False)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
     # Zero line:
     ax.axvline(0, linestyle='--', color='k', alpha=0.4)
     ax.set_title(tit)
     ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
     ax.xaxis.set_minor_locator(MultipleLocator(.1))
-    ax.grid(axis='y', which='major')
+    #ax.grid(axis='y', which='major')
 
-fn = RESULTS_DIR / 'figures/stack_bar_influence_years_mod_spread_ONLY.png'
+ax = axs[0]
+
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params( right=False, left=False)#, color='w')
+
+ax = axs[1]
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params(labelleft=False, right=False, left=False, color='w')
+ax.tick_params(labelright=False, labelleft=False, right=False, left=False,  color='w')
+ax.yaxis.set_visible(False)
+plt.tight_layout()
+
+fn = RESULTS_DIR / 'figures/stack_bar_influence_years.png'
 plt.tight_layout()
 ax = plt.gca()
 
-ax.tick_params(axis='y', which='minor')  # ,bottom='off')
-ax.tick_params(labelright=True, right=True, left=False)
 plt.savefig(fn, dpi=300)
-
 
 # %% [markdown]
 # ## Error bars from model uncertainty AND ECS uncertainty
 
 # %% [markdown]
 # See [Uncertainty_calculation.ipynb](Uncertainty_calculation.ipynb)
-
-# %%
-def sigma_DT(dT, sig_alpha, mu_alpha, dim='climatemodel'):
-    sig_DT = dT.std(dim)
-    mu_DT = dT.mean(dim)
-    return ((sig_DT + mu_DT) * (sig_alpha + mu_alpha) - mu_DT * mu_alpha) / mu_alpha
-
-
-def sigma_com(sig_DT, mu_DT, sig_alpha, mu_alpha):
-    return (((sig_DT ** 2 + mu_DT ** 2) * (
-            sig_alpha ** 2 + mu_alpha ** 2) - mu_DT ** 2 * mu_alpha ** 2) / mu_alpha ** 2) ** .5
-
-
-sum_DT_std =  table_of_sts(_ds, scenarios_fl, ['Sum SLCFs'], ['Sum SLCFs'], years, ref_year, sts='5th percentile')
-sum_DT_mean = table_of_sts(_ds, scenarios_fl, ['Sum SLCFs'], ['Sum SLCFs'], years, ref_year, sts='median')
-tot_DT_std = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year, sts='5th percentile')
-tot_DT_mean = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year, sts='median')
-
-yerr_sum = sigma_com(sum_DT_std, sum_DT_mean, .24, .885)
-yerr_tot = sigma_com(tot_DT_std, tot_DT_mean, .24, .885)  # .rename('')
-
-# tab_sig_DT = setup_table_prop()
-
-# %%
-from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
-from matplotlib.ticker import (MultipleLocator)
-import matplotlib.pyplot as plt
-
-fig, axs = plt.subplots(1, len(years), figsize=[12, 6], sharex=False, sharey=True)
-tits = ['Near Term surface temperature change (2040 relative to 2021)',
-        'Long Term surface T change 2100 relatie to 2021)']
-tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GSAT in 2100 relative to 2021']
-for yr, ax, tit in zip(years, axs, tits):
-    ntot = 'Scenario total'
-    tot_yr = tabel_dT_anthrop.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    tot_sd_yr = yerr_tot.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    # l =ax.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tab_tot_sd)
-    sum_yr = tabel_dT_sum_slcf.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    sum_sd_yr = yerr_sum.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
-            #xerr=tot_sd_yr.transpose()[ntot].values,
-           )#error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
-    ntot = 'Sum SLCFs'
-    # ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
-    #      error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
-
-    s_x = sum_yr.transpose().index
-    s_y = sum_yr.transpose()[ntot].values
-    s_err = sum_sd_yr.transpose()[ntot].values
-    #ax.errorbar(s_y, s_x, xerr=s_err, label=ntot, color='k', fmt='d', linestyle="None")  # ,
-    # error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
-
-    _tab = tabel_dT_slcfs.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-
-    a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr != '2040'))  # , grid=True)#stac)
-    if not yr == '2040':
-        ax.legend()  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
-
-    ax.axvline(0, linestyle='--', color='k', alpha=0.4)
-    ax.set_title(tit)
-    ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
-    ax.xaxis.set_minor_locator(MultipleLocator(.1))
-    ax.grid(axis='y', which='major')
-
-fn = RESULTS_DIR / 'figures/stack_bar_influence_years_horiz_errTot.png'
-plt.tight_layout()
-ax = plt.gca()
-
-ax.tick_params(axis='y', which='minor')  # ,bottom='off')
-ax.tick_params(labelright=True, right=True, left=False)
-plt.savefig(fn, dpi=300)
 
 # %% [markdown]
 # ## Only ssp370:
@@ -474,56 +422,61 @@ plt.savefig(fn, dpi=300)
 scenario_370 =[sc for sc in scenarios_fl if 'ssp370' in sc]
 
 # %%
-tabel_dT_anthrop.loc[yr,scenario_370]
-
-# %%
 from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from matplotlib.ticker import (MultipleLocator)
 import matplotlib.pyplot as plt
 
-fig, axs = plt.subplots(1, len(years), figsize=[12, 3], sharex=False, sharey=True)
+fig, axs = plt.subplots(1, len(years), figsize=[10, 2.5], sharex=False, sharey=True)
+
 tits = ['Near Term surface temperature change (2040 relative to 2021)',
         'Long Term surface T change 2100 relatie to 2021)']
 tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GSAT in 2100 relative to 2021']
 for yr, ax, tit in zip(years, axs, tits):
     ntot = 'Scenario total'
+    # Pick out year and do various renames:
+    # Total antropogenic
     tot_yr = tabel_dT_anthrop.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    tot_sd_yr = yerr_tot.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    # l =ax.bar(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2, yerr=tab_tot_sd)
+    # Sum SLCFs
     sum_yr = tabel_dT_sum_slcf.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-    sum_sd_yr = yerr_sum.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-
+    # Plot bars for anthropopogenic total:
     ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
-            #xerr=tot_sd_yr.transpose()[ntot].values,
-           )#error_kw=dict(ecolor='gray', lw=2, capsize=5, capthick=2))
+           )
+    # Plot bars for SLCFs total:
     ntot = 'Sum SLCFs'
-    # ax.bar(sum_yr.transpose().index, sum_yr.transpose()[ntot].values, color='r', label=ntot, alpha=.2, yerr=sum_sd_yr.transpose()[ntot].values,
-    #      error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
-
     s_x = sum_yr.transpose().index
     s_y = sum_yr.transpose()[ntot].values
-    s_err = sum_sd_yr.transpose()[ntot].values
-    #ax.errorbar(s_y, s_x, xerr=s_err, label=ntot, color='k', fmt='d', linestyle="None")  # ,
-    # error_kw=dict(ecolor='r', lw=2, capsize=0, capthick=1))
 
+    # Plot stacked plot of components:
     _tab = tabel_dT_slcfs.loc[yr, scenario_370].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
 
     a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
-        ax.legend()  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
-
+        ax.legend(frameon=True)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+    # Zero line:
     ax.axvline(0, linestyle='--', color='k', alpha=0.4)
     ax.set_title(tit)
     ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
     ax.xaxis.set_minor_locator(MultipleLocator(.1))
-    ax.grid(axis='y', which='major')
+    #ax.grid(axis='y', which='major')
 
+ax = axs[0]
+
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params( right=False, left=False)#, color='w')
+
+ax = axs[1]
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params(labelleft=False, right=False, left=False, color='w')
+ax.tick_params(labelright=False, labelleft=False, right=False, left=False,  color='w')
+ax.yaxis.set_visible(False)
+plt.tight_layout()
 fn = RESULTS_DIR / 'figures/stack_bar_influence_years_horiz_errTot_370only.png'
+
 plt.tight_layout()
 ax = plt.gca()
 
-ax.tick_params(axis='y', which='minor')  # ,bottom='off')
-ax.tick_params(labelright=True, right=True, left=False)
 plt.savefig(fn, dpi=300)
-a=2
-#plt.show()

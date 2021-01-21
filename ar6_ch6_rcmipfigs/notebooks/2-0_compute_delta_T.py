@@ -181,7 +181,8 @@ variables_erf_comp = [
     'ch4',
     'aerosol-radiation_interactions',
     'aerosol-cloud_interactions',
-    'o3_tropospheric',
+    'aerosol-total',
+    'o3',
     #'F-Gases|HFC',
     'bc_on_snow']
 # total ERFs for anthropogenic and total:
@@ -189,8 +190,10 @@ variables_erf_tot = ['total_anthropogenic',
                      'total']
 variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
-scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
-                'ssp585']#, 'historical']
+scenarios_fl = ['ssp534-over', 'ssp119', 'ssp460', 'ssp585', 'ssp370', 
+                'ssp370-lowNTCF-aerchemmip', 'ssp126', 'ssp245', 'ssp434',
+                'ssp370-lowNTCF-gidden'
+               ]
 
 # %% [markdown]
 # ### Open dataset:
@@ -394,7 +397,7 @@ def setup_table(scenario_n=''):
 
 
 # %%
- 
+
 
 # %%
 # Dicitonary of tables with different ESC:
@@ -467,5 +470,3 @@ tab.to_csv(PATH_DT_TAB_OUTPUT)
 
 # %%
 PATH_DT_TAB_OUTPUT
-
-# %%

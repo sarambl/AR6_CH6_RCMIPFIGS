@@ -58,6 +58,25 @@ for scn in ERFs.keys():
     ERFs[scn].set_index('year')['total_anthropogenic'].plot(label=scn)
 plt.legend( bbox_to_anchor=(1.05, 1), loc='upper left',)
 
+# %%
+ERFs['ssp534-over'].columns#[scn]#.columns
+
+# %% [markdown]
+# ## Add together aerosol forcing:
+
+# %%
+aero_tot = 'aerosol-total'
+aero_cld = 'aerosol-cloud_interactions'
+aero_rad = 'aerosol-radiation_interactions'
+for scn in ERFs.keys():
+    ERFs[scn][aero_tot] = ERFs[scn][aero_cld]+ERFs[scn][aero_rad]
+
+# %%
+ERFs['ssp534-over'].columns#[scn]#.columns
+
+# %%
+ERFs.keys()
+
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 import xarray as xr
 das = []
