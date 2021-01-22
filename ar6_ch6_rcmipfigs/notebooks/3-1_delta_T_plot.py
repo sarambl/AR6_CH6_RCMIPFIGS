@@ -148,7 +148,7 @@ from ar6_ch6_rcmipfigs.utils.plot import get_scenario_c_dic, \
     get_scenario_ls_dic
 
 
-def get_fig_ax_tot(fgsize=None, nrows=2, ncols=2, rows_tot=0, cols_tot=2, tot_first=True, orientation='horizontal'):
+def get_fig_ax_tot(fgsize=None, nrows=2, ncols=3, rows_tot=0, cols_tot=2, tot_first=True, orientation='horizontal'):
     """
     Makes figure for total plot
     :param orientation: horizontal or vertical
@@ -239,7 +239,7 @@ from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 
 import matplotlib.pyplot as plt
 
-figsize = [6, 4]
+figsize = [20, 10]
 s_y = ref_year
 s_y2 = '2015'
 e_y = last_y
@@ -251,7 +251,7 @@ lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
 linewidth = 2
 
 
-fig2, axs, ax_tot = get_fig_ax_tot()  # fig3 = plt.figure(constrained_layout=True)
+fig2, axs, ax_tot = get_fig_ax_tot(fgsize=[13, 4.4])  # fig3 = plt.figure(constrained_layout=True)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 for var, ax in zip(variables_erf_comp, axs):
 
@@ -277,6 +277,10 @@ for var, ax in zip(variables_erf_comp, axs):
     # Plot zero line:
     ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
 
+if len(axs)>len(variables_erf_comp):
+    l = len(variables_erf_comp)
+    for i in range(l,len(axs)):
+        axs[l].axis('off')
 
 # total:
 ax = ax_tot
@@ -298,8 +302,10 @@ ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='da
 plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
 # adjust plot visuals:
 _str = ''
-for var in ds_DT.sel(variable=variables_erf_comp)[variable].values:
-    _str += f'{get_var_nicename(var)}, '
+_vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
+for var in _vl: 
+    _str += f'{var}, '
+
 # ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
 ax.set_title('Sum SLCF (%s)' % _str[:-2])
 # ax.set_ylabel('$\Delta$ T ($^\circ$C)')
@@ -335,6 +341,7 @@ linewidth = 2
 fig2, axs, ax_tot = get_fig_ax_tot(fgsize=[7, 8], rows_tot=2, cols_tot=0,
                                    orientation='vertical',
                                    tot_first=False)
+
 # fig3 = plt.figure(constrained_layout=True)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 for var, ax in zip(variables_erf_comp, axs):
@@ -361,7 +368,10 @@ for var, ax in zip(variables_erf_comp, axs):
     # Plot zero line:
     ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
 
-
+if len(axs)>len(variables_erf_comp):
+    l = len(variables_erf_comp)
+    for i in range(l,len(axs)):
+        axs[l].axis('off')
 # Total:
 
 ax = ax_tot
@@ -383,7 +393,8 @@ ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='da
 plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
 # adjust plot visuals:
 _str = ''
-for var in ds_DT.sel(variable=variables_erf_comp)[variable].values: _str += f'{get_var_nicename(var)}, '
+_vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
+for var in _vl: _str += f'{var}, '
 # ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
 ax.set_title('Sum SLCF (%s)' % _str[:-2])
 # ax.set_ylabel('$\Delta$ T ($^\circ$C)')
@@ -408,7 +419,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from ar6_ch6_rcmipfigs.utils.misc_func import make_folders
 
-figsize = [4.5, 3]
+figsize = [5, 3]
 s_y = ref_year
 s_y2 = '2015'
 e_y = last_y
@@ -449,7 +460,7 @@ for var in variables_erf_comp:  # , axs):
 
     plt.tight_layout()
     plt.savefig(fign, dpi=300)
-    plt.savefig(fign.with_suffix('.pdf'))
+    plt.savefig(fign.with_suffix('.pdf'))  
     plt.show()
 
 axs[0].set_ylabel('($^\circ$C)')
