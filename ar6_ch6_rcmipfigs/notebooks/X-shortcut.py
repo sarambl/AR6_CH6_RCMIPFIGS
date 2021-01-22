@@ -22,26 +22,24 @@ import runpy
 # ## Preprocess:
 
 # %%
-runpy.run_path('0_database-generation.py')
-runpy.run_path('1_preprocess_data.py')
-runpy.run_path('2_compute_delta_T.ipynb.py')
+runpy.run_path('01_preprocess.py')
 clear_output()
 
 # %% [markdown]
 # ## Create table on delta T dependence on ECS:
 
 # %%
-runpy.run_path('2-1_compute_delta_T_sensitivity.py')
+runpy.run_path('2_compute_delta_T.py')
+
 
 # %% [markdown]
 # ## Create plots etc:
 
 # %%
-runpy.run_path('3_delta_T_plot.py')
+runpy.run_path('3-1_delta_T_plot.py')
 
 # %%
-runpy.run_path('3-2_delta_T_plot_bar_stacked.py')
-runpy.run_path('3-2_delta_T_plot_contribution_total.py')
+runpy.run_path('3-2_delta_T_plot_bar_stacked.py.py')
+runpy.run_path('3-3_delta_T_plot_contribution_total.py')
 
 # %%
-# !find . -not -regex '.ipynb_checkpoints.' -regex '.*\.ipynb' | while read line; do echo "file is $line"; jupyter-nbconvert --to pdf $line; done

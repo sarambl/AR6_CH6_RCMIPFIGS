@@ -24,34 +24,31 @@
 
 # %%
 import xarray as xr
-from IPython.display import clear_output
 import numpy as np
-import os
-import re
-from pathlib import Path
 import pandas as pd
-import tqdm
-from scmdata import df_append, ScmDataFrame
 import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
+
 register_matplotlib_converters()
 
 # %load_ext autoreload
 # %autoreload 2
 
 # %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, INPUT_DATA_DIR, RESULTS_DIR
+from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
 
-#PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
-#PATH_DT = OUTPUT_DATA_DIR / '/dT_data_rcmip_models.nc'
+# %%
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
+
+# PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
+# PATH_DT = OUTPUT_DATA_DIR / '/dT_data_rcmip_models.nc'
 PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP.nc'
 
 # %% [markdown]
 # ## Set values:
 
 # %%
-first_y ='1850'
+first_y = '1750'
 last_y = '2100'
 # Years to plot:
 years = ['2040', '2100']
@@ -85,36 +82,30 @@ variables_erf_comp = [
     'ch4',
     'aerosol-total',
     'o3',
-    #'F-Gases|HFC',
+    'HFCs',
     'bc_on_snow']
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
                      'total']
 variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
-scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
-                'ssp585']#, 'historical']
 
 # %%
 
-scenarios_fl = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-lowNTCF-aerchemmip',  # 'ssp370-lowNTCF', Due to mistake here
-                'ssp585', 'historical']
-
-scenarios_fl_370 = ['ssp370', 'ssp370-lowNTCF-aerchemmip','ssp370-lowNTCF-gidden'# Due to mistake here
-                ]
-
+scenarios_fl_370 = ['ssp370', 'ssp370-lowNTCF-aerchemmip', 'ssp370-lowNTCF-gidden'  # Due to mistake here
+                    ]
 
 # %% [markdown]
 # ### Scenarios:
 
 # %%
-scenarios_fl=['ssp119',
-              'ssp126',
-              'ssp245',
-              'ssp370',
-              'ssp370-lowNTCF-aerchemmip',
-              #'ssp370-lowNTCF-gidden',
-              'ssp585']
+scenarios_fl = ['ssp119',
+                'ssp126',
+                'ssp245',
+                'ssp370',
+                'ssp370-lowNTCF-aerchemmip',
+                # 'ssp370-lowNTCF-gidden',
+                'ssp585']
 
 # %%
 median = 'median'
@@ -126,14 +117,15 @@ perc95 = '95th percentile'
 variables_tot = ['Total']
 variables_sum = ['Sum SLCFs']
 
-def setup_table_prop(scenario_n='', years=None, variabs=None, scens=None):
-    if variabs is None:
-        variabs = variables_erf_comp
-    if years is None:
-        years = ['2040', '2100']
+
+def setup_table_prop(scenario_n='', yrs=None, _vlist=None, scens=None):
+    if _vlist is None:
+        _vlist = variables_erf_comp
+    if yrs is None:
+        yrs = ['2040', '2100']
     if scens is None:
         scens = scenarios_fl
-    its = [years, variabs]
+    its = [yrs, _vlist]
     _i = pd.MultiIndex.from_product(its, names=['', ''])
     table = pd.DataFrame(columns=scens, index=_i)  # .transpose()
     table.index.name = scenario_n
@@ -172,15 +164,15 @@ from ar6_ch6_rcmipfigs.utils.plot import get_scenario_c_dic, get_scenario_ls_dic
 
 s_y = first_y
 
-cdic = get_scenario_c_dic()  # get_cmap_dic(ds_DT[scenario].values)
-lsdic = get_scenario_ls_dic()  # _scget_ls_dic(ds_DT[climatemodel].values)
+cdic = get_scenario_c_dic()
+lsdic = get_scenario_ls_dic()
 
-def sum_name(var):
+
+def sum_name(_var):
     """
     Returns the name off the sum o
     """
-    return f'{var} sum '#|'.join(var.split('|')[0:2]) + '|' + 'All'
-
+    return f'{_var} sum '
 
 
 # make xarray with variable as new dimension:
@@ -188,14 +180,14 @@ _lst_f = []
 _lst_dt = []
 # Make list of dataArrays to be concatinated:
 for var in variables_erf_comp:
-    _lst_f.append(ds_DT['ERF'].sel(variable = var))
+    _lst_f.append(ds_DT['ERF'].sel(variable=var))
     _lst_dt.append(ds_DT[name_deltaT].sel(variable=var))
 # Name of new var:
 erf_all = sum_name('ERF')
 # Name of new var:
-dt_all = sum_name( name_deltaT)
-#ds_DT[erf_all] = xr.concat(_lst_f, pd.Index(variables_erf_comp, name='variable'))
-#ds_DT[dt_all] = xr.concat(_lst_dt, pd.Index(variables_erf_comp, name='variable'))
+dt_all = sum_name(name_deltaT)
+# ds_DT[erf_all] = xr.concat(_lst_f, pd.Index(variables_erf_comp, name='variable'))
+# ds_DT[dt_all] = xr.concat(_lst_dt, pd.Index(variables_erf_comp, name='variable'))
 dt_totn = dt_all
 
 # %% [markdown]
@@ -205,13 +197,13 @@ dt_totn = dt_all
 sum_name = 'Sum SLCFs'
 ds_sub = ds_DT.sel(variable=variables_erf_comp)
 ds_sum = ds_sub.sum(variable)
-ds_sum = ds_sum.assign_coords(coords={variable:sum_name})
+ds_sum = ds_sum.assign_coords(coords={variable: sum_name})
 # add sum to variable coordinate
 
-ds_sum = xr.concat([ds_sum,ds_DT.sel(variable=variables_erf_comp)], dim=variable )
+ds_sum = xr.concat([ds_sum, ds_DT.sel(variable=variables_erf_comp)], dim=variable)
 
 # %%
-ds_sum#.assign_coords(coords={variable:sum_name})
+ds_sum  # .assign_coords(coords={variable:sum_name})
 
 
 # %%
@@ -222,75 +214,61 @@ scntab_dic = {}
 
 # tab_tot = setup_table2()
 # tab_tot_sd = setup_table2()
-def table_of_sts(ds_DT, scenarios_fl, variables, tab_vars, years, ref_year, sts='median'):
+def table_of_sts(_ds, _scn_fl, variables, tab_vars, _yrs, ref_yr, sts='median'):
     """
     Creates pandas dataframe of statistics (mean, median, standard deviation) for change
     in temperature Delta T since year (ref year) for each scenario in scenarios,
 
-    :param ds_DT:
-    :param scenarios_fl:
+    :param _ds:
+    :param _scn_fl:
     :param variables:
     :param tab_vars:
-    :param years:
-    :param ref_year:
+    :param _yrs:
+    :param ref_yr:
     :param sts:
     :return:
     """
-    tabel = setup_table_prop(years=years, variabs=tab_vars)
-    for scn in scenarios_fl:
-        for var, tabvar in zip(variables, tab_vars):
-            #dtvar =  name_deltaT # if ERF name, changes it here.
+    tabel = setup_table_prop(yrs=_yrs, _vlist=tab_vars)
+    for scn in _scn_fl:
+        for _var, tabvar in zip(variables, tab_vars):
+            # dtvar =  name_deltaT # if ERF name, changes it here.
             tabscn = scn  # Table scenario name the same.
-            for year in years:
-                _da =ds_DT[name_deltaT].sel(scenario=scn, variable=var)
-                _da_refy = _da.sel(year=slice(ref_year, ref_year)).squeeze() # ref year value
-                _da_y = _da.sel(year=slice(year, year)) # year value
+            for year in _yrs:
+                _da = _ds[name_deltaT].sel(scenario=scn, variable=_var)
+                _da_refy = _da.sel(year=slice(ref_yr, ref_yr)).squeeze()  # ref year value
+                _da_y = _da.sel(year=slice(year, year))  # year value
                 _tab_da = _da_y - _da_refy
-                #_tab_da = ds_DT[dtvar].sel(scenario=scn, time=slice(year, year)) - ds_DT[dtvar].sel(scenario=scn,
-                #                                                                                    time=slice(ref_year,
-                #                                                                                               ref_year)).squeeze()
-                tabel.loc[(year, tabvar), tabscn] = float(_tab_da.sel(percentile=sts).squeeze().values )#[0]
+                tabel.loc[(year, tabvar), tabscn] = float(_tab_da.sel(percentile=sts).squeeze().values)  # [0]
 
     return tabel
 
-def table_of_stats_varsums(ds_DT, scenarios, dsvar, tabvar, years, ref_year, sts='median'):
+
+def table_of_stats_varsums(_ds, dsvar, tabvar, yrs, ref_yr, sts='median'):
     """
     Sums up over dimension 'variable' and creates pandas dataframe of statistics (mean, median, standard deviation) for change
     in temperature Delta T since year (ref year) for each scenario in scenarios. 
 
-    :param ds_DT:
-    :param scenarios_fl:
-    :param variables:
-    :param tab_vars:
-    :param years:
-    :param ref_year:
+    :param tabvar:
+    :param dsvar:
+    :param _ds:
+    :param yrs:
+    :param ref_yr:
     :param sts:
     :return:
     """
-    tabel = setup_table_prop(years=years, variabs=[tabvar])
-    da = ds_DT[name_deltaT].sel(variable = dsvar)
+    tabel = setup_table_prop(yrs=yrs, _vlist=[tabvar])
+    da = _ds[name_deltaT].sel(variable=dsvar)
 
     for scn in scenarios_fl:
-        #for var, tabvar in zip(variables, tab_vars):
-        dtvar =  name_deltaT # if ERF name, changes it here.
         tabscn = scn  # Table scenario name the same.
-        for year in years:
-            _da =da.sel(scenario=scn)#, variable = dsvar)
-            _da_refy = _da.sel(year=slice(ref_year, ref_year)).squeeze() # ref year value
-            _da_y = _da.sel(year=slice(year, year)).squeeze() # year value
+        for year in yrs:
+            _da = da.sel(scenario=scn)  # , variable = dsvar)
+            _da_refy = _da.sel(year=slice(ref_yr, ref_yr)).squeeze()  # ref year value
+            _da_y = _da.sel(year=slice(year, year)).squeeze()  # year value
             _tab_da = (_da_y - _da_refy).squeeze()
-            
-            #if sts=='mean':
-            #    _tab_da = _tab_da.mean('climatemodel').sum('variable')
-            #elif sts == 'median':
-            #    _tab_da = _tab_da.median('climatemodel').sum('variable')
-            #elif sts=='std':
-            #    _tab_da= _tab_da.sum('variable').std('climatemodel')
 
             # Do statistics over RCMIP models
-            tabel.loc[(year, tabvar), tabscn] = float(_tab_da.sel(percentile=sts).squeeze().values )#[0]
-            float(_tab_da.sel(percentile=sts).squeeze().values )
-            #tabel.loc[(year, tabvar), tabscn] = _tab_da.values
+            tabel.loc[(year, tabvar), tabscn] = float(_tab_da.sel(percentile=sts).squeeze().values)  # [0]
 
     return tabel
 
@@ -310,8 +288,10 @@ ds_DT.variable.values
 tabel_dT_anthrop = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year)
 
 # Standard deviation
-tabel_dT_anthrop_5th = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year, sts='5th percentile')
-tabel_dT_anthrop_95th = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year, sts='95th percentile')
+tabel_dT_anthrop_5th = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year,
+                                    sts='5th percentile')
+tabel_dT_anthrop_95th = table_of_sts(ds_DT, scenarios_fl, ['total_anthropogenic'], ['Total'], years, ref_year,
+                                     sts='95th percentile')
 
 # %%
 # Mean:
@@ -319,32 +299,39 @@ tabel_dT_slcfs = table_of_sts(ds_DT, scenarios_fl, variables_erf_comp, variables
                               ref_year)
 # Standard deviation
 tabel_dT_slcfs_5th = table_of_sts(ds_DT, scenarios_fl, variables_erf_comp, variables_erf_comp,
-                                 years, ref_year, sts='5th percentile')
+                                  years, ref_year, sts='5th percentile')
 tabel_dT_slcfs_95th = table_of_sts(ds_DT, scenarios_fl, variables_erf_comp, variables_erf_comp,
-                                 years, ref_year, sts='5th percentile')
+                                   years, ref_year, sts='5th percentile')
 
 # Compute sum of SLCFs
 _ds = ds_sum.copy()
 vall = 'Delta T'
-#_ds['test'] = _ds.sel(variable='Sum SLCFs')
 
 
-#tabel_dT_sum_slcf = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year)
-#tabel_dT_sum_slcf_SD = table_of_sts(_ds, scenarios_nhist, [vall], ['Sum SLCFs'], years, ref_year, sts='std')
 
 # %%
-tabel_dT_sum_slcf = table_of_stats_varsums(ds_sum, scenarios_fl, 'Sum SLCFs', 'Sum SLCFs', years, ref_year)
-tabel_dT_sum_slcf_5 = table_of_stats_varsums(ds_sum, scenarios_fl, 'Sum SLCFs', 'Sum SLCFs', years, ref_year, sts='5th percentile')
-tabel_dT_sum_slcf_95 = table_of_stats_varsums(ds_sum, scenarios_fl, 'Sum SLCFs', 'Sum SLCFs', years, ref_year, sts='95th percentile')
+tabel_dT_sum_slcf = table_of_stats_varsums(ds_sum,  'Sum SLCFs', 'Sum SLCFs', years, ref_year)
+tabel_dT_sum_slcf_5 = table_of_stats_varsums(ds_sum,  'Sum SLCFs', 'Sum SLCFs', years, ref_year,
+                                             sts='5th percentile')
+tabel_dT_sum_slcf_95 = table_of_stats_varsums(ds_sum,  'Sum SLCFs', 'Sum SLCFs', years, ref_year,
+                                              sts='95th percentile')
 tabel_dT_sum_slcf
 
 # %%
 rn_dic = {}
 for v in variables_all:
-    rn_dic[v]= get_var_nicename(v)
+    rn_dic[v] = get_var_nicename(v)
 
 # %%
 tabel_dT_slcfs = tabel_dT_slcfs.rename(rn_dic)
+
+# %% [markdown]
+# ## colors
+
+# %%
+cdic = get_cmap_dic(variables_erf_comp)  # , palette='colorblind'):
+ls = [cdic[key] for key in variables_erf_comp]
+# ls
 
 # %% [markdown]
 # ## Error bars only from model uncertainty
@@ -353,7 +340,6 @@ tabel_dT_slcfs = tabel_dT_slcfs.rename(rn_dic)
 # %%
 from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from matplotlib.ticker import (MultipleLocator)
-import matplotlib.pyplot as plt
 
 fig, axs = plt.subplots(1, len(years), figsize=[10, 4], sharex=False, sharey=True)
 tits = ['Near Term surface temperature change (2040 relative to 2021)',
@@ -363,12 +349,14 @@ for yr, ax, tit in zip(years, axs, tits):
     ntot = 'Scenario total'
     # Pick out year and do various renames:
     # Total antropogenic
-    tot_yr = tabel_dT_anthrop.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    tot_yr = tabel_dT_anthrop.loc[yr].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Sum SLCFs
-    sum_yr = tabel_dT_sum_slcf.loc[yr].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    sum_yr = tabel_dT_sum_slcf.loc[yr].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Plot bars for anthropopogenic total:
     ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
-           )
+            )
     # Plot bars for SLCFs total:
     ntot = 'Sum SLCFs'
     s_x = sum_yr.transpose().index
@@ -377,7 +365,7 @@ for yr, ax, tit in zip(years, axs, tits):
     # Plot stacked plot of components:
     _tab = tabel_dT_slcfs.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
 
-    a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr != '2040'))  # , grid=True)#stac)
+    a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls, legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
         ax.legend(frameon=False)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
     # Zero line:
@@ -385,21 +373,21 @@ for yr, ax, tit in zip(years, axs, tits):
     ax.set_title(tit)
     ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
     ax.xaxis.set_minor_locator(MultipleLocator(.1))
-    #ax.grid(axis='y', which='major')
+    # ax.grid(axis='y', which='major')
 
 ax = axs[0]
 
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(False)
-ax.tick_params( right=False, left=False)#, color='w')
+ax.tick_params(right=False, left=False)  # , color='w')
 
 ax = axs[1]
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(False)
 ax.tick_params(labelleft=False, right=False, left=False, color='w')
-ax.tick_params(labelright=False, labelleft=False, right=False, left=False,  color='w')
+ax.tick_params(labelright=False, labelleft=False, right=False, left=False, color='w')
 ax.yaxis.set_visible(False)
 plt.tight_layout()
 
@@ -419,7 +407,7 @@ plt.savefig(fn, dpi=300)
 # ## Only ssp370:
 
 # %%
-scenario_370 =[sc for sc in scenarios_fl if 'ssp370' in sc]
+scenario_370 = [sc for sc in scenarios_fl if 'ssp370' in sc]
 
 # %%
 from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
@@ -435,21 +423,25 @@ for yr, ax, tit in zip(years, axs, tits):
     ntot = 'Scenario total'
     # Pick out year and do various renames:
     # Total antropogenic
-    tot_yr = tabel_dT_anthrop.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    tot_yr = tabel_dT_anthrop.loc[yr, scenario_370].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Sum SLCFs
-    sum_yr = tabel_dT_sum_slcf.loc[yr, scenario_370].rename({'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    sum_yr = tabel_dT_sum_slcf.loc[yr, scenario_370].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
     # Plot bars for anthropopogenic total:
     ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
-           )
+            )
     # Plot bars for SLCFs total:
     ntot = 'Sum SLCFs'
     s_x = sum_yr.transpose().index
     s_y = sum_yr.transpose()[ntot].values
 
     # Plot stacked plot of components:
-    _tab = tabel_dT_slcfs.loc[yr, scenario_370].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    _tab = tabel_dT_slcfs.loc[yr, scenario_370].transpose().rename(
+        {'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
 
-    a = _tab.plot(kind='barh', stacked=True, ax=ax, legend=(yr != '2040'))  # , grid=True)#stac)
+    a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls,
+                  legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
         ax.legend(frameon=True)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
     # Zero line:
@@ -457,21 +449,21 @@ for yr, ax, tit in zip(years, axs, tits):
     ax.set_title(tit)
     ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
     ax.xaxis.set_minor_locator(MultipleLocator(.1))
-    #ax.grid(axis='y', which='major')
+    # ax.grid(axis='y', which='major')
 
 ax = axs[0]
 
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(False)
-ax.tick_params( right=False, left=False)#, color='w')
+ax.tick_params(right=False, left=False)  # , color='w')
 
 ax = axs[1]
 ax.spines['right'].set_visible(False)
 ax.spines['top'].set_visible(False)
 ax.spines['left'].set_visible(False)
 ax.tick_params(labelleft=False, right=False, left=False, color='w')
-ax.tick_params(labelright=False, labelleft=False, right=False, left=False,  color='w')
+ax.tick_params(labelright=False, labelleft=False, right=False, left=False, color='w')
 ax.yaxis.set_visible(False)
 plt.tight_layout()
 fn = RESULTS_DIR / 'figures/stack_bar_influence_years_horiz_errTot_370only.png'

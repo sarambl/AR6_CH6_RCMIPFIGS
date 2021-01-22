@@ -3,6 +3,7 @@ import pyam
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from ar6_ch6_rcmipfigs.utils.colors import get_chem_col
 from ar6_ch6_rcmipfigs.utils.misc_func import climatemodel
 
 
@@ -40,7 +41,11 @@ def get_cmap_dic(keys, palette='colorblind'):
     cols = sns.color_palette(palette, n_colors=len(keys))
     colordic = {}  # 'NorESM1-LM':col}
     for model, col in zip(keys, cols):
+        _col = get_chem_col(model)
+        if _col is not None:
+            col= _col
         colordic[model] = col
+
     return colordic
 
 
@@ -59,13 +64,13 @@ def trans_scen2plotlabel(label):
     else: return label
 
 nice_name_var = {
-    'ch4':'CH$_4$',
+    'ch4':'Methane (CH$_4$)',
     'aerosol-radiation_interactions':'Aerosols-radiation',
     'aerosol-cloud_interactions':'Aerosols-cloud',
     'aerosol-total':'Aerosols',
-    'o3_tropospheric':'O$_3$',
-    'o3':'O$_3$',
-    #'F-Gases|HFC',
+    'o3_tropospheric':'Ozone (O$_3$)',
+    'o3':'Ozone (O$_3$)',
+    'HFCs':'HFCs',
     'bc_on_snow':'BC on snow'
 
 }
