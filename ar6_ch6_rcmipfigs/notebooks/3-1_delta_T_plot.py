@@ -40,7 +40,7 @@ PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP.nc'
 # ## Set values:
 
 # %%
-first_y = '1850'
+first_y = '1750'
 last_y = '2100'
 
 # %% [markdown]
@@ -88,7 +88,8 @@ scenarios_fl = ['ssp119',
                 'ssp245',
                 'ssp370',
                 'ssp370-lowNTCF-aerchemmip',
-                # 'ssp370-lowNTCF-gidden',
+                #'ssp370-lowNTCF-gidden',
+                'ssp370-lowNTCF-gidden',
                 'ssp585']
 
 # %%
@@ -115,7 +116,7 @@ perc95 = '95th percentile'
 ds_DT = xr.open_dataset(PATH_DT)
 
 # %%
-ds_DT  # .climatemodel
+ds_DT.scenario  # .climatemodel
 
 # %% [markdown]
 # ### Define stuff:
@@ -287,7 +288,7 @@ ax = ax_tot
 
 cdic = get_scenario_c_dic()
 # for var in variables_erf_tot:  # , f_totn]:
-for scn in list(set(scenarios_fl) - {'historical'}):
+for scn in scenarios_fl:# list(set(scenarios_fl) - {'historical'}):
     # Plot dataset difference to first year, i.e.
     ds_DT_sy = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,
                                                                                      year=slice(s_y, s_y)).squeeze()
@@ -321,6 +322,9 @@ plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_v1.pdf')  # , dpi=300)
 plt.show()
 
 # %%
+lsdic.keys()
+
+# %%
 from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 
 # get_fig_ax_tot
@@ -349,7 +353,7 @@ for var, ax in zip(variables_erf_comp, axs):
     print(var)
 
     # fig, ax = plt.subplots(1, 1, figsize=figsize)
-    for scn in list(set(scenarios_fl) - {'historical'}):
+    for scn in scenarios_fl:# list(set(scenarios_fl) - {'historical'}):
         # compute difference from ref year:
         _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2))
         _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y, s_y)).squeeze()
@@ -378,7 +382,7 @@ ax = ax_tot
 
 cdic = get_scenario_c_dic()
 # for var in variables_erf_tot:  # , f_totn]:
-for scn in list(set(scenarios_fl) - {'historical'}):
+for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     # Plot dataset difference to first year, i.e.
     ds_DT_sy = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,
                                                                                      year=slice(s_y, s_y)).squeeze()
@@ -437,7 +441,7 @@ for var in variables_erf_comp:  # , axs):
     print(var)
 
     fig, ax = plt.subplots(1, 1, figsize=figsize)
-    for scn in list(set(scenarios_fl) - {'historical'}):
+    for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
         # compute difference from ref year:
         _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2))
         _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y, s_y)).squeeze()
@@ -472,7 +476,7 @@ fig, ax = plt.subplots(1, 1, figsize=figsize)  # [9,5])
 
 cdic = get_scenario_c_dic()
 # for var in variables_erf_tot:  # , f_totn]:
-for scn in list(set(scenarios_fl) - {'historical'}):
+for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     # Plot dataset difference to first year, i.e.
     ds_DT_sy = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,
                                                                                      year=slice(s_y, s_y)).squeeze()

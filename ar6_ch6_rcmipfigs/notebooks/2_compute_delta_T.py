@@ -13,6 +13,9 @@
 # ---
 
 # %% [markdown]
+# TA MED LOW-NTF-GIDDENS!!!
+
+# %% [markdown]
 # # Plot temperature response over time
 
 # %% [markdown]
@@ -27,6 +30,8 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 # %% [markdown]
 # **Output table found in:**
 # %%
+
+
 # %% [markdown]
 # ### General about computing $\Delta T$:
 # %% [markdown]
@@ -54,6 +59,7 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 # %% [markdown]
 # # Code + figures
 
+# %%
 fn_IRF_constants = INPUT_DATA_DIR / 'irf_from_2xCO2_2020_12_02_050025-1.csv'
 irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
 
@@ -220,7 +226,7 @@ def integrate_(i, _var, _nvar, ds_in: xr.Dataset, ds_DT, irf_cnst: dict):
     """
     # lets create a ds that goes from 0 to i inclusive
     ds_short = ds_in[{'year': slice(0, i + 1)}].copy()
-    print(ds_short)
+    #print(ds_short)
     # lets get the current year
     current_year = ds_short['year'][{'year': i}]  # .dt.year
     # lets get a list of years
@@ -446,7 +452,7 @@ fig, ax = plt.subplots(figsize=[6, 7])
 
 ds_hist = ds.sel(year=slice(1750, 2019), percentile='median', scenario='ssp119', variable=ls_vars)
 for var in ds_hist.variable.values:
-    ds_hist.sel(variable=var)[name_deltaT].plot(label=var, linestyle='dashed', linewidth=4, c=cdic[var])
+    ds_hist.sel(variable=var)[name_deltaT].plot(label=var, linestyle='dashed', linewidth=2, c=cdic[var])
 plt.legend(title='Variable', bbox_to_anchor=(1.05, 1), loc='upper left')  # , prop=fontP)
 ax.yaxis.set_major_locator(MultipleLocator(.25))
 ax.yaxis.set_minor_locator(MultipleLocator(.05))
@@ -460,6 +466,6 @@ plt.show()
 # %%
 
 # %%
-ds_hist
+da_ERF.scenario
 
 # %%

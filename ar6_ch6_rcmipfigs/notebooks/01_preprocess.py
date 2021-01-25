@@ -12,6 +12,7 @@
 #     name: python3
 # ---
 
+# %%
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -54,6 +55,7 @@ for file in files:
     else:
         ERFs[nm] = pd.read_csv(file, index_col=0).copy()
     nms.append(nm)
+
 
 # %%
 ERFs_minor[nm]

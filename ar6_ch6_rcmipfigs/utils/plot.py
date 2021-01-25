@@ -86,6 +86,7 @@ color_map_scenarios_base = {
     "ssp370": "AR6-SSP3-7.0",
     "ssp370-lowNTCF": "AR6-SSP3-LowNTCF",
     "ssp370-lowNTCF-aerchemmip": "AR6-SSP3-LowNTCF",
+    "ssp370-lowNTCF-gidden": "AR6-SSP3-LowNTCF",
     "ssp434": "AR6-SSP4-3.4",
     "ssp460": "AR6-SSP4-6.0",
     "ssp585": "AR6-SSP5-8.5",
@@ -112,6 +113,7 @@ def get_scenario_c_dic(new=True):
         for scn, col in zip(scenario_list, rgb_data_in_the_txt_file):
             colormap_dic[scn] = tuple([a/255. for a in col])#col/255.
         colormap_dic[ssp370low_nn] = colormap_dic[ssp370low_on]#'ssp370-lowNTCF']
+        colormap_dic[ssp370low_gidd] = colormap_dic[ssp370low_on]#'ssp370-lowNTCF']
         colormap_dic['historical'] = 'black'
         return  colormap_dic
 
@@ -135,6 +137,7 @@ def get_scenario_ls_dic():
     for key in c_dic:
         ls_dic[key]='solid'
     ls_dic[ssp370low_nn] = 'dashed'
+    ls_dic[ssp370low_gidd] = 'dotted'
     return ls_dic
 
 
@@ -142,3 +145,4 @@ scenario_list = ['ssp119', 'ssp126','ssp245','ssp370', 'ssp370-LowNTCF',
                  'ssp435','ssp460','ssp534os','ssp585']
 ssp370low_nn = "ssp370-lowNTCF-aerchemmip"
 ssp370low_on = 'ssp370-LowNTCF'
+ssp370low_gidd = "ssp370-lowNTCF-gidden"
