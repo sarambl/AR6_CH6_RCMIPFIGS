@@ -92,10 +92,26 @@ ERFs['ssp534-over'].columns  # [scn]#.columns
 HFCs_name = 'HFCs'
 # list of variables
 ls = list(ERFs_minor['ssp119'].columns)
-# choose only those with HFC in them
+# chocose only those with HFC in them
 vars_HFCs = [v for v in ls if 'HFC' in v]
 
 vars_HFCs
+
+# %%
+HFCs_name = 'HFCs'
+# list of variables
+ls = list(ERFs_minor['ssp370-lowNTCF-aerchemmip'].columns)
+# chocose only those with HFC in them
+vars_HFCs = [v for v in ls if 'HFC' in v]
+
+vars_HFCs
+
+# %%
+
+ERFs_minor['ssp370-lowNTCF-gidden'][vars_HFCs].plot(linestyle='dashed', title='gidden')
+ERFs_minor['ssp370-lowNTCF-aerchemmip'][vars_HFCs].plot(linestyle='dashed', title='aerchemip')
+
+ERFs_minor['ssp370'][vars_HFCs].plot(title='ssp370')
 
 # %%
 

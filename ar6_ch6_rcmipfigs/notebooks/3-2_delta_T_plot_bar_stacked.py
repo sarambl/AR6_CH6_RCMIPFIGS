@@ -104,7 +104,7 @@ scenarios_fl = ['ssp119',
                 'ssp245',
                 'ssp370',
                 'ssp370-lowNTCF-aerchemmip',
-                # 'ssp370-lowNTCF-gidden',
+                'ssp370-lowNTCF-gidden',
                 'ssp585']
 
 # %%
@@ -341,7 +341,7 @@ ls = [cdic[key] for key in variables_erf_comp]
 from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from matplotlib.ticker import (MultipleLocator)
 
-fig, axs = plt.subplots(1, len(years), figsize=[10, 4], sharex=False, sharey=True)
+fig, axs = plt.subplots(1, len(years), figsize=[10, 4.4], sharex=False, sharey=True)
 tits = ['Near Term surface temperature change (2040 relative to 2021)',
         'Long Term surface T change 2100 relatie to 2021)']
 tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GSAT in 2100 relative to 2021']
@@ -367,7 +367,7 @@ for yr, ax, tit in zip(years, axs, tits):
 
     a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls, legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
-        ax.legend(frameon=False)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+        ax.legend(frameon=False, ncol=1)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
     # Zero line:
     ax.axvline(0, linestyle='--', color='k', alpha=0.4)
     ax.set_title(tit)
@@ -396,6 +396,77 @@ plt.tight_layout()
 ax = plt.gca()
 
 plt.savefig(fn, dpi=300)
+
+# %%
+scen_no_lowNTCF = [scn for scn in scenarios_fl if 'lowNTCF' not in scn]
+print(scen_no_lowNTCF)
+
+# %%
+tabel_dT_anthrop2= tabel_dT_anthrop[scen_no_lowNTCF]
+tabel_dT_slcfs2= tabel_dT_slcfs[scen_no_lowNTCF]
+
+# %%
+from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
+from matplotlib.ticker import (MultipleLocator)
+
+fig, axs = plt.subplots(1, len(years), figsize=[10, 3.4], sharex=False, sharey=True)
+tits = ['Near Term surface temperature change (2040 relative to 2021)',
+        'Long Term surface T change 2100 relatie to 2021)']
+tits = ['Change in GSAT in 2040 relative to 2021', 'Change in GSAT in 2100 relative to 2021']
+for yr, ax, tit in zip(years, axs, tits):
+    ntot = 'Scenario total'
+    # Pick out year and do various renames:
+    # Total antropogenic
+    tot_yr = tabel_dT_anthrop2.loc[yr].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    # Sum SLCFs
+    sum_yr = tabel_dT_sum_slcf.loc[yr].rename(
+        {'Total': ntot, 'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+    # Plot bars for anthropopogenic total:
+    ax.barh(tot_yr.transpose().index, tot_yr.transpose()[ntot].values, color='k', label='Scenario total', alpha=.2,
+            )
+    # Plot bars for SLCFs total:
+    ntot = 'Sum SLCFs'
+    s_x = sum_yr.transpose().index
+    s_y = sum_yr.transpose()[ntot].values
+
+    # Plot stacked plot of components:
+    _tab = tabel_dT_slcfs2.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
+
+    a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls, legend=(yr != '2040'))  # , grid=True)#stac)
+    if not yr == '2040':
+        ax.legend(frameon=False, ncol=1)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+    # Zero line:
+    ax.axvline(0, linestyle='--', color='k', alpha=0.4)
+    ax.set_title(tit)
+    ax.set_xlabel('$\Delta$ GSAT ($^\circ$C)')
+    ax.xaxis.set_minor_locator(MultipleLocator(.1))
+    # ax.grid(axis='y', which='major')
+
+ax = axs[0]
+
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params(right=False, left=False)  # , color='w')
+
+ax = axs[1]
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.tick_params(labelleft=False, right=False, left=False, color='w')
+ax.tick_params(labelright=False, labelleft=False, right=False, left=False, color='w')
+ax.yaxis.set_visible(False)
+plt.tight_layout()
+
+fn = RESULTS_DIR / 'figures/stack_bar_influence_years_no_lowNTCF.png'
+plt.tight_layout()
+ax = plt.gca()
+
+plt.savefig(fn, dpi=300)
+
+# %%
+tabel_dT_slcfs
 
 # %% [markdown]
 # ## Error bars from model uncertainty AND ECS uncertainty
@@ -443,7 +514,7 @@ for yr, ax, tit in zip(years, axs, tits):
     a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls,
                   legend=(yr != '2040'))  # , grid=True)#stac)
     if not yr == '2040':
-        ax.legend(frameon=True)  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
+        ax.legend(frameon=True, )  # [l],labels=['Sce!!nario total'], loc = 4)#'lower right')
     # Zero line:
     ax.axvline(0, linestyle='--', color='k', alpha=0.4)
     ax.set_title(tit)

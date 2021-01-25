@@ -512,6 +512,15 @@ plt.show()
 # %% [markdown]
 # ## Plot $\Delta$ T and ERF with reference year +/- 1 standard deviation of the models
 # %%
+scenarios_fl=['ssp119',
+ 'ssp126',
+ 'ssp245',
+# 'ssp370',
+ 'ssp370-lowNTCF-aerchemmip',
+ 'ssp370-lowNTCF-gidden',
+ 'ssp585']
+
+# %%
 from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic
 
 # Get linestyle scenarios:

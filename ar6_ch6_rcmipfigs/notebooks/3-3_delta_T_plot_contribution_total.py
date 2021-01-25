@@ -287,8 +287,9 @@ for ref_var, varl in zip([ref_var_dt],
     ax.set_xlabel('')
     plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
     plt.tight_layout()
-    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.png', dpi=300)
-    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.pdf', dpi=300)
+    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.png', dpi=300,bbox_inches="tight")
+    
+    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.pdf', dpi=300,bbox_inches="tight")
     plt.show()
 
 # %%
@@ -388,8 +389,8 @@ for ref_var, varl in zip([ref_var_dt],
     ax.set_xlabel('')
     plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
     plt.tight_layout()
-    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib_rev.png', dpi=300)
-    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib_rev.pdf', dpi=300)
+    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib_rev.png', dpi=300,bbox_inches="tight")
+    plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib_rev.pdf', dpi=300,bbox_inches="tight")
     plt.show()
 
 # %%

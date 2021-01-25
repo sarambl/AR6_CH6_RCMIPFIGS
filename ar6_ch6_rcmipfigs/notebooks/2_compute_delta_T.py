@@ -175,7 +175,10 @@ variables_erf_comp = [
     'o3',
     'HFCs',
     # 'F-Gases|HFC',
-    'bc_on_snow']
+    'bc_on_snow',
+    'total_anthropogenic',
+    'total',
+]
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
                      'total']
@@ -351,9 +354,9 @@ ds.sel(year=slice(first_y, last_y)).to_netcdf(PATH_DT_OUTPUT)
 iterables = [list(IRFpercentiles), years]
 
 
-def setup_table(scenario_n=''):
+def setup_table(scenario_n='', variables=variables_all):
     _i = pd.MultiIndex.from_product(iterables, names=['', ''])
-    table = pd.DataFrame(columns=[v.split('|')[-1] for v in variables_all], index=_i).transpose()
+    table = pd.DataFrame(columns= variables, index=_i).transpose()
     table.index.name = scenario_n
     return table
 
@@ -366,7 +369,7 @@ def setup_table(scenario_n=''):
 scntab_dic = {}
 for scn in scenarios_fl:
     # Loop over scenrarios
-    tab = setup_table(scenario_n=scn)  # make table
+    tab = setup_table(scenario_n=scn, variables=variables_erf_comp)  # make table
     for var in variables_erf_comp:
         # Loop over variables
         tabvar = var.split('|')[-1]
@@ -391,7 +394,7 @@ for key in scntab_dic:
 
 # %%
 iterables = [list(IRFpercentiles), years]
-iterables2 = [scenarios_fl, [var.split('|')[-1] for var in variables_all]]
+iterables2 = [scenarios_fl, variables_erf_comp]
 
 
 def setup_table2():  # scenario_n=''):
@@ -407,7 +410,7 @@ tab = setup_table2()  # scenario_n=scn)
 
 for scn in scenarios_fl:
     for var in variables_erf_comp:
-        tabvar = var.split('|')[-1]
+        tabvar = var#.split('|')[-1]
         dtvar = name_deltaT
         for key in IRFpercentiles:
             for year in years:
@@ -441,10 +444,13 @@ from matplotlib.ticker import (MultipleLocator)
 from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
 
 # %%
-ls_vars = ['aerosol-total', 'ch4', 'co2', 'other_wmghg', 'o3']
+ls_vars = ['aerosol-total', 'ch4', 'co2', 'other_wmghg', 'o3','HFCs']
 
 # %%
 cdic = get_cmap_dic(ls_vars)
+
+# %%
+ds
 
 # %%
 
