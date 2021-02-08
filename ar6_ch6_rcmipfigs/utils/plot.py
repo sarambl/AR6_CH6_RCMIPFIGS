@@ -68,11 +68,15 @@ nice_name_var = {
     'aerosol-radiation_interactions':'Aerosols-radiation',
     'aerosol-cloud_interactions':'Aerosols-cloud',
     'aerosol-total':'Aerosols',
+    'aerosol-total-with_bc':'Aerosols (incl BC)',
     'o3_tropospheric':'Ozone (O$_3$)',
     'o3':'Ozone (O$_3$)',
     'HFCs':'HFCs',
     'bc_on_snow':'BC on snow'
 
+}
+nice_name_scenario = {
+    ''
 }
 def get_var_nicename(var):
     if var in nice_name_var:

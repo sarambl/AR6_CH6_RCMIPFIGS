@@ -3,8 +3,9 @@ chem_cat,co2,127,0,137
 chem_cat,ch4,173,94,0
 chem_cat,n2o,0,142,131
 chem_cat,GHG general,0,112,192
-chem_cat,aerosol-total,229,218,71
-chem_cat,o3,102,102,95
+chem_cat,aerosol-total,102,102,95
+chem_cat,aerosol-total-with_bc,102,102,95
+chem_cat,o3,229,218,71
 chem_cat,bc_on_snow,247,129,191
 chem_cat,HFCs,55,126,184
 ,,,,

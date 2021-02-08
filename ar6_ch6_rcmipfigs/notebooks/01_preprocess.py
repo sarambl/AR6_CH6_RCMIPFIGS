@@ -16,6 +16,15 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# %% [markdown]
+# ## UPDATE:
+#
+# - use historic erf up to 2019. 
+# - afterwards use SSP
+# - Zeb. 
+# - Chris 
+# - Colors
+
 # %%
 from ar6_ch6_rcmipfigs import constants
 
@@ -24,6 +33,16 @@ from ar6_ch6_rcmipfigs import constants
 
 # %% [markdown]
 # Load data:
+
+# %%
+path_AR_hist = constants.INPUT_DATA_DIR /'AR6_ERF_1750-2019.csv'
+path_AR_hist_minorGHG = constants.INPUT_DATA_DIR /'AR6_ERF_minorGHGs_1750-2019.csv'
+# we use the historical forcing up to year 2019:
+use_hist_to_year = 2019
+
+df_hist = pd.read_csv(path_AR_hist, index_col=0).copy()
+df_hist_minor_GHG = pd.read_csv(path_AR_hist_minorGHG, index_col=0).copy()
+df_hist.columns
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 path_ssps = constants.INPUT_DATA_DIR / 'SSPs'
@@ -57,6 +76,57 @@ for file in files:
     nms.append(nm)
 
 
+# %% [markdown]
+# ## Replace years up to 2019 by historical ERF
+
+# %% [markdown]
+# #### Before:
+#
+
+# %%
+for scn in ERFs.keys():
+    ERFs[scn].loc[2010:2025]['total_anthropogenic'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# %%
+for scn in ERFs_minor.keys():
+    ERFs_minor[scn].loc[2010:2025]['HFC-125'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# %%
+cols = ERFs['ssp119'].columns
+print(cols)
+cols_minorGHG = ERFs_minor['ssp119'].columns
+print(cols_minorGHG)
+
+
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+for scn in ERFs.keys():
+    ERFs[scn].loc[1750:use_hist_to_year] = df_hist[cols].loc[1750:use_hist_to_year]    
+    ERFs_minor[scn].loc[1750:use_hist_to_year] = df_hist_minor_GHG[cols_minorGHG].loc[1750:use_hist_to_year]
+
+
+# %% [markdown]
+# #### After:
+
+# %%
+for scn in ERFs.keys():
+    ERFs[scn].loc[2010:2025]['total_anthropogenic'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# %%
+for scn in ERFs_minor.keys():
+    ERFs_minor[scn].loc[2010:2025]['HFC-125'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
 # %%
 ERFs_minor[nm]
 
@@ -65,7 +135,7 @@ ERFs[nm].plot()
 
 # %%
 for scn in ERFs.keys():
-    ERFs[scn]['total_anthropogenic'].plot(label=scn)
+    ERFs[scn].loc[2000:2025]['total_anthropogenic'].plot(label=scn)
 plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', )
 
 # %%
@@ -78,9 +148,12 @@ ERFs['ssp534-over'].columns  # [scn]#.columns
 aero_tot = 'aerosol-total'
 aero_cld = 'aerosol-cloud_interactions'
 aero_rad = 'aerosol-radiation_interactions'
+bc_on_snow = 'bc_on_snow'
+aero_tot_wbc = 'aerosol-total-with_bc'
 for scn in ERFs.keys():
     # add together:
     ERFs[scn][aero_tot] = ERFs[scn][aero_cld] + ERFs[scn][aero_rad]
+    ERFs[scn][aero_tot_wbc] = ERFs[scn][aero_tot]+ ERFs[scn][bc_on_snow] 
 
 # %%
 ERFs['ssp534-over'].columns  # [scn]#.columns
@@ -168,6 +241,9 @@ da_tot_minor.to_dataset()
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 da_check = xr.open_dataset(SAVEPATH_DATASET)
 da_check
+
+# %%
+da_check.variables
 
 # %%
 import matplotlib.pyplot as plt
