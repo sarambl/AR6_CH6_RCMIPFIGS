@@ -89,7 +89,6 @@ units = inp_df.loc['Units']
 units
 inp_df = inp_df.drop('Units').astype(float)
 
-# %%
 inp_sd_df = inp_sd_df.drop('Units').astype(float)
 inp_sd_df 
 

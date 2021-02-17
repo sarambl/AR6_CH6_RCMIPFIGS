@@ -17,6 +17,12 @@
 # # Plot temperature response over time
 
 # %% [markdown]
+# ## TODO:
+# - Aerosols inc BC on snow.
+# - Call it aerosols. 
+# - Assume addition normal distribution, independent. 
+
+# %% [markdown]
 # ## Imports:
 #
 # import numpy as np
@@ -44,7 +50,7 @@ PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 # #### Uncertainty data from Chris
 
 # %%
-PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
+PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
 
 
 # %% [markdown]
@@ -83,13 +89,15 @@ time = 'time'
 # %%
 # variables to plot:
 variables_erf_comp = [
+    'aerosol-total-with_bc-snow',
     'ch4',
     # 'aerosol-radiation_interactions',
     # 'aerosol-cloud_interactions',
-    'aerosol-total',
+    #'aerosol-total',
     'o3',
     'HFCs',
-    'bc_on_snow']
+    #'bc_on_snow'
+]
 # total ERFs for anthropogenic and total:
 #variables_erf_tot = ['total_anthropogenic',
 #                     'total']
@@ -104,6 +112,7 @@ scenarios_fl_370 = ['ssp370', 'ssp370-lowNTCF-aerchemmip', 'ssp370-lowNTCF-gidde
 scenarios_fl = ['ssp119',
                 'ssp126',
                 'ssp245',
+                'ssp334',
                 'ssp370',
                 'ssp370-lowNTCF-aerchemmip',
                 #'ssp370-lowNTCF-gidden',
@@ -145,7 +154,9 @@ for var in variables_erf_comp:
     da95 = ds_uncertainty.sel(variable=var, scenario='ssp585')['p95-p50']
     da5.plot(label=var)
     da95.plot(label=var)
-    
+
+
+
 
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
@@ -267,7 +278,6 @@ vn_sum = 'Sum SLCF (%s)' % _str[:-2]
 print(vn_sum)
 #_st = vn_sum.replace('(','').replace(')','').replace(' ','_').replace(',','')+'.csv'
 
-
 _da_sum  = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable)
 #_da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(year=slice(int(s_y2), int(e_y2))) - ds_DT_sy
 _da_sum#.assin_coord()
@@ -277,7 +287,7 @@ ds_DT
 
 dd1=_da_sum.expand_dims(
     {'variable':
-    ['Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)']})
+    [vn_sum]})
 #dd1=dd1.to_dataset()
 
 ds_DT = xr.merge([ds_DT,dd1])
@@ -293,7 +303,7 @@ def add_uncertainty_bar(ax, var, end_y = 2100, s_y = 2020,
                        ):
     _ds2100_err = ds_uncertainty.sel(year=end_y)
     _ds2100 = ds_DT.sel(year=end_y)-ds_DT.sel(year=s_y)
-    #var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)'
+    #var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
     #to = 'p95-p50'
     #frm = 'p05-p50'
     #_ds2100_err.sel(variable=var)
@@ -322,13 +332,18 @@ def add_uncertainty_bar(ax, var, end_y = 2100, s_y = 2020,
 
 
 # %%
+cdic = get_scenario_c_dic()
+lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
+
+
+# %%
 from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 
 # get_fig_ax_tot
 
 import matplotlib.pyplot as plt
 
-figsize = [9, 8]#[6, 4]
+figsize = [7, 8]#[6, 4]
 s_y = ref_year
 s_y2 = '2015'
 e_y = last_y
@@ -339,7 +354,7 @@ lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
 
 linewidth = 2
 
-fig2, axs, ax_tot = get_fig_ax_tot(fgsize=figsize, rows_tot=2, cols_tot=0,
+fig2, axs, ax_tot = get_fig_ax_tot(fgsize=figsize, rows_tot=2, cols_tot=0,ncols=2,
                                    orientation='vertical',
                                    tot_first=False)
 
@@ -368,12 +383,14 @@ for var, ax in zip(variables_erf_comp, axs):
     fix_ax(ax)
     # Plot zero line:
     ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
-    add_uncertainty_bar(ax, var, linewidth=3, i_plus=2.6)
-    
+    add_uncertainty_bar(ax, var, linewidth=2.3, i_plus=1.7)
+    #ax.set_ylim([-.3,1])
+
 if len(axs)>len(variables_erf_comp):
     l = len(variables_erf_comp)
     for i in range(l,len(axs)):
         axs[l].axis('off')
+        
 # Total:
 
 ax = ax_tot
@@ -391,9 +408,10 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle=lsdic[scn], linewidth=linewidth)
 
     
-var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)'
+var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
 
-add_uncertainty_bar(ax, var, linewidth=4, i_plus=.8)
+add_uncertainty_bar(ax, var, linewidth=3,
+                    i_plus=.8)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
 plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2020', fontsize=14, y=1.05)
@@ -409,10 +427,10 @@ ax.set_xlabel('')
 
 ax.legend(frameon=False, loc='upper left')
 fix_ax(ax)
-plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
-plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.png', dpi=300)
-plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.pdf')  # , dpi=300)
+plt.subplots_adjust(top=0.94, left=0.125, wspace=.5, hspace=.5)
+plt.tight_layout()# w_pad=4)#rect=[0,0,.94,1],
+plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.png', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.pdf', bbox_inches='tight')  # , dpi=300)
 plt.show()
 
 # %%
@@ -509,7 +527,7 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     _pl_da = _da.sel(percentile=recommendation)
     _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), xticks=[], linestyle=lsdic[scn],
                 linewidth=linewidth)
-var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)'
+var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
 
 add_uncertainty_bar(ax, var, linewidth=3, i_plus=1.1)
 
@@ -521,7 +539,7 @@ ax.set_title('GSAT change, sum SLCF \n(%s)' % _str[:-2])
 ax.set_ylabel('($^\circ$C)')
 ax.set_xlabel('')
 
-ax.legend(frameon=False, loc=2)
+ax.legend(frameon=False, loc=2, ncol=2)
 fix_ax(ax)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
@@ -541,6 +559,7 @@ plt.show()
 scenarios_fl=['ssp119',
  'ssp126',
  'ssp245',
+              
 # 'ssp370',
  'ssp370-lowNTCF-aerchemmip',
  'ssp370-lowNTCF-gidden',

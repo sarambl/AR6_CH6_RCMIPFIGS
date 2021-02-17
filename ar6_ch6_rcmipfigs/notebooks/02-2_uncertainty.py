@@ -13,10 +13,6 @@
 # ---
 
 # %%
-
-# %%
-
-# %%
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -27,8 +23,6 @@ from ar6_ch6_rcmipfigs import constants
 # %autoreload 2
 
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
-
-# %%
 
 # %%
 first_y = '1750'
@@ -53,9 +47,6 @@ df_uncertainty#['scenario']#.uniqu
 df_uncertainty
 #diff_uncertainty = df_uncertainty - df_uncertainty['p50']
 
-# %%
-df_uncertainty['forcing'].unique()
-
 # %% [markdown]
 # ## Renaming to fit conventions:
 
@@ -73,7 +64,7 @@ df_uncertainty['forcing'].unique()
 # %%
 dic_vars = dict(
     hfc='HFCs', 
-    slcf='Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)', 
+    slcf='Sum SLCF (Methane, Aerosols, Ozone, HFCs)',
     aerosol='aerosol-total',
     anthro='total_anthropogenic'
 )
@@ -183,13 +174,6 @@ lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
 
 
 # %%
-ds_DT.scenario
-
-# %%
-ds_DT.variable
-
-
-# %%
 scenario
 scenarios_fl = ['ssp119',
                 'ssp126',
@@ -213,10 +197,6 @@ for var in ['o3','ch4','aerosol-total','bc_on_snow','HFCs']:
 
 # %% [markdown]
 # ## Make difference and save:
-
-# %%
-percentiles
-
 
 # %%
 p50= 'p50'
@@ -291,3 +271,9 @@ for scn in cdic.keys():
     pl_n = pl_n[pl_n['forcing']==var2]
     pl_n = pl_n[pl_n['scenario']==scn]
     plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], linestyle='dotted')
+
+# %%
+
+# %%
+
+# %%

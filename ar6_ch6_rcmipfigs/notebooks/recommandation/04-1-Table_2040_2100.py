@@ -42,9 +42,11 @@ percentile = 'percentile'
 # ### Define variables to look at:
 
 # %%
-# variables to plot:
+# variables to include:
+
 variables_erf_comp = [
     'ch4',
+    'aerosol-total-with_bc-snow',
     'aerosol-radiation_interactions',
     'aerosol-cloud_interactions',
     'aerosol-total',
@@ -54,6 +56,16 @@ variables_erf_comp = [
     'bc_on_snow',
     'total_anthropogenic',
     'total',
+]
+variables_in_sum = [
+    'aerosol-total-with_bc-snow',
+    'ch4',
+    # 'aerosol-radiation_interactions',
+    # 'aerosol-cloud_interactions',
+    #'aerosol-total',
+    'o3',
+    'HFCs',
+    #'bc_on_snow'
 ]
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
@@ -97,7 +109,10 @@ PATH_DT_INPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 
 
 # %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
-PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
+PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables_recommendation' / 'table_sens_dT_cs_recommandetion.csv'
+
+
+
 
 
 
@@ -109,6 +124,9 @@ print(PATH_DT_INPUT)
     
     
 ds_DT = xr.open_dataset(PATH_DT_INPUT)
+
+# %%
+ds_DT.variable
 
 # %% [markdown]
 # ## Table
@@ -188,7 +206,7 @@ tab = setup_table2()  # scenario_n=scn)
 
 for scn in scenarios_fl:
     for var in variables_erf_comp:
-        tab = var#.split('|')[-1]
+        tabvar = var#.split('|')[-1]
         dtvar = name_deltaT
         for key in IRFpercentiles:
             for year in years:
@@ -208,6 +226,10 @@ for scn in scenarios_fl:
                 _tab_da = _da_y - _da_refy
 
                 tab.loc[(scn, tabvar), (key, year)] = _tab_da.squeeze().values  # [0]
+
+# %%
+tab
+
 
 # %%
 tab

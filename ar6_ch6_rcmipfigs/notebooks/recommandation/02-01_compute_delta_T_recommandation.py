@@ -175,7 +175,7 @@ variables_erf_tot = ['total_anthropogenic',
                      'total']
 variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
-scenarios_fl = ['ssp534-over', 'ssp119', 'ssp460', 'ssp585', 'ssp370',
+scenarios_fl = ['ssp534-over', 'ssp119', 'ssp334','ssp460', 'ssp585', 'ssp370',
                 'ssp370-lowNTCF-aerchemmip', 'ssp126', 'ssp245', 'ssp434',
                 'ssp370-lowNTCF-gidden'
                 ]
@@ -321,9 +321,6 @@ def integrate_to_dT(_ds, from_t, to_t, irf_cnsts, int_var='ERF'):
     #ds_DT.to_netcdf(fname)
     return ds_DT
 
-
-# %%
-ds
 
 # %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 dic_ds = {}

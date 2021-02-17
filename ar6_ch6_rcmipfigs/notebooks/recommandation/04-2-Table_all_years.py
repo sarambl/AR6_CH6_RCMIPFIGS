@@ -38,7 +38,7 @@ PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 # #### Uncertainty data from Chris
 
 # %%
-PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
+PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
 
 
 # %% [markdown]
@@ -81,12 +81,28 @@ name_deltaT = 'Delta T'
 # variables to plot:
 variables_erf_comp = [
     'ch4',
-    # 'aerosol-radiation_interactions',
-    # 'aerosol-cloud_interactions',
+    'aerosol-total-with_bc-snow',
+    #'aerosol-radiation_interactions',
+    #'aerosol-cloud_interactions',
     'aerosol-total',
     'o3',
     'HFCs',
-    'bc_on_snow']
+    # 'F-Gases|HFC',
+    'bc_on_snow',
+    'total_anthropogenic',
+    #'total',
+]
+variables_in_sum = [
+    'aerosol-total-with_bc-snow',
+    'ch4',
+    # 'aerosol-radiation_interactions',
+    # 'aerosol-cloud_interactions',
+    #'aerosol-total',
+    'o3',
+    'HFCs',
+    #'bc_on_snow'
+]
+
 # total ERFs for anthropogenic and total:
 #variables_erf_tot = ['total_anthropogenic',
 #                     'total']
@@ -105,7 +121,8 @@ scenarios_fl = ['ssp119',
                 'ssp370-lowNTCF-aerchemmip',
                 #'ssp370-lowNTCF-gidden',
                 'ssp370-lowNTCF-gidden',
-                'ssp585']
+                'ssp585'
+               ]
 
 # %%
 median = 'median'
@@ -141,9 +158,55 @@ for var in variables_erf_comp:
     da95.plot(label=var)
 
 
+# %%
+ds_uncertainty.variable
+
+# %%
+v_sum = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+ds_uncertainty['p05-p50'].sel(year=2040, scenario='ssp119', variable=v_sum)#.variables#.plot()#, variable='%%SVG')%%SVG
+
+# %%
+ds_uncertainty.variable
+
+# %%
+ds_DT
+
 # %% [markdown]
 # ## Merge uncertainty and original: 
 #
+
+# %%
+from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
+
+# %% [markdown]
+# ### Add sum
+
+# %%
+_str = ''
+_vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_in_sum]
+for var in _vl: 
+    _str += f'{var}, '
+
+# ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
+
+
+vn_sum = 'Sum SLCF (%s)' % _str[:-2]
+print(vn_sum)
+#_st = vn_sum.replace('(','').replace(')','').replace(' ','_').replace(',','')+'.csv'
+
+_da_sum  = ds_DT[name_deltaT].sel(variable=variables_in_sum).sum(variable)
+#_da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(year=slice(int(s_y2), int(e_y2))) - ds_DT_sy
+_da_sum#.assin_coord()
+#_ds_check = ds_DT.copy()
+ds_DT
+#xr.concat([_ds_check[name_deltaT],_da_sum], dim=variable)
+
+dd1=_da_sum.expand_dims(
+    {'variable':
+    [vn_sum]})
+#dd1=dd1.to_dataset()
+
+ds_DT = xr.merge([ds_DT,dd1])
 
 # %%
 percentiles_to_keep = ['p05-p50','p16-p50','p84-p50','p95-p50']
@@ -157,6 +220,9 @@ ds_DT= xr.concat([ds_DT[name_deltaT],_ds[name_deltaT]], dim='percentile').to_dat
 
 # %%
 ds_DT
+
+# %%
+ds_DT.sel(year=2040, scenario='ssp119', percentile='recommendation', variable=v_sum)#.variables#.plot()#, variable='%%SVG')%%SVG
 
 # %% [markdown]
 # ## Make csv table of total values:
@@ -178,12 +244,12 @@ def get_fn(var_name, s_y, e_y, ref_y, perc):
     fn = f'{perc}_{_st}_{s_y}-{e_y}_refyear{ref_y}.csv'
     return fn
 
-def make_sum_slcfs_tabel(percentile=recommendation):
-    _str = ''
-    _vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
-    for var in _vl:
-        _str += f'{var}, '
-    vn_sum = 'Sum SLCF (%s)' % _str[:-2]
+def make_sum_slcfs_tabel(sum_vn = vn_sum, percentile=recommendation):
+    #_str = ''
+    #_vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
+    #for var in _vl:
+    #    _str += f'{var}, '
+    #vn_sum = 'Sum SLCF (%s)' % _str[:-2]
 
     fn = get_fn(vn_sum, start_y_tabel, end_y_tabel, ref_year, percentile)
 
@@ -191,27 +257,28 @@ def make_sum_slcfs_tabel(percentile=recommendation):
 
     # ref year value:
     ds_DT_sy = ds_DT[name_deltaT].sel(
-        variable=variables_erf_comp,
+        variable=sum_vn,
         year=reference_year
-    ).sum(variable).squeeze()
+    ).squeeze()
 
     # all values from s_y to e_y
     _da = ds_DT[name_deltaT].sel(
-        variable=variables_erf_comp,
+        variable=sum_vn,
         year=slice(start_y_tabel, end_y_tabel)
-    ).sum(variable).sel(year=slice(int(start_y_tabel), int(end_y_tabel))) - ds_DT_sy
+    ) - ds_DT_sy
 
     # Choose recommendation::
     _pl_da = _da.sel(percentile=percentile).squeeze()
     df = _pl_da.to_pandas().transpose()
     df['percentile'] = percentile
-    display(df)
     fn = TABLE_DIR / fn
+    print(percentile)
+    display(df.loc[2040])
     df.to_csv(fn)
-    df
-for prc in [recommendation, 'p05-p50','p95-p50']:
-    make_sum_slcfs_tabel(percentile=prc)
-    print(prc)
+    
+    
+#for prc in [recommendation, 'p05-p50','p95-p50']:
+#    make_sum_slcfs_tabel(percentile=prc)
 # %%
 import pandas as pd
 
@@ -247,6 +314,10 @@ def make_slcfs_tabel(var, percentile=recommendation):
     fn = TABLE_DIR/_st
     df.to_csv(fn)
 
-for var in variables_erf_comp:
+for var in variables_erf_comp+[vn_sum]:
     for prc in [recommendation, 'p05-p50','p95-p50']:
         make_slcfs_tabel(var, percentile=prc)
+
+# %%
+
+# %%

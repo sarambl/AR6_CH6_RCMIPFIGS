@@ -81,12 +81,18 @@ name_deltaT = 'Delta T'
 
 # %%
 # variables to plot:
+
 variables_erf_comp = [
+    'aerosol-total-with_bc-snow',
     'ch4',
-    'aerosol-total',
+    # 'aerosol-radiation_interactions',
+    # 'aerosol-cloud_interactions',
+    #'aerosol-total',
     'o3',
     'HFCs',
-    'bc_on_snow']
+    #'bc_on_snow'
+]
+
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
                      'total']
@@ -202,6 +208,9 @@ total_varname = 'total_anthropogenic'
 # In the following plot, the total anthropogenic temperature change in a scenario is showed by the black stipled line, while the contribution of each SLCFer is showed as an shaded area either (cooling) over or under (warming).
 
 # %%
+from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
+
+# %%
 SMALL_SIZE = 12
 MEDIUM_SIZE = 12
 BIGGER_SIZE = 14
@@ -279,7 +288,8 @@ for ref_var, varl in zip([ref_var_dt],
             else:
                 kwargs = {'xy': (x_val, y_val)}
             # ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
+            scn_lab = trans_scen2plotlabel(scn)
+            ax.annotate(' %s' % scn_lab, **kwargs)
 
     ax.legend(frameon=False, loc=2)
 
@@ -374,7 +384,9 @@ for ref_var, varl in zip([ref_var_dt],
             else:
                 kwargs = {'xy': (x_val, y_val)}
             # ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
+            scn_lab = trans_scen2plotlabel(scn)
+            ax.annotate(' %s' % scn_lab, **kwargs)
+
 
     ax.legend(frameon=False, loc=2)
 
@@ -476,7 +488,9 @@ for ref_var, varl in zip([ref_var_dt],
             else:
                 kwargs = {'xy': (x_val, y_val)}
             # ax.annotate('$\Delta$T, %s' % scn, **kwargs)
-            ax.annotate(' %s' % scn, **kwargs)
+            #ax.annotate(' %s' % scn, **kwargs)
+            scn_lab = trans_scen2plotlabel(scn)
+            ax.annotate(' %s' % scn_lab, **kwargs)
 
     ax.legend(frameon=False, loc=2)
 
@@ -577,7 +591,10 @@ for ref_var, varl in zip([ref_var_dt],
                 kwargs = {'xy': (x_val, y_val)}  # , 'rotation': 28.6}
             else:
                 kwargs = {'xy': (x_val, y_val)}
-            ax.annotate(' %s' % scn, **kwargs)
+            scn_lab = trans_scen2plotlabel(scn)
+            ax.annotate(' %s' % scn_lab, **kwargs)
+
+            #ax.annotate(' %s' % scn, **kwargs)
 
     ax.legend(frameon=False, loc=2)
 

@@ -25,11 +25,8 @@
 # %% [markdown]
 # ## UPDATE:
 #
-# - use historic erf up to 2019. 
-# - afterwards use SSP
-# - Zeb. 
-# - Chris 
-# - Colors
+# - Update HFCs, figures etc
+# - new figures
 
 # %%
 from ar6_ch6_rcmipfigs import constants
@@ -108,6 +105,30 @@ for file in files:
 
 # %%
 for scn in ERFs.keys():
+    ERFs[scn].loc[2010:2025]['ch4'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# %%
+for scn in ERFs.keys():
+    ERFs[scn].loc[2010:2040]['o3'].plot(label=scn)
+    
+plt.ylabel('ERF [W/m2]')
+plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# %%
+for var in ERFs['ssp119'].columns:
+    for scn in ERFs.keys():
+        ERFs[scn].loc[2010:2040][var].plot(label=scn)
+        
+    plt.ylabel('ERF [W/m2]')
+    plt.title(var)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.show()
+
+# %%
+for scn in ERFs.keys():
     ERFs[scn].loc[2010:2025]['total_anthropogenic'].plot(label=scn)
     
 plt.ylabel('ERF [W/m2]')
@@ -129,8 +150,9 @@ print(cols_minorGHG)
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 for scn in ERFs.keys():
-    ERFs[scn].loc[1750:use_hist_to_year] = df_hist[cols].loc[1750:use_hist_to_year]    
-    ERFs_minor[scn].loc[1750:use_hist_to_year] = df_hist_minor_GHG[cols_minorGHG].loc[1750:use_hist_to_year]
+    ERFs[scn].loc[1750:use_hist_to_year] = df_hist[cols].loc[1750:use_hist_to_year]   
+    if scn in ERFs_minor:
+        ERFs_minor[scn].loc[1750:use_hist_to_year] = df_hist_minor_GHG[cols_minorGHG].loc[1750:use_hist_to_year]
 
 
 # %% [markdown]
@@ -161,7 +183,7 @@ aero_tot = 'aerosol-total'
 aero_cld = 'aerosol-cloud_interactions'
 aero_rad = 'aerosol-radiation_interactions'
 bc_on_snow = 'bc_on_snow'
-aero_tot_wbc = 'aerosol-total-with_bc'
+aero_tot_wbc = 'aerosol-total-with_bc-snow'
 for scn in ERFs.keys():
     # add together:
     ERFs[scn][aero_tot] = ERFs[scn][aero_cld] + ERFs[scn][aero_rad]
@@ -179,13 +201,49 @@ vars_HFCs = [v for v in ls if 'HFC' in v]
 
 vars_HFCs
 
+# %% [markdown]
+# We define SLCFs as those with a lifetime of less than 20 years, and this excludes the following:
+# HFC-23,HFC-125,HFC-143a,HFC-227ea,HFC-236fa
+#
+#
+
+# %%
+excluded_HFCs = ['HFC-23','HFC-236fa'] #'HFC-125','HFC-227ea','HFC-143a',
+
+# %%
+final_HFC_vars = [hfc for hfc in vars_HFCs if hfc not in excluded_HFCs]
+
+# %%
+final_HFC_vars
+
+# %%
+ERFs_minor['ssp585'][vars_HFCs].sum(axis=1).plot(label='All HFCs')
+ERFs_minor['ssp585'][excluded_HFCs].sum(axis=1).plot(label='excluded HFCs')
+ERFs_minor['ssp585'][final_HFC_vars].sum(axis=1).plot(label='Used HFCs')
+#(ERFs_minor['ssp585'][excluded_HFCs].sum(axis=1)+ERFs_minor['ssp585'][final_HFC_vars].sum(axis=1)).plot(label='sum')
+plt.legend()
+
 # %%
 for scn in ERFs_minor.keys():
     # sum over HFC variables
-    ERFs_minor[scn][HFCs_name] = ERFs_minor[scn][vars_HFCs].sum(axis=1)
+    ERFs_minor[scn][HFCs_name] = ERFs_minor[scn][final_HFC_vars].sum(axis=1)
     # add row to ERFs as well
     ERFs[scn][HFCs_name] = ERFs_minor[scn][HFCs_name]
 ERFs[scn]
+
+# %% [markdown]
+# ## For SSP4-3.4 HFCs, use SSP1-1.9 for HFCs
+
+# %%
+ssp334 ='ssp334'
+ssp119 = 'ssp119'
+
+# %%
+ERFs[ssp334][HFCs_name] = ERFs[ssp119][HFCs_name]
+ERFs_minor[ssp334] = ERFs_minor[ssp119]#[HFCs_name]
+
+# %% [markdown]
+# ERFs_minor[ssp334] = ERFs_minor[ssp119].copy()#.keys()
 
 # %% [markdown]
 # ## Convert to xarray:
@@ -206,6 +264,8 @@ for scn in ERFs.keys():
 
     das.append(da)
 
+# %%
+
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 # let the new dimension be called scenario:
 da_tot = xr.merge(das).to_array('scenario')
@@ -223,6 +283,8 @@ import xarray as xr
 
 das = []
 for nm in nms:
+    if nm not in  ERFs_minor.keys():
+        continue
     ds = ERFs_minor[nm].to_xarray()  # .squeeze()
     da = ds.to_array('variable')
     da = da.rename(nm)
@@ -240,6 +302,9 @@ da_tot_minor.to_dataset()
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 da_check = xr.open_dataset(SAVEPATH_DATASET)
 da_check
+
+# %%
+da_check.sel(scenario='ssp334', variable='HFCs')
 
 # %%
 import matplotlib.pyplot as plt

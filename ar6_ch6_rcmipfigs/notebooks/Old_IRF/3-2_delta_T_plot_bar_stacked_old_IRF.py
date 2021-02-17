@@ -679,7 +679,7 @@ plt.savefig(fn, dpi=300)
 variables_erf_comp
 
 # %%
-variables_erf_comp_nbc = ['ch4', 'aerosol-total-with_bc', 'o3', 'HFCs']
+variables_erf_comp_nbc = ['ch4', 'aerosol-total-with_bc-snow', 'o3', 'HFCs']
 
 # %%
 tabel_dT_slcfs2 = table_of_sts(ds_DT, scenarios_fl, variables_erf_comp_nbc, variables_erf_comp_nbc, years,

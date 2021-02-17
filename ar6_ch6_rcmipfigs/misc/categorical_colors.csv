@@ -4,10 +4,15 @@ chem_cat,ch4,255,107,19
 chem_cat,n2o,211,0,40
 chem_cat,GHG general,0,112,192
 chem_cat,aerosol-total,143,0,165
-chem_cat,aerosol-total-with_bc,102,102,95
-chem_cat,o3,229,218,71
+chem_cat,aerosol-total-with_bc-snow,143,0,165
+chem_cat,o3,134,199,75
 chem_cat,bc_on_snow,138,57,0
 chem_cat,HFCs,55,126,184
+chem_cat,WMGHG,79,82,183
+chem_cat,H2O_strat,122,129,129
+chem_cat,aci,143,0,165
+chem_cat,ari,202,178,214
+
 ,,,,
 ssp_cat_1,SSP1,30,150,132
 ssp_cat_1,SSP2,69,118,191
@@ -17,6 +22,7 @@ ssp_cat_1,SSP5,128,54,168
 ,,,,
 ssp_cat_2,ssp119,30,150,132
 ssp_cat_2,ssp126,29,51,84
+ssp_cat_2,ssp334,48,79,191
 ssp_cat_2,ssp245,234,221,61
 ssp_cat_2,ssp370,242,17,17
 ssp_cat_2,ssp3low,242,17,17

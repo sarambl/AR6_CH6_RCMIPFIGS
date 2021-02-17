@@ -54,7 +54,8 @@ PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 # #### Uncertainty data from Chris
 
 # %%
-PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
+#PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
+PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
 
 
 # %% [markdown]
@@ -87,7 +88,7 @@ time = 'time'
 # %%
 recommendation = 'recommendation'
 name_deltaT = 'Delta T'
-sum_v = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)'
+sum_v = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
 
 scenario_tot = 'Scenario total'
 
@@ -102,6 +103,17 @@ variables_erf_comp = [
     'o3',
     'HFCs',
     'bc_on_snow']
+variables_erf_comp = [
+    'aerosol-total-with_bc-snow',
+    'ch4',
+    # 'aerosol-radiation_interactions',
+    # 'aerosol-cloud_interactions',
+    #'aerosol-total',
+    'o3',
+    'HFCs',
+    #'bc_on_snow'
+]
+
 # total ERFs for anthropogenic and total:
 variables_erf_tot = ['total_anthropogenic',
                      'total']
@@ -120,6 +132,7 @@ scenarios_fl_370 = ['ssp370', 'ssp370-lowNTCF-aerchemmip', 'ssp370-lowNTCF-gidde
 scenarios_fl = ['ssp119',
                 'ssp126',
                 'ssp245',
+                'ssp334',
                 'ssp370',
                 'ssp370-lowNTCF-aerchemmip',
                 'ssp370-lowNTCF-gidden',
@@ -210,7 +223,7 @@ ds_DT
 
 dd1 = _da_sum.expand_dims(
     {'variable':
-         ['Sum SLCF (Methane, Aerosols, Ozone, HFCs, BC on snow)']})
+         ['Sum SLCF (Methane, Aerosols, Ozone, HFCs)']})
 # dd1=dd1.to_dataset()
 
 ds_DT = xr.merge([ds_DT, dd1])
@@ -487,6 +500,12 @@ tabel_dT_slcfs
 ds_DT.variable
 
 # %%
+v_sum = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+ds_uncertainty.sel(year=2040, scenario='ssp119', percentile='p05-p50', variable=v_sum)#.variables#.plot()#, variable='%%SVG')%%SVG
+
+# %%
+v_sum = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+ds_uncertainty.sel(year=2040, scenario='ssp119', percentile='p95-p50', variable=v_sum)#.variables#.plot()#, variable='%%SVG')%%SVG
 
 # %%
 tabel_dT_sum_slcf = table_of_sts(ds_DT,
@@ -531,12 +550,18 @@ ls = [cdic[key] for key in variables_erf_comp]
 
 # ls
 
+# %%
+cdic
+
 # %% [markdown]
 # ## Error bars only from model uncertainty
 # The following uncertainties assume the ECS has a standard deviation of
 
 # %%
 
+
+# %%
+from ar6_ch6_rcmipfigs.utils.plot import scn_dic
 
 # %%
 from matplotlib.ticker import (MultipleLocator)
@@ -551,15 +576,13 @@ def plt_stacked(fig, axs, tabel_dT_anthrop, tabel_dT_sum_slcf,tabel_dT_slcfs, ta
     for yr, ax, tit in zip(years, axs, tits):
         # Pick out year and do various renames:
         # Total antropogenic
-        tot_yr = tabel_dT_anthrop.loc[yr]
+        tot_yr = tabel_dT_anthrop.loc[yr].rename(scn_dic, axis=1)
         # Sum SLCFs
         # uncertainty:
-        bot = tabel_dT_anthrop_5th.loc[yr]
-        top = tabel_dT_anthrop_95th.loc[yr]
+        bot = tabel_dT_anthrop_5th.loc[yr].rename(scn_dic, axis=1)
+        top = tabel_dT_anthrop_95th.loc[yr].rename(scn_dic, axis=1)
         err = pd.merge(bot, top, how='outer').values
         # Plot bars for anthropopogenic total:
-        print(err)
-        print(tot_yr)
         ax.barh(tot_yr.transpose().index, tot_yr.transpose()[scenario_tot].values,
                 color='k',
                 xerr=err,
@@ -571,14 +594,13 @@ def plt_stacked(fig, axs, tabel_dT_anthrop, tabel_dT_sum_slcf,tabel_dT_slcfs, ta
 
         # Plot stacked plot of components:
         _tab = tabel_dT_slcfs.loc[yr].transpose().rename({'ssp370-lowNTCF-aerchemmip': 'ssp370-lowNTCF\n-aerchemmip'})
-        print(_tab.columns)
-
+        _tab = _tab.rename(scn_dic, axis=0)
         a = _tab.plot(kind='barh', stacked=True, ax=ax, color=ls, legend=(yr != '2040'))  # , grid=True)#stac)
         _t = _tab.sum(axis=1)  # , c=100)#.plot(kind='barh', )
         # ax.scatter(_t, list(_t.reset_index().index), zorder=10, c='w', marker='d')
         # uncertainty:
-        bot = tabel_dT_sum_slcf_5.loc[yr]
-        top = tabel_dT_sum_slcf_95.loc[yr]
+        bot = tabel_dT_sum_slcf_5.loc[yr].rename(scn_dic, axis=1)
+        top = tabel_dT_sum_slcf_95.loc[yr].rename(scn_dic, axis=1)
         err = pd.merge(bot, top, how='outer').values
 
         ax.errorbar(_t, list(_t.reset_index().index), xerr=err, label='__nolabel__', color='w', fmt='d',
@@ -614,6 +636,11 @@ def fix_axs(axs):
 # %%
 for tab in [tabel_dT_anthrop, tabel_dT_sum_slcf,tabel_dT_slcfs]:
     display(tab)
+
+# %%
+tabel_dT_sum_slcf_5.rename(scn_dic, axis=1)
+
+# %%
 
 # %%
 fig, axs = plt.subplots(1, len(years), figsize=[10, 4.4], sharex=False, sharey=True)
@@ -747,7 +774,7 @@ plt.savefig(fn.with_suffix('.pdf'), dpi=300)
 variables_erf_comp
 
 # %%
-variables_erf_comp_nbc = ['ch4', 'aerosol-total-with_bc', 'o3', 'HFCs']
+variables_erf_comp_nbc = ['ch4', 'aerosol-total-with_bc-snow', 'o3', 'HFCs']
 
 # %%
 tabel_dT_slcfs2 = table_of_sts(ds_DT, scenarios_fl, variables_erf_comp_nbc, variables_erf_comp_nbc, years,
@@ -985,6 +1012,28 @@ plt.savefig(fn.with_suffix('.pdf'), dpi=300)
 
 # %%
 scenario_370 = [sc for sc in scenarios_fl if 'ssp370' in sc]
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
 
 # %%
 
