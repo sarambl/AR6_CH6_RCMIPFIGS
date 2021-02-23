@@ -1,13 +1,24 @@
 type,var,r,g,b
 chem_cat,co2,244,203,54
+chem_cat,CO2,244,203,54
 chem_cat,ch4,255,107,19
+chem_cat,CH4,255,107,19
 chem_cat,n2o,211,0,40
+chem_cat,N2O,211,0,40
 chem_cat,GHG general,0,112,192
 chem_cat,aerosol-total,143,0,165
 chem_cat,aerosol-total-with_bc-snow,143,0,165
 chem_cat,o3,134,199,75
 chem_cat,bc_on_snow,138,57,0
+chem_cat,BC,138,57,0
+chem_cat,OC,121,202,238
+chem_cat,SO2,96,146,203
+chem_cat,NOx,68,0,134
+chem_cat,CO,147,160,57
+chem_cat,VOC,0,128,59
+chem_cat,NH3,0,176,154
 chem_cat,HFCs,55,126,184
+chem_cat,HC,122,129,129
 chem_cat,WMGHG,79,82,183
 chem_cat,H2O_strat,122,129,129
 chem_cat,aci,143,0,165

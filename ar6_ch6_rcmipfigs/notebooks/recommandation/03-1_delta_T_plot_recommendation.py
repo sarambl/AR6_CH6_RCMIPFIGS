@@ -149,11 +149,18 @@ ds_uncertainty = xr.open_dataset(PATH_DT_UNCERTAINTY)
 ds_DT.scenario  # .climatemodel
 
 # %%
+ds_DT['variable']
+
+# %%
+ds_uncertainty['variable']
+
+# %%
 for var in variables_erf_comp:
     da5 = ds_uncertainty.sel(variable=var, scenario='ssp585')['p05-p50']    
     da95 = ds_uncertainty.sel(variable=var, scenario='ssp585')['p95-p50']
     da5.plot(label=var)
     da95.plot(label=var)
+
 
 
 
@@ -408,7 +415,7 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle=lsdic[scn], linewidth=linewidth)
 
     
-var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
 
 add_uncertainty_bar(ax, var, linewidth=3,
                     i_plus=.8)
@@ -527,7 +534,7 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
     _pl_da = _da.sel(percentile=recommendation)
     _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), xticks=[], linestyle=lsdic[scn],
                 linewidth=linewidth)
-var = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
 
 add_uncertainty_bar(ax, var, linewidth=3, i_plus=1.1)
 
@@ -640,6 +647,8 @@ for var in variables_erf_comp:
     axs[1].legend(frameon=False)  # , loc=2)
 
     plt.show()
+
+# %%
 
 # %%
 

@@ -64,7 +64,7 @@ df_uncertainty
 # %%
 dic_vars = dict(
     hfc='HFCs', 
-    slcf='Sum SLCF (Methane, Aerosols, Ozone, HFCs)',
+    slcf='Sum SLCF (Aerosols, Methane, Ozone, HFCs)',
     aerosol='aerosol-total',
     anthro='total_anthropogenic'
 )

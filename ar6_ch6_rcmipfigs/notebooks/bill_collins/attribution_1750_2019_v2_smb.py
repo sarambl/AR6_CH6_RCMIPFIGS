@@ -135,6 +135,8 @@ def main():
 
     # Assume can attributed present day CO2 change by scaling cumulative emissions
     co2 = (em_co2/tot_em_co2)*(co2_2014-co2_1850)
+    co2[0]
+    # %%
     rfco2=np.zeros(nspec)
     for ispec in np.arange(nspec):
         rfco2[ispec] = \
@@ -188,6 +190,7 @@ def main():
     total_aci = np.sum(ac[i_aer])
     ac[i_aer] = ac[i_aer]*erf_aci/total_aci
     ac_sd[i_aer] = ac_sd[i_aer]*erf_aci/total_aci
+    # %%
 
     #Scale everything to table 7.8
     scale_co2 = co2_erf_AR6/(rfco2_co2+np.sum(rfco2))
@@ -336,8 +339,10 @@ def main():
     pos_co2[0] =rfco2_co2 ; pos_ghg[0] = pos_co2[0] ; pos_ch4[0] = pos_co2[0]
     pos_o3[0]=pos_co2[0]; pos_h2o[0] = pos_co2[0]
     pos_aer[0] = pos_co2[0]; pos_cloud[0] = pos_co2[0]
-    #print(pos_ghg)
+    print(pos_ghg)
+    # %%
     # Gases
+
     pos_co2[i_gas+1] = rfco2[i_gas]
     pos_ghg[i_gas+1] = pos_co2[i_gas+1]+rfghg[i_gas]
     #print(pos_ghg)
@@ -358,7 +363,7 @@ def main():
         np.maximum(ac[i_gas], 0.)
     neg_cloud[i_gas+1] = neg_aer[i_gas+1]+\
         np.minimum(ac[i_gas], 0.)
-
+    # %%
     #Aerosols
     pos_aer[i_aer+1] = np.maximum(ari[i_aer], 0.)
     neg_aer[i_aer+1] = np.minimum(ari[i_aer], 0.)
@@ -367,7 +372,7 @@ def main():
     neg_cloud[i_aer+1] = neg_aer[i_aer+1]+\
         np.minimum(ac[i_aer], 0.)
 
-
+    # %%
     error = np.zeros(nspec+1)
     error[0] = co2[0]*0.12 # 12% uncertainty
     error[i_ch4+1] = np.sqrt((rfghg_sd[i_ch4]+rfch4_sd[i_ch4])**2+ # CH4
@@ -382,6 +387,7 @@ def main():
                         ac_sd[i_non_ch4]**2)
     error[i_aer+1] = np.sqrt(ari_sd[i_aer]**2+
                         ac_sd[i_aer]**2)
+    # %%
     kwargs = {'linewidth':.1,'edgecolor':'k'}
     plt.barh(ybar, pos_co2, width, color=get_chem_col('co2'), label=labels[0],**kwargs)
     #plt.barh(ybar, pos_ghg-pos_co2, width, left=pos_co2, color=get_chem_col('WMGHG'), label=labels[1],**kwargs)
@@ -406,7 +412,7 @@ def main():
     plt.errorbar(pos_cloud+neg_cloud,ybar, marker='d', linestyle='None', color='k', label='Sum', xerr=error)
     plt.yticks([])#species)
 
-
+    # %%
     for i in np.arange(nspec+1):
         #plt.text(-1.55, ybar[i], species[i],  ha='left')#, va='left')
         plt.text(-1.6, ybar[i]-0.1, species[i],  ha='left')#, va='left')

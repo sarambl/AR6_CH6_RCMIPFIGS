@@ -69,6 +69,7 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 #fn_IRF_constants = INPUT_DATA_DIR / 'irf_from_2xCO2_2021_02_02_025721.csv'
 #fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_03_045947.csv'
 fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_07_223156.csv'
+fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_17_233041.csv'
 
 irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
 
