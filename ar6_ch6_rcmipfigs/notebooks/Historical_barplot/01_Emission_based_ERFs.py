@@ -27,51 +27,10 @@
 # Finally, these ERFs are integrated with the IRF and the change in GSAT is calculated. 
 
 # %% [markdown]
-# ## idea:
-
-# %% [markdown]
-# Use estimated ERF from xx (BILL COLLINS, plot below) together with change in emissions or concentrations of gases to estimate a historical timeseries for ERF. From this, use an impulse response function (from rcmip?) to estimate the change in GSAT from each component. 
+# ## Final ERFs in 2019:
 
 # %% [markdown]
 # ![](../../results/figures_historic_attribution/attribution_1750_2019.png)
-
-# %% [markdown]
-# ## From 1750 to 2019
-
-# %% [markdown]
-# ### Input data:
-# "We would have to take the present day estimates and construct historic ERF-timeseries for each component by simple scaling with global historical emissions, i.e. ignoring any non-linearities."
-# - Splits from Bills figure? http://www.globalchange.umd.edu/ceds/
-
-# %% [markdown]
-# Summary Chris email:
-# - CEDS for BC, OC, SO2, NH3, NOx, VOC, NH3 from here: https://zenodo.org/record/4025316#.YDAg9tj7TIU
-# - The biomass burning component of emissions I use from van Marle, the CMIP6 dataset. Where I have to choose a representative scenario for the last few years I just pick SSP2-4.5. There's a lot less variation in the biomass burning scenarios than there are for the anthropogenic.
-# - 
-
-# %% [markdown]
-# **concentrations**: 
-# Chris sendt file? LLGHG_history_AR6_v9_updated.xlsx
-#
-# rcmip https://www.google.com/url?q=https%3A%2F%2Frcmip-protocols-au.s3-ap-southeast-2.amazonaws.com%2Fv5.1.0%2Frcmip-concentrations-annual-means-v5-1-0.csv&sa=D&sntz=1&usg=AFQjCNFKdZQQeBdz_W1XfaSso8aStOr0xQ
-#
-
-# %% [markdown]
-# **emissions**: 
-# CEDS gives up to 2019 from https://zenodo.org/record/4025316#.YDJl3XVKg5l
-# - BC
-# - CO
-# - NH3
-# - NMVOC
-# - NOx
-# - 
-
-# %% [markdown]
-# ## TODO:
-# - load concentrations in a good format
-# - load emissions in a good format
-# - load bill collins 
-#
 
 # %%
 import numpy as np
@@ -225,13 +184,6 @@ ERFs['CO2'].index
 # %%
 ERFs['NOx'].index
 
-# %%
-
-
-
-
-
-
 # %% [markdown]
 # # HFCs:
 # For HFCs we use the RE from Hodnebrog et al 2019 and the concentrations from chapter two to calculate the ERF. 
@@ -283,6 +235,9 @@ ERFs['HC']
 # %%
 df_ERF = pd.concat(ERFs, axis=1)#['CO2'].loc[1752]
 df_ERF.columns
+
+# %% [markdown]
+# ## Save ERFs
 
 # %%
 fn = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
