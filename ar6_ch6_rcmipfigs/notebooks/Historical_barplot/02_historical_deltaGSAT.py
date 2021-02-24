@@ -54,10 +54,7 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 #
 # Where the constants, $q_i$ and $d_i$ are shown below. 
 #
-# **TODO: find ref**
-# %% [markdown]
-# ## Input data:
-# See [README.md](../../README.md)
+#
 # %% [markdown]
 # # Code + figures
 
@@ -81,9 +78,6 @@ recommendation = 'recommendation'
 irf_consts  # [d1]
 
 # %%
-irf_consts['d1 (yr)']=10.
-
-# %%
 # lets get the irf values from 0 until i
 d1 = 10.#float(irf_consts[ld1])
 d2 = float(irf_consts[ld2])
@@ -101,6 +95,7 @@ from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 #PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
+
 
 
 

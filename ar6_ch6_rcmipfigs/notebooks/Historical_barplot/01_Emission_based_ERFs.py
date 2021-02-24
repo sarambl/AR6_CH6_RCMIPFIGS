@@ -38,13 +38,26 @@ import pandas as pd
 
 
 # %%
+import glob
+from pathlib import Path
+
+
+# %%
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR, BASE_DIR, OUTPUT_DATA_DIR
 
 # %%
 fn_concentrations = '../../data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx'
+path_emissions = Path('../../data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions/')
+
+# file path table of ERF 2019-1750
+fp_collins = BASE_DIR/'notebooks/bill_collins/table_mean_smb_orignames.csv'
 
 # %%
 import pandas as pd
+
+# %%
+fn_output_ERF = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
+
 
 # %% [markdown]
 # ## Load concentration file and interpolate from 1750 to 1850
@@ -73,12 +86,6 @@ df_conc
 # ## Emissions:
 
 # %%
-import glob
-from pathlib import Path
-
-
-# %%
-path_emissions = Path('../../data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions/')
 fl =list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
 
 # %%
@@ -115,7 +122,6 @@ units_dic
 # ## Load CMIP ERFs (bill collins)
 
 # %%
-fp_collins = BASE_DIR/'notebooks/bill_collins/table_mean_smb_orignames.csv'
 
 # %%
 df_collins = pd.read_csv(fp_collins, index_col=0)
@@ -178,12 +184,6 @@ plt.ylabel('W m$^{-2}$')
 
 plt.legend(loc='upper left')
 
-# %%
-ERFs['CO2'].index
-
-# %%
-ERFs['NOx'].index
-
 # %% [markdown]
 # # HFCs:
 # For HFCs we use the RE from Hodnebrog et al 2019 and the concentrations from chapter two to calculate the ERF. 
@@ -211,7 +211,7 @@ RE_df#.transpose().loc['This work']*
 df_conc[RE_df.columns] - df_conc[RE_df.columns].loc[1750] 
 
 # %%
-ERF_HFCs = (df_conc[RE_df.columns] -  - df_conc[RE_df.columns].loc[1750])*RE_df.loc['This work']*1e-3 #ppt to ppb
+ERF_HFCs = (df_conc[RE_df.columns] -   df_conc[RE_df.columns].loc[1750])*RE_df.loc['This work']*1e-3 #ppt to ppb
 ERF_HFCs['HFCs'] = ERF_HFCs.sum(axis=1)
 ERF_HFCs
 
@@ -240,6 +240,7 @@ df_ERF.columns
 # ## Save ERFs
 
 # %%
-fn = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
-fn.parent.mkdir(parents=True,exist_ok=True)
-df_ERF.to_csv(fn)
+fn_output_ERF.parent.mkdir(parents=True,exist_ok=True)
+df_ERF.to_csv(fn_output_ERF)
+
+# %%

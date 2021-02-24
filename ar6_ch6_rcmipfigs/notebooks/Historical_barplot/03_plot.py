@@ -43,6 +43,7 @@ PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/dT_data_hist_recommendation.
 
 
 
+
 # %% [markdown]
 # ## Path output data
 
@@ -152,6 +153,9 @@ col_list
 
 
 # %%
+import seaborn as sns
+
+# %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
 
 fig, ax = plt.subplots(figsize=[10,5])
@@ -188,3 +192,5 @@ sns.despine(fig, left=True)
 ax.set_xlim([-1,2.3])
 ax.set_xlabel('$\Delta$GSAT$^\circ$C')
 plt.show()
+
+# %%
