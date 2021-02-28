@@ -64,7 +64,7 @@ last_y = '2100'
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2020'
+ref_year = '2019'
 
 # %%
 FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/'
@@ -165,6 +165,10 @@ for var in variables_erf_comp:
 
 
 
+
+
+
+
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
 
@@ -202,7 +206,7 @@ def get_fig_ax_tot(fgsize=None, nrows=2, ncols=3, rows_tot=0, cols_tot=2, tot_fi
     """
     if fgsize is None:
         fgsize = [11, 4.4]
-    fg = plt.figure(constrained_layout=False, figsize=fgsize)
+    fg = plt.figure(constrained_layout=False, figsize=fgsize, dpi=150)
     if orientation == 'horizontal':
         _cols = ncols + cols_tot
         _rows = nrows
@@ -248,7 +252,7 @@ def get_fig_ax_tot_old(fgsize=None):
     """
     if fgsize is None:
         fgsize = [13, 12]
-    _fig = plt.figure(constrained_layout=False, figsize=fgsize)
+    _fig = plt.figure(constrained_layout=False, figsize=fgsize, dpi=140)
     spec2 = gridspec.GridSpec(ncols=12, nrows=4, figure=_fig)
     com_axs = []
     for i in np.arange(2):
@@ -301,7 +305,7 @@ ds_DT = xr.merge([ds_DT,dd1])
 
 
 # %%
-def add_uncertainty_bar(ax, var, end_y = 2100, s_y = 2020,
+def add_uncertainty_bar(ax, var, end_y = 2100, s_y = 2019,
                         to = 'p95-p50', 
                         frm='p05-p50',
                        linewidth=4,
@@ -344,15 +348,125 @@ lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
 
 
 # %%
+from matplotlib import ticker
+
+
+# %%
+ls_xticks= [2020,2040,2060,2080,2100]
+
+
+ytick_dic = {
+    'aerosol-total-with_bc-snow': [-.2,.0,.2,.4,.6],
+    'ch4': [0.,-0.2,0,.2],#,.4],
+    'o3': [-.2,0.,.2,],#,.6],
+    'HFCs': [0,.1,.2,],
+    'Sum SLCF (Aerosols, Methane, Ozone, HFCs)': [0,.2,.4,.6,.8,1,1.2]
+}
+ytick_dic_pi = {
+    'aerosol-total-with_bc-snow': [-.6, -.3,0.],
+    'ch4': [0.2,.4,.6],
+    'o3': [0., .2,.4,.6],
+    'HFCs': [0.,.1,.2,.3],
+    'Sum SLCF (Aerosols, Methane, Ozone, HFCs)': [0,.2,.4,.6,.8,1,1.2]
+}
+
+def set_ylim_sec_ax(ds_DT, var, ax1, ref_year=1750, ref_y_first_ax=2019, adj=10, l_tick=2, xlim=None):
+    if xlim is None:
+        xlim=[1998,2100]
+    ylims = ax1.get_ylim()
+    # as long as both ref_year and ref_y_first_ax are in historical period, all scenarios are the same:
+    se_da = ds_DT.sel(variable=var).squeeze()[name_deltaT]
+
+    difference_y1_y2 =(se_da.sel(year=ref_y_first_ax)-se_da.sel(year=ref_year)).mean('scenario')
+    difference_y1_y2 = float(difference_y1_y2)
+    _yticks = ytick_dic_pi[var]
+    for yt in _yticks:
+        ax1.text(xlim[0]+adj,yt-difference_y1_y2,'%.1f'%(yt),ha='center',va='center',color='r')# color=(0,128/256,128/256,))
+        ax1.hlines(yt-difference_y1_y2, xlim[0],xlim[0]+l_tick, color='r')
+    print([ylims[0]+difference_y1_y2, ylims[1]+difference_y1_y2])
+    #ax2.set_ylim([ylims[0]+difference_y1_y2, ylims[1]+difference_y1_y2])
+    bound_yax(ax1, red_ybound=.1)
+    #bound_yax(ax2, red_ybound=.1)
+
+    print(difference_y1_y2)
+    return difference_y1_y2
+
+
+def add_reftext(ax, y_pos=.9, c=None):
+    if c is None:
+        c = (0,128/256,128/256,)
+
+    ax.text(-0.,y_pos,
+            'Ref 2019 ',
+            ha='right',
+            va='bottom',
+            transform = ax.transAxes)
+    ax.text(-0.,y_pos,
+            ' Ref 1750',
+            ha='left',
+            va='bottom',
+            transform = ax.transAxes,
+            color=c
+            )
+def bound_yax(ax, red_ybound=.1):
+    bounds = ax.get_ybound()#[0]
+    to = bounds[1]
+    bo = bounds[0]
+    ax.spines['left'].set_bounds(low =bo ,high=(to-(to-bo)*red_ybound))
+
+
+
+def add_ticks_right(par1, c=None, tkw=dict(size=4, width=1.5), pad=-31):
+    if c is None:
+        c = (0,128/256,128/256,)
+
+    par1.tick_params(axis='y', direction='in')
+    par1.yaxis.label.set_color(c)
+
+
+    #par1.spines["left"].set_position(("axes", -0.)) # red one
+
+    #make_patch_spines_invisible(par1)
+
+    par1.spines["left"].set_visible(True)
+    par1.yaxis.set_label_position('left')
+    par1.yaxis.set_ticks_position('left')
+
+
+    par1.tick_params(axis="y",direction="in",
+                     pad=pad,
+                     right=False,
+                     left=True,
+                     top=False,
+                     colors=c,
+                     **tkw,
+                     )
+    #par1.xaxis.set_major_formatter(ticker.StrMethodFormatter("{x:.1f}"))
+
+
+
+
+
+def make_patch_spines_invisible(ax):
+    ax.set_frame_on(True)
+    ax.patch.set_visible(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+
+
+# %%
 from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
 
 # get_fig_ax_tot
 
 import matplotlib.pyplot as plt
 
-figsize = [7, 8]#[6, 4]
+figsize = [7, 9]#[6, 4]
 s_y = ref_year
-s_y2 = '2015'
+s_y2 = '2019'
+s_y2_xax = '2005'
+
 e_y = last_y
 e_y2 = last_y
 # scenario colors and linestyle
@@ -367,6 +481,7 @@ fig2, axs, ax_tot = get_fig_ax_tot(fgsize=figsize, rows_tot=2, cols_tot=0,ncols=
 
 # fig3 = plt.figure(constrained_layout=True)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
+twn_axs =[]
 for var, ax in zip(variables_erf_comp, axs):
 
     print(var)
@@ -385,14 +500,45 @@ for var, ax in zip(variables_erf_comp, axs):
     # various labels:
     ax.set_title('%s' % get_var_nicename(var))
 
-    ax.set_ylabel('')
     ax.set_xlabel('')
-    fix_ax(ax)
+    ax.set_ylabel('')
     # Plot zero line:
-    ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+    if 'aerosol' in var:
+        ax.hlines(0,2014,2100,linewidth=.8, alpha=0.5)
+    else:
+        ax.hlines(0,1990,2100,linewidth=.8, alpha=0.5)
+
+    #ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
     add_uncertainty_bar(ax, var, linewidth=2.3, i_plus=1.7)
     #ax.set_ylim([-.3,1])
+    #par1 = ax.twinx()
+    if 'aerosol' in var:
+        pad = -30
+    else:
+        pad=-25
+    #add_ticks_right(par1, pad=pad)
+    fix_ax(ax)
+    #fix_ax(par1)
+    ax.spines['bottom'].set_bounds(2019, 2100)
+    #par1.spines['bottom'].set_bounds(2019, 2100)
+    bound_yax(ax)
+    #bound_yax(par1)
+    ax.set_xlim([1998,2100])
+    #twn_axs.append(par1)
+    set_ylim_sec_ax(ds_DT, var, ax, ref_year=1750, ref_y_first_ax=2019)
+    #ax.set_yticks(ax.get_yticks()[:-1])
+    #par1.set_yticks(par1.get_yticks()[:-1])
+    #par1.set_yticks(ytick_dic_pi[var])
+    ax.set_yticks(ytick_dic[var])
+    ax.set_xticks(ls_xticks)
 
+add_reftext(axs[0])
+    
+    
+for ax in axs[0::2]:
+    ax.set_ylabel('($^\circ$C)')
+    
+    
 if len(axs)>len(variables_erf_comp):
     l = len(variables_erf_comp)
     for i in range(l,len(axs)):
@@ -420,25 +566,166 @@ var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
 add_uncertainty_bar(ax, var, linewidth=3,
                     i_plus=.8)
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
-ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
-plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2020', fontsize=14, y=1.05)
+#ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+plt.suptitle('Effect on Global Surface Air Temperature (GSAT) relative to 2019', fontsize=14, y=1.0)
 # adjust plot visuals:
 _str = ''
 _vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
 for var in _vl: _str += f'{var}, '
 # ax.set_title('Temperature change, sum SLCF  (%s)' % _str[:-2])
 ax.set_title('Sum SLCF (%s)' % _str[:-2])
+ax.hlines(0,1990,2100,linewidth=.8, alpha=0.5)
+
 # ax.set_ylabel('$\Delta$ T ($^\circ$C)')
 ax.set_ylabel('($^\circ$C)')
 ax.set_xlabel('')
 
-ax.legend(frameon=False, loc='upper left')
+#par1 = ax.twinx()
+#add_ticks_right(par1, pad=-25)
 fix_ax(ax)
-plt.subplots_adjust(top=0.94, left=0.125, wspace=.5, hspace=.5)
-plt.tight_layout()# w_pad=4)#rect=[0,0,.94,1],
-plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.png', dpi=300, bbox_inches='tight')
-plt.savefig(FIGURE_DIR / 'total_ref2020_from2015_all_2.pdf', bbox_inches='tight')  # , dpi=300)
+#fix_ax(par1)
+#fix_ax(ax)
+
+#ax.spines['bottom'].set_bounds(2019, 2100)
+#par1.spines['bottom'].set_bounds(2019, 2100)
+ax.set_xlim([2010,2100])
+add_reftext(ax)
+ax.text(1.1,.85,
+            '5th-95th\npercentile\n2100',
+            ha='right',
+            va='bottom',
+        alpha=.7,
+            transform = ax.transAxes)
+var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
+ax.set_ylim([-.1,1.5])
+diff = set_ylim_sec_ax(ds_DT, var, ax, ref_year=1750, ref_y_first_ax=2019, adj=5, l_tick=1, xlim=[2010, 2100])
+# ax.set_yticks(ax.get_yticks()[:-2])
+# par1.set_yticks(par1.get_yticks()[:-2])
+ax.set_yticks(ytick_dic[var])
+ax.set_xticks(ls_xticks)
+
+#ax.set_yticks(ytick_dic[var])
+
+#par1.set_yticks(ytick_dic_pi[var])
+
+ax.legend(frameon=False, loc='upper center',ncol=2)
+plt.subplots_adjust(top=0.94, left=0.125, wspace=.5, hspace=.6)
+#plt.tight_layout()# w_pad=4)#rect=[0,0,.94,1],
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.png', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.pdf', bbox_inches='tight')  # , dpi=300)
 plt.show()
+
+
+
+# %%
+diff
+
+# %%
+ytick_dic_pi[var]
+
+# %%
+var
+
+# %%
+ax.get_yticks()[ax.get_yticks()<0.9]
+
+# %%
+ax.set_yticks(ax.get_yticks()[:-1])#[:-1])
+fig2
+
+# %%
+print('%.0f'%23.555)
+
+# %%
+variables_erf_comp
+
+# %%
+
+
+# %%
+twn_axs[0].caxis.set_major_formatter(ticker.StrMethodFormatter("{x:.01f}"))
+#twn_axs[0].yaxis.set_major_locator(plt.)
+twn_axs[0].set_yticks([-.6, -.3,0.])
+print(twn_axs[0].get_yticks())
+fig2
+
+
+# %%
+diff
+
+# %%
+ds_DT.sel(variable=var, scenario='ssp119').squeeze()[name_deltaT].plot.line()
+
+ds_DT.sel(variable=var, scenario='ssp585', year=[1750,2019]).squeeze()[name_deltaT].plot.line(marker='*')
+
+
+# %%
+ds_DT.sel(variable=var, scenario='ssp585', year=[1750,2019]).squeeze()[name_deltaT]
+
+# %%
+var
+se_da = ds_DT.sel(variable=var).squeeze()[name_deltaT]
+
+difference_y1_y2 =(se_da.sel(year=2019)-se_da.sel(year=1750)).mean('scenario')
+difference_y1_y2 = float(difference_y1_y2)
+difference_y1_y2
+
+# %%
+se_da = ds_DT.sel(variable=variables_erf_comp[0]).squeeze()[name_deltaT]
+(se_da.sel(year=2019)-se_da.sel(year=1750)).mean('scenario')
+
+
+# %%
+
+
+# %%
+axs[0::2]
+
+# %%
+ds_DT[name_deltaT].sel(variable='o3', scenario='ssp119', year=2019)
+
+# %%
+
+
+# %%
+import matplotlib.pyplot as plt
+
+
+def make_patch_spines_invisible(ax):
+    ax.set_frame_on(True)
+    ax.patch.set_visible(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+fig, host = plt.subplots()
+fig.subplots_adjust(right=0.75)
+
+par1 = host.twinx()
+
+p1, = host.plot([0, 1, 2], [0, 1, 2], "b-", label="Density")
+p2, = par1.plot([0, 1, 2], [0, 3, 2], "r-", label="Temperature")
+#p3, = par2.plot([0, 1, 2], [50, 30, 15], "g-", label="Velocity")
+
+host.set_xlim(0, 2)
+host.set_ylim(0, 2)
+par1.set_ylim(0, 4)
+
+
+host.yaxis.label.set_color(p1.get_color())
+
+tkw = dict(size=4, width=1.5)
+host.tick_params(axis='y', colors=p1.get_color(), **tkw)
+
+
+
+    
+add_ticks_right(par1)
+par1.spines['right'].set_visible(False)
+par1.spines['top'].set_visible(False)
+host.spines['right'].set_visible(False)
+host.spines['top'].set_visible(False)
+
+host
 
 # %%
 import seaborn as sns
@@ -500,7 +787,8 @@ for var in variables_erf_comp:  # , axs):
     ax.set_xlabel('')
     fix_ax(ax)
     # Plot zero line:
-    ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+    #ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
+    plt.hlines(0,2014,2100,linewidth=.8)
     # figname
     fign = FIGURE_DIR / fign_dt(var, s_y, s_y2)
     make_folders(str(fign))
@@ -608,7 +896,7 @@ for var in variables_erf_comp:
     plt.show()
 
 # %% [markdown]
-# Subtracting year 2020, while still plotting from 2015. Thus the results represent the cooling/warming with respect to year 2020
+# Subtracting year 2019, while still plotting from 2015. Thus the results represent the cooling/warming with respect to year 2020
 
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic
