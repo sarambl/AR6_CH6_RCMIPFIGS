@@ -13,13 +13,13 @@ scn_dic = {
     'ssp460': 'SSP4-6.0',
     'ssp585': 'SSP5-8.5',
     'ssp370': 'SSP3-7.0',
-    'ssp370-lowNTCF-aerchemmip': 'SSP3-7.0-LowNTCF-aerchemmip',
-    'ssp370-lowNTCF\n-aerchemmip':'SSP3-7.0-LowNTCF\n-aerchemmip',
+    'ssp370-lowNTCF-aerchemmip': 'SSP3-7.0-LowSLCF-HighCH$_4$',
+    'ssp370-lowNTCF\n-aerchemmip':'SSP3-7.0-LowSLCF\n-HighCH$_4$',
     'ssp126': 'SSP1-2.6',
     'ssp245': 'SSP2-4.5',
     'ssp434': 'SSP4-3.4',
-    'ssp370-lowNTCF-gidden': 'SSP3-7.0-LowNTCF-Gidden',
-    'ssp370-lowNTCF\n-gidden': 'SSP3-7.0-LowNTCF\n-Gidden',
+    'ssp370-lowNTCF-gidden': 'SSP3-7.0-LowSLCF-LowCH$_4$',
+    'ssp370-lowNTCF\n-gidden': 'SSP3-7.0-LowSLCF\n-LowCH$_4$',
 }
 
 

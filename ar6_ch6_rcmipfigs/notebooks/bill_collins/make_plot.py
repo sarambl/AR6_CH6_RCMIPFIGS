@@ -16,7 +16,7 @@
 # ##
 
 # %%
-import pandas as pd
+    import pandas as pd
 import numpy.testing
 from numpy.testing import assert_allclose
 from ar6_ch6_rcmipfigs.utils.plot import get_chem_col
@@ -33,29 +33,63 @@ import attribution_1750_2019_v2_smb
 table, table_sd = attribution_1750_2019_v2_smb.main()
 
 # %%
-table.to_csv('table_mean_smb_orignames.csv')
-
-# %%
-from ar6_ch6_rcmipfigs.utils.plot import get_chem_col
-
-# %%
-varn = ['co2','WMGHG','ch4','o3','H2O_strat','ari','aci']
-var_dir = ['CO2','GHG','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
-
-# %%
-cols = [get_chem_col(var) for var in varn]
+table_sd
 
 # %%
 import matplotlib.pyplot as plt
 import numpy as np
+
+# %% [markdown]
+# ## Add together O3 primary and O3
 
 # %%
 o3_sum = table['O3']+table['O3_prime']
 tab2 = table.copy(deep=True).drop(['O3','O3_prime','Total'], axis=1)
 tab2['O3'] = o3_sum
 
+# %% [markdown]
+# ## Replace GHG with N2O and HC
+
 # %%
-tab2.loc[::-1,var_dir].plot.barh(stacked=True, color=cols, linewidth=.3, edgecolor='k',
+_ghg
+
+# %%
+table_ed = tab2.copy(deep=True)
+_ghg = tab2.loc['HC','GHG']
+table_ed.loc['HC','GHG'] = 0
+table_ed['HC'] = 0
+table_ed.loc['HC','HC']=_ghg
+table_ed
+_ghg = tab2.loc['N2O','GHG']
+table_ed.loc['N2O','GHG'] = 0
+table_ed['N2O']=0
+table_ed.loc['N2O','N2O']=_ghg
+table_ed = table_ed.drop('GHG', axis=1)
+table_ed
+
+# %%
+table_sd
+
+# %%
+table_ed.to_csv('table_mean_smb_orignames.csv')
+table_sd.to_csv('table_std_smb_orignames.csv')
+
+# %%
+from ar6_ch6_rcmipfigs.utils.plot import get_chem_col
+
+# %%
+varn = ['co2','N2O','HC','ch4','o3','H2O_strat','ari','aci']
+var_dir = ['CO2','N2O','HC','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
+
+# %%
+cols = [get_chem_col(var) for var in varn]
+
+# %%
+
+# %%
+fig, ax = plt.subplots(dpi=150)
+table_ed.loc[::-1,var_dir].plot.barh(stacked=True, color=cols, linewidth=.3, edgecolor='k',
+                                     ax=ax
                                 )
 tot = table['Total'][::-1]
 xerr = table_sd['Total_sd'][::-1]
@@ -107,16 +141,17 @@ sd_tot = table_sd['Total_sd']
 df_err= pd.DataFrame(sd_tot.rename('std'))
 df_err['SE'] = df_err
 
-# %%
 df_err['SE'] = df_err['std']/np.sqrt(thornhill[num_mod_lab])
 df_err['95-50_SE'] = df_err['SE']*std_2_95th
 df_err.loc['CO2','95-50_SE']= df_err.loc['CO2','std']
 df_err
 
-# %%
 df_err['95-50'] = df_err['std']*std_2_95th
 df_err.loc['CO2','95-50']= df_err.loc['CO2','std']
 df_err
+
+# %% [markdown]
+# ## Raname some variables
 
 # %%
 rename_dic_cat = {
@@ -126,7 +161,10 @@ rename_dic_cat = {
     'O3': 'Ozone (O$_3$)',
     'Strat_H2O':'H$_2$O (strat)',
     'Aerosol':'Aerosol-radiation',
-    'Cloud':'Aerosol-cloud'
+    'Cloud':'Aerosol-cloud',
+    'N2O':'N$_2$O',
+    'HC':'CFC + HCFC',
+
 }
 rename_dic_cols ={
     'CO2':'CO$_2$',
@@ -134,29 +172,18 @@ rename_dic_cols ={
     'N2O':'N$_2$O',
     'HC':'CFC + HCFC',
     'NOx':'NO$_x$',
-    'VOC':'VOC + CO',
+    'VOC':'NMVOC + CO',
     'SO2':'SO$_2$',
     'OC':'Organic carbon',
     'BC':'Black carbon',
     'NH3':'Ammonia'
 }
-tab_plt = tab2.loc[::-1,var_dir].rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
+tab_plt = table_ed.loc[::-1,var_dir].rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 tab_plt
-
-# %%
-tab_plt.sum()
-
-# %%
-tab_plt.sum(axis=1)
-
-# %%
 
 # %%
 fn_sd = 'table_uncertainties_smb.csv'
 fn_mean = 'table_mean_smb.csv'
-
-# %%
-df_err
 
 # %%
 df_err = df_err.rename(rename_dic_cols, axis=0)
@@ -214,5 +241,12 @@ plt.show()
 
 # %% [markdown]
 # Will combine all uncertaintes
+
+# %%
+tab_plt.to_csv('plt_tab.csv')
+tot.to_csv('tot.csv')
+xerr.to_csv('xerr.csv')
+
+# %%
 
 # %%

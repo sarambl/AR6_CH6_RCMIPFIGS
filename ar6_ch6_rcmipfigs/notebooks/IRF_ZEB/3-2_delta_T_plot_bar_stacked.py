@@ -57,7 +57,7 @@ years = ['2040', '2100']
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2021'
+ref_year = '2019'
 
 # %%
 FIGURE_DIR = RESULTS_DIR / 'figures/'

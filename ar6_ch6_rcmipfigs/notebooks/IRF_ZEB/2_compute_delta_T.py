@@ -130,7 +130,7 @@ last_y = '2100'
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2021'
+ref_year = '2019'
 
 # %% [markdown]
 # **Years to output change in**
@@ -477,4 +477,3 @@ plt.show()
 da_ERF.scenario
 
 # %%
-OLD:

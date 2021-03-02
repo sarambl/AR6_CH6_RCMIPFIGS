@@ -68,8 +68,9 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 #fn_IRF_constants = INPUT_DATA_DIR / 'irf_from_2xCO2_2020_12_02_050025-1.csv'
 #fn_IRF_constants = INPUT_DATA_DIR / 'irf_from_2xCO2_2021_02_02_025721.csv'
 #fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_03_045947.csv'
-fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_07_223156.csv'
+#fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_07_223156.csv'
 fn_IRF_constants = INPUT_DATA_DIR / 'recommended_irf_from_2xCO2_2021_02_17_233041.csv'
+fn_IRF_constants = INPUT_DATA_DIR /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
 
 irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
 
@@ -82,6 +83,16 @@ perc5 = '5th percentile'
 perc95 = '95th percentile'
 recommendation = 'recommendation'
 irf_consts  # [d1]
+
+# %%
+# lets get the irf values from 0 until i
+d1 = float(irf_consts[ld1])
+d2 = float(irf_consts[ld2])
+q1 = float(irf_consts[lq1])
+q2 = float(irf_consts[lq2])
+
+print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
+
 
 # %%
 # lets get the irf values from 0 until i
@@ -146,7 +157,7 @@ last_y = 2100
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = 2020
+ref_year = 2019
 
 # %% [markdown]
 # **Years to output change in**

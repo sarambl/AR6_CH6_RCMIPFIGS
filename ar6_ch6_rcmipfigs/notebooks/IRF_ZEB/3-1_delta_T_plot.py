@@ -47,7 +47,7 @@ last_y = '2100'
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2021'
+ref_year = '2019'
 
 # %%
 FIGURE_DIR = RESULTS_DIR / 'figures/'
@@ -374,8 +374,8 @@ ax.legend(frameon=False, loc='upper left')
 fix_ax(ax)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
 plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_v1.png', dpi=300)
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_v1.pdf')  # , dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_v1.png', dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_v1.pdf')  # , dpi=300)
 plt.show()
 
 # %%
@@ -451,7 +451,7 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
 
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
-plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
+plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2019', fontsize=14, y=1.05)
 # adjust plot visuals:
 _str = ''
 _vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
@@ -466,8 +466,8 @@ ax.legend(frameon=False, loc='upper left')
 fix_ax(ax)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
 plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_2.png', dpi=300)
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_2.pdf')  # , dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.png', dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.pdf')  # , dpi=300)
 plt.show()
 
 # %% jupyter={"source_hidden": true}
@@ -540,7 +540,7 @@ for scn in scenarios_fl:#list(set(scenarios_fl) - {'historical'}):
 
 _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='dashed')
-plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2021', fontsize=14, y=1.05)
+plt.suptitle('Impact on Global Surface Air Temperature (GSAT) relative to 2019', fontsize=14, y=1.05)
 # adjust plot visuals:
 _str = ''
 _vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
@@ -555,8 +555,8 @@ ax.legend(frameon=False, loc='upper left')
 fix_ax(ax)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=9.1, hspace=.5)
 plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_2.png', dpi=300)
-plt.savefig(FIGURE_DIR / 'total_ref2021_from2015_all_2.pdf')  # , dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.png', dpi=300)
+plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.pdf')  # , dpi=300)
 plt.show()
 
 # %%
@@ -699,7 +699,7 @@ for var in variables_erf_comp:
     plt.show()
 
 # %% [markdown]
-# Subtracting year 2021, while still plotting from 2015. Thus the results represent the cooling/warming with respect to year 2021
+# Subtracting year 2019, while still plotting from 2015. Thus the results represent the cooling/warming with respect to year 2021
 
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_scenario_ls_dic, get_scenario_c_dic

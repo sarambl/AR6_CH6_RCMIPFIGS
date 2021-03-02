@@ -93,7 +93,7 @@ last_y = 2100
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = 2020
+ref_year = 2019
 
 # %% [markdown]
 # **Years to output change in**
@@ -110,6 +110,7 @@ PATH_DT_INPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 
 # %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables_recommendation' / 'table_sens_dT_cs_recommandetion.csv'
+
 
 
 

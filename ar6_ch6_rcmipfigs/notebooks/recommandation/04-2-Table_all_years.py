@@ -52,7 +52,7 @@ last_y = 2100
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = 2020
+ref_year = 2019
 
 # %%
 FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/'
@@ -162,10 +162,11 @@ for var in variables_erf_comp:
 ds_uncertainty.variable
 
 # %%
-v_sum = 'Sum SLCF (Methane, Aerosols, Ozone, HFCs)'
+v_sum = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
 ds_uncertainty['p05-p50'].sel(year=2040, scenario='ssp119', variable=v_sum)#.variables#.plot()#, variable='%%SVG')%%SVG
 
 # %%
+
 ds_uncertainty.variable
 
 # %%
@@ -317,6 +318,8 @@ def make_slcfs_tabel(var, percentile=recommendation):
 for var in variables_erf_comp+[vn_sum]:
     for prc in [recommendation, 'p05-p50','p95-p50']:
         make_slcfs_tabel(var, percentile=prc)
+
+# %%
 
 # %%
 
