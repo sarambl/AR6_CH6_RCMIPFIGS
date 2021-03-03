@@ -25,14 +25,14 @@ from ar6_ch6_rcmipfigs import constants
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 
 # %%
-first_y = '1750'
-last_y = '2100'
+first_y = 1750
+last_y = 2100
 
 # %% [markdown]
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2020'
+ref_year = 2020
 
 # %% [markdown]
 # # Code + figures
@@ -63,6 +63,7 @@ df_uncertainty#['scenario']#.uniqu
 # %%
 dic_vars = dict(
     hfc='HFCs', 
+    o3='o3',
     slcf='Sum SLCF (Aerosols, Methane, Ozone, HFCs)',
     aerosol='aerosol-total',
     anthro='total_anthropogenic'
@@ -158,7 +159,7 @@ PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 ds_DT = xr.open_dataset(PATH_DT)
 
 # %%
-ds_DT#.scenario  # .climatemodel
+ds_DT['variable']#.scenario  # .climatemodel
 
 # %%
 ds
@@ -210,71 +211,6 @@ PATH_DT_OUTPUT
 
 # %%
 ds.to_netcdf(PATH_DT_OUTPUT)
-
-# %% [markdown]
-# ## Comparison with old version
-
-# %%
-
-# %%
-fn_uncertainty_o = INPUT_DATA_DIR /'slcf_warming_ranges_old.csv'
-df_uncertainty_o = pd.read_csv(fn_uncertainty_o, index_col=0)#.set_index('id')
-
-# make sure base period/ref period are the same:
-df_uncertainty_o = df_uncertainty_o[df_uncertainty_o['base_period']==int(ref_year)]
-df_uncertainty_o#['scenario']#.uniqu
-#diff_uncertainty = df_uncertainty - df_uncertainty['p50']
-
-# %%
-var = 'ch4'
-perc = 'p05'
-
-cdic = get_scenario_c_dic()
-for scn in cdic.keys():
-    pl_n= df_uncertainty#
-    pl_n = pl_n[pl_n['variable']==var]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], alpha=0.7)
-    pl_n= df_uncertainty_o#
-    pl_n = pl_n[pl_n['forcing']==var]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], linestyle='dotted')
-plt.show()
-
-# %%
-var = 'aerosol'
-perc = 'p05'
-
-cdic = get_scenario_c_dic()
-for scn in cdic.keys():
-    pl_n= df_uncertainty#
-    pl_n = pl_n[pl_n['variable']==var]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], alpha=0.7)
-    pl_n= df_uncertainty_o#
-    pl_n = pl_n[pl_n['forcing']==var]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], linestyle='dotted')
-plt.show()
-
-# %%
-var = 'aerosol-total'
-var2 = 'aerosol'
-perc = 'p95'
-
-cdic = get_scenario_c_dic()
-for scn in cdic.keys():
-    pl_n= df_uncertainty#
-    pl_n = pl_n[pl_n['variable']==var]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], alpha=0.7)
-    pl_n= df_uncertainty_o#
-    pl_n = pl_n[pl_n['forcing']==var2]
-    pl_n = pl_n[pl_n['scenario']==scn]
-    plt.plot(pl_n['year'], pl_n[perc], c=cdic[scn], linestyle='dotted')
-plt.show()
-
-# %%
 
 # %%
 

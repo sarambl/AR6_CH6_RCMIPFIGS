@@ -35,14 +35,14 @@ aero_tot_wbc = 'aerosol-total-with_bc-snow'
 
 
 # %%
-first_y = '1750'
-last_y = '2100'
+first_y = 1750
+last_y = 2100
 
 # %% [markdown]
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2020'
+ref_year = 2020
 
 # %% [markdown]
 # ## Load data:
