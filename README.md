@@ -5,7 +5,7 @@ Contact: Sara Marie Blichner, University of Oslo [s.m.blichner@geo.uio.no](s.m.b
 Code for analyzing and plotting RCMIP data for AR6 IPCC. 
 
 
-Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)) who allowed some of the code to be based on or copied directly [https://gitlab.com/rcmip/rcmip](https://gitlab.com/rcmip/rcmip) 
+Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions.  
  
 
 ## RESULTS:
@@ -25,16 +25,18 @@ pip install -e .
 ``` 
 
 ## Input data: 
-The input data for these figures is RCMIP phase 1 model data:
- 
-Nicholls, Zebedee, & Gieseke, Robert. (2019). RCMIP Phase 1 Data (Version v1.0.0)
- [Data set]. Zenodo. http://doi.org/10.5281/zenodo.3593570
+The correct source citations will be updated soon. 
 
-For more detail on the dataset, see:
+In this work we use: 
+1) Impulse response function (IRF) from AR6, ?? 
+2) SSP scenario ERF from FAIR
+3) ERF from Thornhill et al (2021)
+4) Radiative forcing for HFCs from Hodnebrog et al (2020)
+5) Historical emissions of SLCFs from CEDS
+6) Historical concentrations from AR6
+7) Uncertainties in $\Delta$ GSAT from FAIR
 
-Nicholls, Z. R. J., Meinshausen, M., Lewis, J., Gieseke, R., Dommenget, D., Dorheim, K., Fan, C.-S., Fuglestvedt, J. S., Gasser, T., Golüke, U., Goodwin, P., Kriegler, E., Leach, N. J., Marchegiani, D., Quilcaille, Y., Samset, B. H., Sandstad, M., Shiklomanov, A. N., Skeie, R. B., Smith, C. J., Tanaka, K., Tsutsui, J., and Xie, Z.: Reduced complexity model intercomparison project phase 1: Protocol, results and initial observations, Geosci. Model Dev. Discuss., https://doi.org/10.5194/gmd-2019-375, in review, 2020.
- Nicholls Z. et al (2020), "Reduced complexity model intercomparison project phase 1: Protocol, results and initial observations", 
- https://www.geosci-model-dev-discuss.net/gmd-2019-375/
+
 
 
 ## Usage:  
@@ -56,32 +58,17 @@ ln -s /path/to/download_data/rcmip-tmp/data ar6_ch6_rcmipfigs/data_in/
 ```            
   
 ### Preprocess data
-Follow the below steps. 
 
-
-1. **Create a nicely formatted dataset:**: 
-Run notebook [0_database-generation.ipynb](./ar6_ch6_rcmipfigs/notebooks/0_database-generation.ipynb)
-This will create the folder [data_in/database-results](./ar6_ch6_rcmipfigs/data_in/database-results) and the
-data there. 
-2. **Do various fixes and save relevant data as netcdf**: Run notebook 
-[1_preprocess_data.ipynb](./ar6_ch6_rcmipfigs/notebooks/1_preprocess_data.ipynb)
-This creates the dataset as a netcdf file in 
-[ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc](ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc)
-2. **Calculate delta T from effective radiative forcing:** Run notebook [2_compute_delta_T.ipynb](./ar6_ch6_rcmipfigs/notebooks/2_compute_delta_T.ipynb)
-This creates at netcdf file in [ar6_ch6_rcmipfigs/data_out/dT_data_rcmip_models.nc](ar6_ch6_rcmipfigs/data_out/dT_data_rcmip_models.nc)
- [ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc](ar6_ch6_rcmipfigs/data_out/forcing_data_rcmip_models.nc)
-
-OR: 
-
-1. Simply run [00-02_shortcut.ipynb](./ar6_ch6_rcmipfigs/notebooks/00-02_shortcut.ipynb)
+1. Simply run [X_shortcuts.ipynb](./ar6_ch6_rcmipfigs/notebooks/00-02_shortcut.ipynb)
 
 ## Plot figures:
 The figures are produced in notebooks:
-- [3_delta_T_plot.ipynb](./ar6_ch6_rcmipfigs/notebooks/3_delta_T_plot.ipynb)
-- [3-1_delta_T_plot_SLCF_sum.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-1_delta_T_plot_SLCF_sum.ipynb)
-- [3-2_delta_T_plot_bar_stacked.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-2_delta_T_plot_bar_stacked.ipynb)
-Table (sensitivity to ECS):
-- [2-1_compute_delta_T_sensitivity.ipynb](./ar6_ch6_rcmipfigs/notebooks/2-1_compute_delta_T_sensitivity.ipynb)
+- [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
+- [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
+- [03-03_delta_T_plot_contribution_total_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-03_delta_T_plot_contribution_total_recommendation.ipynb)
+Table (save values to file):
+- [04-01-Table_2040_2100.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-01-Table_2040_2100.ipynb)
+- [04-02-Table_all_years.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-02-Table_all_years.ipynb)
 
 Extra: 
 - [3-2_delta_T_plot_contribution_total.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-2_delta_T_plot_contribution_total.ipynb)
@@ -101,7 +88,10 @@ Extra:
 ## Libraries, software etc:
 A list of the required packages for these figures can be found in [env_rcmip_ch6.yml](env_rcmip_ch6.yml)
 
+## References:
 
+- Hodnebrog, Ø, B. Aamaas, J. S. Fuglestvedt, G. Marston, G. Myhre, C. J. Nielsen, M. Sandstad, K. P. Shine, and T. J. Wallington. “Updated Global Warming Potentials and Radiative Efficiencies of Halocarbons and Other Weak Atmospheric Absorbers.” Reviews of Geophysics 58, no. 3 (2020): e2019RG000691. https://doi.org/10.1029/2019RG000691.
 
+- Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
 
 
