@@ -97,6 +97,7 @@ PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
 
 
 
+
 # %% [markdown]
 # ## Path output data
 
@@ -105,6 +106,7 @@ PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
 PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.csv'
 
 print(PATH_DF_OUTPUT)
+PATH_DF_OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 
 
 # %% [markdown]
