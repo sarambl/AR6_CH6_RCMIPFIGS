@@ -43,7 +43,6 @@ from ar6_ch6_rcmipfigs.utils.plot import get_var_nicename
 # %%
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
-PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP.nc'
 PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 
 
@@ -64,6 +63,9 @@ ref_year = '2019'
 FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/'
 
 TABS_DIR = RESULTS_DIR / 'tables_recommendation/'
+
+# %%
+FIGURE_DIR.mkdir(parents=True,exist_ok=True)
 
 # %%
 
