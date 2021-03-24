@@ -9,7 +9,6 @@ Code for analyzing and plotting RCMIP data for AR6 IPCC.
 
 Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
 
-Also, code in [ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py](ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py) is is only slightly modified version of code Bill Collins has written.  
  
 
 ## RESULTS:
@@ -55,11 +54,6 @@ In this work we use:
 ## Plot figures:
 The figures are produced in notebooks:
 - [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
-- [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
-- [03-03_delta_T_plot_contribution_total_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-03_delta_T_plot_contribution_total_recommendation.ipynb)
-Table (save values to file):
-- [04-01-Table_2040_2100.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-01-Table_2040_2100.ipynb)
-- [04-02-Table_all_years.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-02-Table_all_years.ipynb)
 
 
 ## Directory overview: 
