@@ -17,6 +17,12 @@
 # # Plot temperature response over time
 
 # %% [markdown]
+# ### output name: 
+
+# %%
+output_name = 'fig_timeseries_dT'
+
+# %% [markdown]
 # ## Imports:
 #
 # import numpy as np
@@ -51,17 +57,17 @@ PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.n
 # ## Set values:
 
 # %%
-first_y = '1750'
-last_y = '2100'
+first_y = 1750
+last_y = 2100
 
 # %% [markdown]
 # **Set reference year for temperature change:**
 
 # %%
-ref_year = '2019'
+ref_year = 2019
 
 # %%
-FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/'
+FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/'/output_name
 
 TABLE_DIR = RESULTS_DIR / 'tables_recommendation/'
 
@@ -303,12 +309,11 @@ def add_uncertainty_bar(ax, var, end_y=2100, s_y=2019,
                         frm='p05-p50',
                         linewidth=4,
                         i_plus=1.5,
-                        alpha=1
+                        alpha=1, 
                         ):
     _ds2100_err = ds_uncertainty.sel(year=end_y)
     _ds2100 = ds_DT.sel(year=end_y) - ds_DT.sel(year=s_y)
     i = end_y + 1  # 2101
-    ax.set_xlim([2015, 2100])
     # print(_ds2100.sel(scenario=scenarios_fl))
     for scn in scenarios_fl:
         _ds2100_err_scn = _ds2100_err.sel(scenario=scn, variable=var)
@@ -333,8 +338,17 @@ def add_uncertainty_bar(ax, var, end_y=2100, s_y=2019,
         bot = _ds_scn[name_deltaT] + _ds_err_scn[frm]
         top = _ds_scn[name_deltaT] + _ds_err_scn[to]
         ax.fill_between(bot['year'], bot, top, color=cdic[scn], alpha=0.05)
+    _tbl = _ds_err[[to,frm]].sel(variable=var).squeeze().to_dataframe()
+    fn = FIGURE_DIR  / get_fn(var, s_y, end_y, ds_uncertainty['base_period'].values[0], 'percentiles')
+    _tbl.to_csv(fn)
+    
 
 
+# %%
+to='p95-p50'
+frm='p05-p50'
+tb = ds_uncertainty[[to, frm]].sel(variable=var).to_dataframe()
+ds_uncertainty['base_period'].values[0]
 
 # %%
 cdic = get_scenario_c_dic()
@@ -342,6 +356,15 @@ lsdic = get_scenario_ls_dic()  # get_ls_dic(ds_DT[climatemodel].values)
 
 # %%
 from matplotlib import ticker
+
+
+# %%
+def get_fn(var_name, s_y, e_y, ref_y, perc):
+    _st = var_name.replace('(','').replace(')','').replace(' ','_').replace(',','')#+'.csv'
+    fn = f'{output_name}_{perc}_{_st}_{s_y}-{e_y}_refyear{ref_y}.csv'
+    return fn
+
+
 
 # %%
 ls_xticks = [2020, 2040, 2060, 2080, 2100]
@@ -427,6 +450,14 @@ import matplotlib.pyplot as plt
 
 
 # %%
+ref_year
+
+
+# %%
+ref_year
+last_y
+
+# %%
 figsize = [7, 9]  # [6, 4]
 s_y = ref_year
 s_y2 = 2019
@@ -447,18 +478,20 @@ _ds = ds_DT.sel(year=slice(s_y2, e_y2))
 for var, ax in zip(variables_erf_comp, axs):
 
     print(var)
-
+    # select var and years
+    da_var = ds_DT[name_deltaT].sel(variable=var, year=slice(ref_year, last_y) )
+    da_var_ref_year = da_var.sel( year=ref_year ).squeeze()
+    # take difference to ref year
+    da_var_diff = da_var- da_var_ref_year
     # fig, ax = plt.subplots(1, 1, figsize=figsize)
     for scn in scenarios_fl:  # list(set(scenarios_fl) - {'historical'}):
-        # compute difference from ref year:
-        _da_ally = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y2, e_y2))
-        _da_refy = ds_DT[name_deltaT].sel(variable=var, scenario=scn, year=slice(s_y, s_y)).squeeze()
-        _da = _da_ally - _da_refy
-        # Choose median:
-        _pl_da = _da.sel(percentile=recommendation)
+        _pl_da = da_var_diff.sel(scenario=scn,percentile=recommendation)
         # Plot mean:
         _pl_da.plot(ax=ax, c=cdic[scn], label=scn, linestyle=lsdic[scn], linewidth=linewidth)
-
+    
+    # save csv:
+    fn = get_fn(var, ref_year, last_y, ref_year, recommendation)
+    da_var_diff.to_dataframe().to_csv( FIGURE_DIR /fn)
     # various labels:
     ax.set_title('%s' % get_var_nicename(var))
 
@@ -493,20 +526,25 @@ if len(axs) > len(variables_erf_comp):
 # Total:
 
 ax = ax_tot
+var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
 
 cdic = get_scenario_c_dic()
 # for var in variables_erf_tot:  # , f_totn]:
-for scn in scenarios_fl:  # list(set(scenarios_fl) - {'historical'}):
-    # Plot dataset difference to first year, i.e.
-    ds_DT_sy = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,
-                                                                                     year=slice(s_y, s_y)).squeeze()
-    _da = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,
-                                                                                year=slice(s_y2, e_y2)) - ds_DT_sy
-    # Take median::
-    _pl_da = _da.sel(percentile=recommendation)
-    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle=lsdic[scn], linewidth=linewidth)
+# select var and years
+da_var = ds_DT[name_deltaT].sel(variable=variables_erf_comp).sum(variable).sel(year=slice(ref_year, last_y) )
+da_var_ref_year = da_var.sel( year=ref_year ).squeeze()
+# take difference to ref year
+da_var_diff = da_var- da_var_ref_year
 
-var = 'Sum SLCF (Aerosols, Methane, Ozone, HFCs)'
+for scn in scenarios_fl:  
+    _pl_da = da_var_diff.sel(scenario=scn,percentile=recommendation)
+    # Plot mean:
+    _pl_da.plot(ax=ax, c=cdic[scn], label=trans_scen2plotlabel(scn), linestyle=lsdic[scn], linewidth=linewidth)
+    
+# save csv:
+fn = get_fn(var, ref_year, last_y, ref_year, recommendation)
+da_var_diff.to_dataframe().to_csv( FIGURE_DIR /fn)
+
 
 add_uncertainty_bar(ax, var, linewidth=3,
                     i_plus=.8)
@@ -518,6 +556,7 @@ _str = ''
 _vl = [get_var_nicename(var).split('(')[0].strip() for var in variables_erf_comp]
 for var in _vl: _str += f'{var}, '
 ax.set_title('Sum SLCF (%s)' % _str[:-2])
+ax.set_title('Sum SLCFs (Aerosols, Methane, Ozone) + HFCs')
 ax.hlines(0, 1990, 2100, linewidth=.8, alpha=0.5)
 
 # ax.set_ylabel('$\Delta$ T ($^\circ$C)')
@@ -543,14 +582,28 @@ ax.set_xticks(ls_xticks)
 ax.legend(frameon=False, loc='upper center', ncol=2)
 plt.subplots_adjust(top=0.94, left=0.125, wspace=.5, hspace=.6)
 # plt.tight_layout()# w_pad=4)#rect=[0,0,.94,1],
-plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.png', dpi=300, bbox_inches='tight')
-plt.savefig(FIGURE_DIR / 'total_ref2019_from2015_all_2.pdf', bbox_inches='tight')  # , dpi=300)
+fp = FIGURE_DIR / output_name
+plt.savefig(fp.with_suffix('.png'), dpi=300, bbox_inches='tight')
+plt.savefig(fp.with_suffix('.pdf'), bbox_inches='tight')  # , dpi=300)
 plt.show()
 # %%
+da_var_diff
 
+# %%
+output_name+'_'
+
+# %%
+fp = FIGURE_DIR / (output_name + f'_{var}')
+fp.with_suffix('.png')
+
+# %%
+ds_DT[name_deltaT]#.sel(variable=variables_erf_comp).sum(variable).sel(scenario=scn,year=slice(s_y, s_y)).squeeze()
 
 # %%
 import seaborn as sns
+
+# %%
+output_name
 
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import trans_scen2plotlabel
@@ -606,8 +659,8 @@ for var in variables_erf_comp:  # , axs):
     plt.tight_layout()
     fig.subplots_adjust(right=.9)  # or whatever
 
-    plt.savefig(fign, dpi=300)
-    plt.savefig(fign.with_suffix('.pdf'))
+    #plt.savefig(fign, dpi=300)
+    #plt.savefig(fign.with_suffix('.pdf'))
     plt.show()
 
 axs[0].set_ylabel('($^\circ$C)')
@@ -648,8 +701,8 @@ ax.plot(_ds['year'], np.zeros(len(_ds['year'])), c='k', alpha=0.5, linestyle='da
 
 plt.tight_layout()
 fn = FIGURE_DIR / fign_dt('total', s_y, s_y2)
-plt.savefig(fn, dpi=200)
-plt.savefig(fn.with_suffix('.pdf'))  # , dpi=200)
+#plt.savefig(fn, dpi=200)
+#plt.savefig(fn.with_suffix('.pdf'))  # , dpi=200)
 plt.show()
 
 # %% [markdown]

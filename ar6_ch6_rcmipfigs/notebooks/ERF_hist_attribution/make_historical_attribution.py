@@ -33,21 +33,38 @@ import matplotlib.pyplot as plt
 from ar6_ch6_rcmipfigs.notebooks.ERF_hist_attribution import attribution_1750_2019_v2_smb
 
 # %%
-table, table_sd = attribution_1750_2019_v2_smb.main()
+table, table_sd = attribution_1750_2019_v2_smb.main(plot=True)
 
 # %%
-table_sd
+table.sum()#_sd
 
 # %%
 import matplotlib.pyplot as plt
 import numpy as np
 
 # %% [markdown]
+# ## Scale cloud forcing to fit mest estimate 0.84
+
+# %%
+table.sum()['Cloud']
+
+# %%
+(correct_cloud_forcing*table['Cloud'].sum())#.sum()
+
+# %%
+table_c = table.copy()
+correct_cloud_forcing = -0.84
+scale_fac = correct_cloud_forcing/table.sum()['Cloud']
+table_c['Cloud']=scale_fac*table['Cloud']
+table_c.sum()
+
+
+# %% [markdown]
 # ## Add together O3 primary and O3
 
 # %%
-o3_sum = table['O3']+table['O3_prime']
-tab2 = table.copy(deep=True).drop(['O3','O3_prime','Total'], axis=1)
+o3_sum = table_c['O3']+table_c['O3_prime']
+tab2 = table_c.copy(deep=True).drop(['O3','O3_prime','Total'], axis=1)
 tab2['O3'] = o3_sum
 
 # %% [markdown]
@@ -95,17 +112,6 @@ var_dir = ['CO2','N2O','HC','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
 
 # %%
 cols = [get_chem_col(var) for var in varn]
-
-# %%
-fig, ax = plt.subplots(dpi=150)
-table_ed.loc[::-1,var_dir].plot.barh(stacked=True, color=cols, linewidth=.3, edgecolor='k',
-                                     ax=ax
-                                )
-tot = table['Total'][::-1]
-xerr = table_sd['Total_sd'][::-1]
-y = np.arange(len(tot))
-plt.errorbar(tot, y,xerr=xerr,marker='d', linestyle='None', color='k', label='Sum', )
-plt.legend()
 
 # %% [markdown]
 # ## Uncertainty:
@@ -214,11 +220,14 @@ ybar = np.arange(len(tab_plt)+1)#, -1)
 ybar
 
 # %%
+table_ed.sum(axis=0)
+
+# %%
 fig, ax = plt.subplots(dpi=150)#figsize=[10,10])
 
 
 tab_plt.plot.barh(stacked=True, color=cols, linewidth=.0, edgecolor='k',ax=ax, width=width)
-tot = table['Total'][::-1]
+tot = table_ed.sum(axis=1)[::-1]#table_ed['Total'][::-1]
 xerr = df_err['95-50'][::-1]
 y = np.arange(len(tot))
 plt.errorbar(tot, y,xerr=xerr,marker='d', linestyle='None', color='k', label='Sum', )

@@ -143,6 +143,9 @@ df_collins.index = df_collins.index.rename('emission_experiment')
 df_collins#.columns
 
 # %%
+df_collins.sum()#.columns
+
+# %%
 forcing_total_collins = df_collins.sum(axis=1)#['Total']
 forcing_total_collins 
 

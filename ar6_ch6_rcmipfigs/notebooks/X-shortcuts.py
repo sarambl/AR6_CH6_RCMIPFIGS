@@ -73,5 +73,3 @@ print('sdfsd')
 runpy.run_path('04-01-Table_2040_2100.py')
 runpy.run_path('04-02-Table_all_years.py')
 print('done')
-
-# %%

@@ -33,6 +33,9 @@ import seaborn as sns
 # %% [markdown]
 # # Code + figures
 
+# %%
+output_name = 'fig_em_based_ERF_GSAT'
+
 # %% [markdown]
 # ### Path input data
 
@@ -248,10 +251,14 @@ rename_dic_cat = {
 
 }
 rename_dic_cols ={
+    'co2':'CO$_2$',
     'CO2':'CO$_2$',
     'CH4':'CH$_4$',
+    'ch4':'CH$_4$',
     'N2O':'N$_2$O',
+    'n2o':'N$_2$O',
     'HC':'CFC + HCFC + HFC',
+    'HFCs':'HFC',
     'NOx':'NO$_x$',
     'VOC':'NMVOC + CO',
     'SO2':'SO$_2$',
@@ -360,8 +367,81 @@ col_ls = [cmap[c] for c in cmap.keys()]
 # %%
 tab_plt_dT
 
+# %% [markdown]
+# ### Uncertainties $\Delta$ GSAT
+
 # %%
-fig, axs = plt.subplots(1,2,dpi=150, figsize=[10,4])
+std_ERF =df_err['std']
+std_ECS_lw_rl = 0.5/3
+std_ECS_hg_rl = 1/3
+
+tot_ERF = tab_plt_ERF.sum(axis=1)
+std_erf_rl = np.abs(std_ERF/tot_ERF)
+std_erf_rl
+
+
+# %%
+std_ERF
+
+# %%
+tot_ERF
+
+
+# %% [markdown]
+#
+# \begin{align*} 
+# \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
+# \end{align*}
+
+# %% [markdown]
+# most of the uncertainty in the IRF derives from the uncertainty in the climate sensitivity which is said 3 (2.5-4), i.e. relative std 0.5/3 for the lower and 1/3 for the higher. If we treat this as two independent normally distributed variables multiplied together, $X$ and $Y$ and $X \cdot Y$, we may propagate the uncertainty: 
+#
+# \begin{align*} 
+# \frac{\sigma_{XY}^2}{(XY)^2} = \Big[(\frac{\sigma_X}{X})^2 + (\frac{\sigma_Y}{Y})^2 \Big]
+# \end{align*}
+
+# %%
+def rel_sigma_prod(rel_sigmaX,rel_sigmaY):
+    var_prod_rel =( (rel_sigmaX)**2 + (rel_sigmaY)**2)
+    rel_sigma_prod = np.sqrt(var_prod_rel)
+    return rel_sigma_prod
+
+rel_sig_lw =  rel_sigma_prod(std_erf_rl, std_ECS_lw_rl)
+rel_sig_hg =  rel_sigma_prod(std_erf_rl, std_ECS_hg_rl)
+
+# %%
+tot_dT = tab_plt_dT.sum(axis=1)[::-1]
+
+neg_v =(tot_dT<0)#.squeeze()
+
+
+# %%
+std_2_95th
+
+# %%
+tot_dT = tab_plt_dT.sum(axis=1)
+err_dT = pd.DataFrame(index=tot_dT.index)
+err_dT['min 1 sigma'] = np.abs(tot_dT*rel_sig_lw)#*tot_dT
+err_dT['plus 1 sigma'] =np.abs(tot_dT*rel_sig_hg)
+err_dT['plus 1 sigma'][neg_v]=np.abs(tot_dT*rel_sig_lw)[neg_v]#.iloc[neg_v].iloc[neg_v].iloc[neg_v]
+err_dT['min 1 sigma'][neg_v]=np.abs(tot_dT*rel_sig_hg)[neg_v]#.iloc[neg_v].iloc[neg_v].iloc[neg_v]
+#err_dT['min 1 sigma'].iloc[neg_v] =np.abs(tot_dT*rel_sig_hg).iloc[neg_v]
+#err_dT['plus 1 sigma'][neg_v] = np.abs(tot_dT*rel_sig_lw)[neg_v]
+#err_dT['min 1 sigma'][neg_v] = np.abs(tot_dT*rel_sig_hg)[neg_v]
+#[::-1]
+err_dT['p50-05'] = err_dT['min 1 sigma']*std_2_95th
+err_dT['p95-50'] = err_dT['plus 1 sigma']*std_2_95th
+err_dT
+
+#var_nn_dir = [rename_dic_cols[v] for v in varn]
+
+# %%
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
+
+
+# %%
+sns.set_style()
+fig, axs = plt.subplots(1,2,dpi=300, figsize=[10,4])#, dpi=150)
 width=.8
 kws = {
     'width':.8,
@@ -371,6 +451,8 @@ kws = {
 }
 
 ax=axs[0]
+ax.axvline(x=0., color='k', linewidth=0.25)
+
 tab_plt_ERF.plot.barh(stacked=True, color=col_ls, ax=ax,**kws)
 #tot = table['Total'][::-1]
 tot = tab_plt_ERF.sum(axis=1)#tab_plt
@@ -390,40 +472,83 @@ ax.set_xlabel(r'(W m$^{-2}$)')
     #plt.xlim(-1.6, 2.0)
 #sns.despine(fig, left=True, trim=True)
 ax.legend(loc='lower right', frameon=False)
-ax.axvline(x=0., color='k', linewidth=0.25)
 ax.set_yticks([])
 
 ax.get_legend().remove()
 
+ax.set_xticks(np.arange(-1.5,2.1,.5))
+ax.set_xticks(np.arange(-1.5,2,.1), minor=True)
 
 
 
 
 ax=axs[1]
+ax.axvline(x=0., color='k', linewidth=0.25)
+
 tab_plt_dT[::-1].plot.barh(stacked=True, color=col_ls, ax=ax,**kws)
 tot = tab_plt_dT.sum(axis=1)[::-1]
 #xerr =0# df_err['95-50'][::-1]
 y = np.arange(len(tot))
-ax.errorbar(tot, y,marker='d', linestyle='None', color='k', label='Sum', )
+
+ax.errorbar(tot, y,
+            xerr=err_dT[['p50-05','p95-50']].loc[tot.index].transpose().values,
+            #xerr=err_dT[['min 1 sigma','plus 1 sigma']].loc[tot.index].transpose().values,
+            marker='d', linestyle='None', color='k', label='Sum', )
 #ax.legend(frameon=False)
 ax.set_ylabel('')
 
 ax.set_title('Change in GSAT, 1750 to 2019')
 ax.set_xlabel(r'($^{\circ}$C)')
-ax.set_xlim(-.6, 1.8)
+ax.set_xlim(-1.3, 1.8)
 
 
 sns.despine(fig, left=True, trim=True)
-ax.spines['bottom'].set_bounds(-.5,1.5)
-
+ax.spines['bottom'].set_bounds(-1.,1.5)
 ax.legend(loc='lower right', frameon=False)
-ax.axvline(x=0., color='k', linewidth=0.25)
-fn = 'ERF_DELTA_GSAT_1750_2019.png'
+
+
+ax.set_xticks(np.arange(-1,2.1,.5))
+    #ax.xaxis.set_major_locator(MultipleLocator(.5))
+    
+ax.set_xticks(np.arange(-1,1.6,.5))
+ax.set_xticks(np.arange(-1,1.5,.1), minor=True)
+
+
+fn = output_name + '.png'
 fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
 fp.parent.mkdir(parents=True, exist_ok=True)
 ax.set_yticks([])
 fig.tight_layout()
 plt.savefig(fp, dpi=300, bbox_inches='tight')
 plt.savefig(fp.with_suffix('.pdf'), dpi=300, bbox_inches='tight')
+plt.savefig(fp.with_suffix('.png'), dpi=300, bbox_inches='tight')
 plt.show()
+
+
+# %%
+tab_plt_ERF.sum(axis=0)
+
+# %% [markdown]
+# ### Write vales to csv
+
+# %%
+fn = output_name+'_values_ERF.csv'
+fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
+tab_plt_ERF.to_csv(fp)
+
+
+fn = output_name+'_values_ERF_uncertainty.csv'
+fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
+df_err.to_csv(fp)
+
+
+# %%
+fn = output_name+'_values_dT.csv'
+fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
+tab_plt_dT.to_csv(fp)
+
+
+fn = output_name+'_values_dT_uncertainty.csv'
+fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
+err_dT.to_csv(fp)
 

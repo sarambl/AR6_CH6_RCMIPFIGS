@@ -299,7 +299,7 @@ for ref_var, varl in zip([ref_var_dt],
     ax.set_xlim([int(s_y2), int(e_y2)])
     ax.set_ylabel('($^\circ$C)')
     ax.set_xlabel('')
-    plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
+    plt.title('Temperature change contributions by SLCF\'s in three scenarios', fontsize=14)
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.png', dpi=300,bbox_inches="tight")
     
@@ -396,7 +396,7 @@ for ref_var, varl in zip([ref_var_dt],
     ax.set_xlim([int(s_y2), int(e_y2)])
     ax.set_ylabel('($^\circ$C)')
     ax.set_xlabel('')
-    plt.title('Temperature change contributions by SLCF\'s in two scenarios', fontsize=14)
+    plt.title('Temperature change contributions by SLCF\'s in three scenarios', fontsize=14)
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'ssp858_126_relative_contrib.png', dpi=300,bbox_inches="tight")
     
