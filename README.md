@@ -7,9 +7,8 @@ Contact: Sara Marie Blichner, University of Oslo
 Code for analyzing and plotting RCMIP data for AR6 IPCC. 
 
 
-Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
 
-Also, code in [ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py](ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py) is is only slightly modified version of code Bill Collins has written.  
+Code in [ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py](ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py) is is only slightly modified version of code Bill Collins has written.  
  
 
 ## RESULTS:
