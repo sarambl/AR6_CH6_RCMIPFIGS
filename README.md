@@ -4,7 +4,7 @@ Contact: Sara Marie Blichner, University of Oslo
 [s.m.blichner@geo.uio.no](mailto:s.m.blichner@geo.uio.no)
 
 
-Code for analyzing and plotting RCMIP data for AR6 IPCC. 
+Code for analyzing and plotting for AR6 IPCC. 
 
 
 Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
