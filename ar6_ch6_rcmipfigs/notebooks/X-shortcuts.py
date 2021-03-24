@@ -46,22 +46,5 @@ print('done')
 # ## Create plots etc:
 
 # %%
-runpy.run_path('03-01_delta_T_plot_recommendation.py')
-runpy.run_path('03-02_delta_T_plot_bar_stacked_recommendation.py')
 runpy.run_path('03-03_delta_T_plot_contribution_total_recommendation.py')
-print('done')
-# %% [markdown]
-# ## Figures ERF emission based attribution (from Bill Collins script)
-
-# %%
-runpy.run_path('ERF_hist_attribution/make_historical_attribution.py')
-print('done')
-
-# %% [markdown]
-# ## Figures ERF/GSAT emission based attribution:
-
-# %%
-runpy.run_path('GSAT_change_hist_attribution/01_Emission_based_ERFs.py')
-runpy.run_path('GSAT_change_hist_attribution/02_historical_deltaGSAT.py')
-runpy.run_path('GSAT_change_hist_attribution/03_plot.py')
 print('done')
