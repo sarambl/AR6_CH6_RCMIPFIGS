@@ -46,12 +46,6 @@ import numpy as np
 # ## Scale cloud forcing to fit mest estimate 0.84
 
 # %%
-table.sum()['Cloud']
-
-# %%
-(correct_cloud_forcing*table['Cloud'].sum())#.sum()
-
-# %%
 table_c = table.copy()
 correct_cloud_forcing = -0.84
 scale_fac = correct_cloud_forcing/table.sum()['Cloud']

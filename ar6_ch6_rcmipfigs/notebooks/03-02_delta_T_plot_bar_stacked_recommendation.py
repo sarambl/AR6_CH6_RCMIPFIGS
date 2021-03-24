@@ -571,9 +571,6 @@ def write_percentiles_to_file(tabel_dT_anthrop, tabel_dT_slcfs, tabel_dT_anthrop
 
 
 
-# %%
-
-      tabel_dT_anthrop  
 
 # %%
 fig, axs = plt.subplots(1, len(years), figsize=[10, 4.4], sharex=False, sharey=True)
@@ -597,7 +594,6 @@ plt.show()
 # %%
 all_scanarios = tabel_dT_anthrop.columns
 subset_scenarios = [s for s in all_scanarios if s!='SSP3-3.4']
-
 # %%
 tabel_dT_anthrop2 = tabel_dT_anthrop[subset_scenarios]
 tabel_dT_slcfs2 = tabel_dT_slcfs[subset_scenarios]
