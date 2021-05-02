@@ -42,7 +42,6 @@ output_name = 'fig_em_based_ERF_GSAT'
 # %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR, BASE_DIR
 
-#PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/dT_data_hist_recommendation.nc'
 
 
