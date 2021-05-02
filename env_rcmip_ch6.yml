@@ -36,4 +36,8 @@ dependencies:
     - nbdime==1.0.6
     - nbresuse==0.3.2
     - tqdm==4.32.2
+    - scmdata==0.9.1
+    - openscm-twolayermodel==0.2.1
+    - openscm-units==0.2.0
+
 
