@@ -2,7 +2,7 @@ import logging
 import os
 
 import pandas as pd
-from scmdata import ScmDataFrame
+#from scmdata import ScmDataFrame
 
 climatemodel = 'climatemodel'
 logger = logging.getLogger()

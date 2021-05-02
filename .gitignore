@@ -1,8 +1,6 @@
 .idea
-ar6_ch6_rcmipfigs/data_in/
 *.iml
 *.pyc
 *.ipynb_checkpoints/
 AR6_CH6_RCMIPFIGS.iml
 /AR6_CH6_RCMIPFIGS.egg-info/
-/ar6_ch6_rcmipfigs/data_in/

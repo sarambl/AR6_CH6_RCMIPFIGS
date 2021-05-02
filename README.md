@@ -1,11 +1,15 @@
 ## Description
-Contact: Sara Marie Blichner, University of Oslo [s.m.blichner@geo.uio.no](s.m.blichner@geo.uio.no)
+Contact: Sara Marie Blichner, University of Oslo 
+
+[s.m.blichner@geo.uio.no](mailto:s.m.blichner@geo.uio.no)
 
 
-Code for analyzing and plotting RCMIP data for AR6 IPCC. 
+Code for analyzing and plotting for AR6 IPCC. 
 
 
-Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions.  
+Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
+
+Also, code in [ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py](ar6_ch6_rcmipfigs/notebooks/ERF_hist_attribution/attribution_1750_2019_v2_smb.py) is is only slightly modified version of code Bill Collins has written.  
  
 
 ## RESULTS:
@@ -22,44 +26,31 @@ cd AR6_CH6_RCMIPFIGS
 conda env create -f env_rcmip_ch6.yml
 conda activate rcmip_ch6
 pip install -e .
+cd ar6_ch6_rcmipfigs/notebooks/
+python X-shortcuts.py
 ``` 
 
 ## Input data: 
 The correct source citations will be updated soon. 
 
 In this work we use: 
-1) Impulse response function (IRF) from AR6, ?? 
-2) SSP scenario ERF from FAIR
-3) ERF from Thornhill et al (2021)
-4) Radiative forcing for HFCs from Hodnebrog et al (2020)
-5) Historical emissions of SLCFs from CEDS
-6) Historical concentrations from AR6
-7) Uncertainties in $\Delta$ GSAT from FAIR
+1) Impulse response function (IRF) from AR6 [ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
+2) SSP scenario ERF from FAIR [ar6_ch6_rcmipfigs/data_in/SSPs/](ar6_ch6_rcmipfigs/data_in/SSPs)
+3) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv)
+4) Radiative forcing for HFCs from Hodnebrog et al (2020) [ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv)
+5) Historical emissions of SLCFs from CEDS [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions)
+6) Historical concentrations from AR6 [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx)
+7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv](ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv)
 
 
 
 
 ## Usage:  
 
-### Get input data:
-Download the data from http://doi.org/10.5281/zenodo.3593570
-E.g. do:
-```bash
-wget https://zenodo.org/record/3593570/files/rcmip-phase-1-submission.tar.gz
-```
-Unpack the data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in):
-```bash 
-cd ar6_ch6_rcmipfigs/data_in; tar zxf ../../rcmip-phase-1-submission.tar.gz; mv rcmip-tmp/data/* .;
-```
-OR: Create a symbolic link to the downloaded input data in [ar6_ch6_rcmipfigs/data_in](./ar6_ch6_rcmipfigs/data_in).
-In project base do:
-```bash
-ln -s /path/to/download_data/rcmip-tmp/data ar6_ch6_rcmipfigs/data_in/
-```            
   
 ### Preprocess data
 
-1. Simply run [X_shortcuts.ipynb](./ar6_ch6_rcmipfigs/notebooks/00-02_shortcut.ipynb)
+1. Simply run [X_shortcuts.ipynb](./ar6_ch6_rcmipfigs/notebooks/X-shortcuts.ipynb)
 
 ## Plot figures:
 The figures are produced in notebooks:
@@ -69,9 +60,6 @@ The figures are produced in notebooks:
 Table (save values to file):
 - [04-01-Table_2040_2100.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-01-Table_2040_2100.ipynb)
 - [04-02-Table_all_years.ipynb](./ar6_ch6_rcmipfigs/notebooks/04-02-Table_all_years.ipynb)
-
-Extra: 
-- [3-2_delta_T_plot_contribution_total.ipynb](./ar6_ch6_rcmipfigs/notebooks/3-2_delta_T_plot_contribution_total.ipynb)
 
 
 ## Directory overview: 

@@ -34,6 +34,14 @@ import matplotlib.pyplot as plt
 # %autoreload 2
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 
+# %%
+
+# %%
+from openscm_twolayermodel import ImpulseResponseModel, TwoLayerModel, constants  # pip install openscm-twolayermodel
+from openscm_units import unit_registry  # pip install openscm-units
+from scmdata import ScmRun  # pip install scmdata
+
+
 # %% [markdown]
 # ### General about computing $\Delta T$:
 # %% [markdown]
@@ -85,6 +93,11 @@ d1 = float(irf_consts[ld1])
 d2 = float(irf_consts[ld2])
 q1 = float(irf_consts[lq1])
 q2 = float(irf_consts[lq2])
+eff = float(irf_consts['efficacy (dimensionless)'])
+print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
+
+
+# %%
 
 print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 
@@ -335,10 +348,109 @@ def integrate_to_dT(_ds, from_t, to_t, irf_cnsts, int_var='ERF'):
     return ds_DT
 
 
+# %%
+
+# %%
+int(ds.isel(year=0)['year'].values)
+
+
+# %%
+def calc_dGSAT(var, ds, ds_out, scenario='scenario'):
+    s_y = int(ds.isel(year=0)['year'].values)
+    _erf_tmp = ds['ERF'].sel(variable=var).to_pandas()
+    unit = "W/m^2"
+
+    driver = ScmRun(
+
+        data=_erf_tmp,
+        index=s_y + np.arange(len(_erf_tmp)),
+        columns={
+            "unit": unit,
+            "model": "custom",
+            "scenario": scenario,
+            "region": "World",
+            "variable": "Effective Radiative Forcing",
+        },
+    )
+
+    impulse_res = ImpulseResponseModel(
+        d1=d1 * unit_registry("yr"),
+        d2=d2 * unit_registry("yr"),
+        q1=q1* unit_registry("delta_degC / (W / m^2)"),
+        q2=q2* unit_registry("delta_degC / (W / m^2)"),
+        efficacy=eff* unit_registry("dimensionless"),
+    )
+    dt_tmp = impulse_res.run_scenarios(driver)
+
+
+    df_tmp= dt_tmp.filter(variable='Surface Temperature').timeseries()#.lineplot()#['Surface']
+    #_ds_dT[var] =df_tmp.transpose()
+
+    #ds_out[var]  =
+    df_tmp = df_tmp.reset_index().iloc[:,12:].transpose().rename({0:var}, axis=1)#.to_xarray()
+    year_index = pd.to_datetime(df_tmp.index).year
+    df_tmp['year'] = year_index
+    df_tmp = df_tmp.set_index('year')
+
+    ds_out[var] = df_tmp.to_xarray()[var]
+
+    return ds_out
+
+
+# %%
+def calc_GSAT_all_vars(_ds, ds_out, variables=None, scenario='scenario'):
+
+
+    if variables is None:
+        variables =_ds['variable'].values
+
+
+    _ds_dT = xr.Dataset()
+    for var in variables:
+        print(var)
+        _ds_dT = calc_dGSAT(var, _ds, _ds_dT, scenario=scenario)
+        print()
+    ds_DT = _ds_dT.to_array(name=name_deltaT)
+
+    #ds_out[name_deltaT] = ds_DT
+
+
+    return ds_DT
+
+
+# %%
+def calc_GSAT_all_scenarios(ds, ds_out, scenarios_l = None):
+
+
+    scenarios_l = None
+    if scenarios_l is None:
+        scenarios_l = ds[scenario].values
+    _ds_dT = xr.Dataset()
+    _ds_out = xr.Dataset()
+    for scn in scenarios_l:
+        print(scn)
+        ds_scn = calc_GSAT_all_vars(ds.sel(scenario = scn), _ds_dT, scenario=scn)
+        ds_scn = ds_scn.rename(scn)
+        _ds_out[scn] = ds_scn
+    ds_DT = _ds_out.to_array(dim=scenario, name=name_deltaT)
+    ds_out[name_deltaT] = ds_DT
+
+
+    return ds_out
+
+# %%
+ds_minor
+
+# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+dic_minor_ds_old = {}
+for key in IRFpercentiles:
+    dic_minor_ds_old[key] = integrate_to_dT(ds_minor, first_y, last_y, irf_consts.loc[key], int_var='ERF')
+
 # %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 dic_minor_ds = {}
+ds_out = ds_minor.copy(deep=True)
 for key in IRFpercentiles:
-    dic_minor_ds[key] = integrate_to_dT(ds_minor, first_y, last_y, irf_consts.loc[key], int_var='ERF')
+    dic_minor_ds[key] = calc_GSAT_all_scenarios(ds_minor,ds_out)
 
 # %% [markdown]
 # ## check:
@@ -454,3 +566,5 @@ ds_minor.sel(year=slice(first_y, last_y)).to_netcdf(PATH_DT_OUTPUT)
 print(f'Saved to {PATH_DT_OUTPUT}')
 # ds_DT.to_array('percentile')
 # dic_ds[key]['Delta T']
+
+# %%

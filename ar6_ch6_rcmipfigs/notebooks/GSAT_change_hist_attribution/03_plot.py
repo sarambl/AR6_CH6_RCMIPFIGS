@@ -177,6 +177,18 @@ ax.set_xlim([1740,2028])
 sns.despine()
 
 # %%
+m1850_1900 = df_deltaT.loc[1850:1900].mean()
+m2010_2019 = df_deltaT.loc[2010:2019].mean()
+diff = m2010_2019-m1850_1900
+diff
+
+# %%
+m2010_2019
+
+# %%
+df_deltaT.loc[2019]
+
+# %%
 import seaborn as sns
 
 
@@ -306,13 +318,16 @@ ybar = np.arange(len(tab_plt)+1)#, -1)
 ybar
 
 # %% [markdown]
-# ## Scale delta GSAT by ERF 
+# ## decompose GSAT as ERF 
 
 # %% [markdown]
 # ### Source of delta T equal to source of ERF
 
 # %%
 df_collins
+
+# %%
+df_deltaT['CO2']
 
 # %%
 dT_2019 = pd.DataFrame(df_deltaT.loc[2019])
@@ -345,12 +360,49 @@ df_dt_sep.transpose().sum().plot.line()
 
 df_deltaT.loc[2019].plot.line()#bar(stacked=True)
 
-# %%
-ybar = np.arange(len(tab_plt)+1)#, -1)
-ybar
+# %% [markdown]
+# ## REMOVED: For consistency with rest of the report (chapter 7), GSAT is scaled by  1.3/1.48527635
+
+# %% [markdown]
+# df_dt_sep
+
+# %% [markdown]
+# df_dt_sep.sum(axis=1)
+
+# %% [markdown]
+# dt_tmp = df_dt_sep.sum(axis=1)# + df_dt_sep
+#
+# ghg = dt_tmp['CO2']+dt_tmp['CH4']+dt_tmp['N2O'] + dt_tmp['NOx'] +  dt_tmp['VOC'] + dt_tmp['HC']
+# BC_nosnow = 0.077972559347102
+#
+# aer = dt_tmp['SO2']+ dt_tmp['OC'] + dt_tmp['NH3'] + dt_tmp['BC']
+# sum_ghg_aer = ghg + aer
+# sum_ghg_aer
+# scale_by = 1.3/sum_ghg_aer
+
+# %% [markdown]
+# print('GHG:',ghg)
+# print('AER:',aer)
+# print('SUM: ',sum_ghg_aer)
+# print('scale by', scale_by)
+
+# %% [markdown]
+# df_dt_sep = df_dt_sep*scale_by
 
 # %% [markdown]
 # Correct order of variables:
+
+# %% [markdown]
+# ## Accounting for non-linearities in ERFaci, we scale down the ERF aci contribution to fit with chapter 7 
+
+# %%
+scal_to = -0.38
+aci_tot = df_dt_sep.sum()['Cloud']
+scale_by = scal_to/aci_tot
+print(scal_to, aci_tot)
+
+df_dt_sep['Cloud'] = df_dt_sep['Cloud']*scale_by
+df_dt_sep.sum()
 
 # %%
 exps_ls = ['CO2', 'CH4', 'N2O', 'HC', 'NOx', 'VOC', 'SO2', 'OC', 'BC', 'NH3']
@@ -365,7 +417,7 @@ cmap = get_cmap_dic(var_dir)
 col_ls = [cmap[c] for c in cmap.keys()]
 
 # %%
-tab_plt_dT
+tab_plt_dT.sum(axis=1)
 
 # %% [markdown]
 # ### Uncertainties $\Delta$ GSAT
@@ -528,6 +580,12 @@ plt.show()
 # %%
 tab_plt_ERF.sum(axis=0)
 
+# %%
+tab_plt_dT.sum(axis=1)
+
+# %%
+tab_plt_dT.sum()
+
 # %% [markdown]
 # ### Write vales to csv
 
@@ -552,3 +610,11 @@ fn = output_name+'_values_dT_uncertainty.csv'
 fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
 err_dT.to_csv(fp)
 
+
+# %%
+
+# %%
+
+# %%
+
+# %%
