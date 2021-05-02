@@ -572,6 +572,7 @@ def write_percentiles_to_file(tabel_dT_anthrop, tabel_dT_slcfs, tabel_dT_anthrop
 
 
 
+
 # %%
 fig, axs = plt.subplots(1, len(years), figsize=[10, 4.4], sharex=False, sharey=True)
 plt_stacked(fig, axs, tabel_dT_anthrop, tabel_dT_slcfs, tabel_dT_anthrop_5th, tabel_dT_anthrop_95th,

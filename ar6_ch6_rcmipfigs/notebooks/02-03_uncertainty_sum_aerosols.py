@@ -331,5 +331,3 @@ ds_unc_upd2.to_netcdf(PATH_UNCERT_DT_OUTPUT)
 
 # %%
 print(PATH_UNCERT_DT_OUTPUT)
-
-# %%

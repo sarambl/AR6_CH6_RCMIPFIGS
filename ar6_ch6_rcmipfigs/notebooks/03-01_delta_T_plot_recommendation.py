@@ -587,9 +587,6 @@ plt.savefig(fp.with_suffix('.png'), dpi=300, bbox_inches='tight')
 plt.savefig(fp.with_suffix('.pdf'), bbox_inches='tight')  # , dpi=300)
 plt.show()
 # %%
-da_var_diff
-
-# %%
 output_name+'_'
 
 # %%

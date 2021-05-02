@@ -155,8 +155,8 @@ import matplotlib.pyplot as plt
 
 # %%
 def scale_ERF(forcing_tot, df_agent, spec, spec_cmip, end_year=2019, base_year=1750):
-    delta_spec_end_year = df_agent[spec].loc[end_year]- df_agent[spec].loc[base_year] # co2 concentration in 2019
-    delta_spec = df_agent[spec] -df_agent[spec].loc[base_year]# co2 concentration 1750-2019
+    delta_spec_end_year = df_agent[spec].loc[end_year]- df_agent[spec].loc[base_year] # 2019
+    delta_spec = df_agent[spec] -df_agent[spec].loc[base_year]# 1750-2019
     aerchemmip_endyear_forcing = forcing_tot[spec_cmip] # from Bill collins
     forcing_spec = aerchemmip_endyear_forcing*delta_spec/delta_spec_end_year # scale by concentrations
     return forcing_spec
@@ -263,6 +263,9 @@ forcing_HC[2019]
 df_collins['HFCs']=0
 df_collins.loc['HC','HFCs']=ERF_HFCs['HFCs'][2019]
 df_collins
+
+# %%
+df_collins.sum(axis=0)
 
 # %%
 df_ERF
