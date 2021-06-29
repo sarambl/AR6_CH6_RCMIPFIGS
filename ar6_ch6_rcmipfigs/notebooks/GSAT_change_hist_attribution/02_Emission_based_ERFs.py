@@ -2,11 +2,12 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -64,6 +65,9 @@ path_emissions = INPUT_DATA_DIR / 'historical_delta_GSAT/CEDS_v2021-02-05_emissi
 # file path table of ERF 2019-1750
 fp_collins = RESULTS_DIR /'tables_historic_attribution/table_mean_smb_orignames.csv'
 
+# %%
+fl_CEDS =list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
+
 # %% [markdown]
 # ### Output file paths:
 
@@ -100,12 +104,9 @@ df_conc
 # ## Emissions:
 
 # %%
-fl =list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
-
-# %%
 list_df_em=[]
 units_dic = {}
-for fn in fl:
+for fn in fl_CEDS:
     _df = pd.read_csv(fn)
     u_em = _df['em'].unique()
     if len(u_em)>1:

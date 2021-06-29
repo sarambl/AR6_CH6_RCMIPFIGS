@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -14,6 +16,13 @@
 
 # %% [markdown]
 # ## Make plot ERF 2019
+#
+#
+# This script uses code produced by Bill Collins to produce an emission based estimate of ERF in 2019 vs 1750 based on Thornhill et al 2021. 
+#
+#
+# Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
+#
 
 # %%
 import pandas as pd
@@ -27,10 +36,20 @@ import matplotlib.pyplot as plt
 
 
 # %% [markdown]
-# ## Get tables from script from Bill
+# ### Output filenames.
 
 # %%
-from ar6_ch6_rcmipfigs.notebooks.ERF_hist_attribution import attribution_1750_2019_v2_smb
+# standard deviation filename:
+fn_sd = RESULTS_DIR/'tables_historic_attribution/table_uncertainties_smb_plt.csv'
+# mean filename
+fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
+
+
+# %% [markdown]
+# ## Get tables from script from Bill
+
+# %% tags=[]
+from util_hist_att import attribution_1750_2019_v2_smb
 
 # %%
 table, table_sd = attribution_1750_2019_v2_smb.main(plot=True)
@@ -47,7 +66,7 @@ import numpy as np
 
 # %%
 table_c = table.copy()
-correct_cloud_forcing = -0.84
+correct_cloud_forcing = - 0.84
 scale_fac = correct_cloud_forcing/table.sum()['Cloud']
 table_c['Cloud']=scale_fac*table['Cloud']
 table_c.sum()
@@ -192,11 +211,6 @@ tab_plt = table_ed.loc[::-1,var_dir].rename(rename_dic_cat, axis=1).rename(renam
 tab_plt
 
 # %%
-fn_sd = RESULTS_DIR/'tables_historic_attribution/table_uncertainties_smb_plt.csv'
-fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
-
-
-# %%
 df_err = df_err.rename(rename_dic_cols, axis=0)
 df_err.to_csv(fn_sd)
 tab_plt.to_csv(fn_mean)
@@ -254,5 +268,6 @@ plt.show()
 
 
 # %%
+tab_plt
 
 # %%
