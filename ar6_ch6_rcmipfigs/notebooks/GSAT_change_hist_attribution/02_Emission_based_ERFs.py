@@ -19,6 +19,7 @@
 # We use timeseries for historical emissions/concentrations and then scale these with the 1750-2019 ERF from Thornhill (2019)/bill collins plot to derive ERF timeseries. 
 # For short lived components, we use change in emissions from CEDS:
 # - NOx, VOC/CO, SO2, OC, BC, NH3
+#
 # For longer lived components, we use change in concentrations from chap 2:
 # - CO2, CH4, N2O, HC
 #
@@ -81,13 +82,19 @@ fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_de
 # ## Load concentration file and interpolate from 1750 to 1850
 
 # %%
-df_conc = pd.read_excel(fn_concentrations, header=22, index_col=0)
+
+df_conc = pd.read_excel(fn_concentrations, header=22, index_col=0, engine='openpyxl')
+# adds unecessary row with nans and unnamed columns
+df_conc = df_conc.loc[1750:2019]
+unnamed = [c for c in df_conc.columns if 'Unnamed:' in c]
+df_conc=df_conc.drop(unnamed,axis=1)
+
 # For C8F18 there appears to be an error in the spreadsheet where 2015 is entered as zero, presumably 0.09 but treat as missing
 df_conc.loc[2015, 'C8F18'] = np.nan
 
 
 # datetime index
-df_conc.index = pd.to_datetime(df_conc.index, format='%Y')
+df_conc.index = pd.to_datetime(df_conc.index.astype(int), format='%Y')
 
 # resample to yearly, i.e. NaNs will be filled between 1750 and 1850:
 df_conc = df_conc.resample('Y').first()#.interpolate()

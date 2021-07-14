@@ -9,7 +9,6 @@ dependencies:
   - ipywidgets==7.5.1
   - nb_black==1.0.6
   - iris
-  - scmdata==0.2.1
   - numpy >=1.11.0
   - xarray >=0.10.8
   - pandas >=0.22.0
@@ -36,7 +35,7 @@ dependencies:
     - nbdime==1.0.6
     - nbresuse==0.3.2
     - tqdm==4.32.2
-    - scmdata==0.9.1
+    - scmdata=0.11.0
     - openscm-twolayermodel==0.2.1
     - openscm-units==0.2.0
 

@@ -49,17 +49,22 @@ fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
 # ## Get tables from script from Bill
 
 # %% tags=[]
-from util_hist_att import attribution_1750_2019_newBC_smb
+from util_hist_att import attribution_1750_2019_newBC_smb, attribution_1750_2019_v2_smb
 
 # %%
 table, table_sd = attribution_1750_2019_newBC_smb.main(plot=True)
 
 # %%
-table.sum()#_sd
+table_old, table_sd_old = attribution_1750_2019_v2_smb.main(plot=True)
 
 # %%
-import matplotlib.pyplot as plt
-import numpy as np
+table - table_old
+
+# %%
+table_old
+
+# %%
+table
 
 # %% [markdown]
 # ## Make one category with both CH4 from emissions and change in lifetime 
@@ -70,6 +75,44 @@ ch4_lftime_old = table.loc['CH4','CH4_lifetime']
 
 table.loc['CH4','CH4_lifetime'] = ch4_lftime_old + ch4_ghg_old
 table.loc['CH4','GHG'] = 0.
+
+# %%
+diff = table-table_old
+diff[np.abs(diff)<1e-15]=0
+diff
+
+
+# %%
+diff.sum(axis=0)
+
+# %%
+fn1 = 'new_versions_bill_july2021/attribution_output_1750_2019_newBC.csv'
+fn2 = 'new_versions_bill_july2021/attribution_output_1750_2019.csv'
+df1 = pd.read_csv(fn1, index_col=0)
+df2 = pd.read_csv(fn2, index_col=0)
+df1
+
+# %%
+df2
+
+# %%
+df2-df1
+
+# %%
+table.sum()['O3']+table.sum()['O3_prime']#_sd
+
+# %%
+table_old.sum()['O3']+table_old.sum()['O3_prime']#_sd
+
+# %%
+table.sum()
+
+# %%
+table_old.sum()
+
+# %%
+import matplotlib.pyplot as plt
+import numpy as np
 
 # %% [markdown]
 # ## Scale cloud forcing to fit mest estimate 0.84
@@ -82,6 +125,14 @@ table_c['Cloud']=scale_fac*table['Cloud']
 table_c.sum()
 
 
+# %%
+table_c_old = table_old.copy()
+correct_cloud_forcing = - 0.84
+scale_fac = correct_cloud_forcing/table_old.sum()['Cloud']
+table_c_old['Cloud']=scale_fac*table_old['Cloud']
+table_c_old.sum()
+
+
 # %% [markdown]
 # ## Add together O3 primary and O3
 
@@ -89,6 +140,11 @@ table_c.sum()
 o3_sum = table_c['O3']+table_c['O3_prime']
 tab2 = table_c.copy(deep=True).drop(['O3','O3_prime','Total'], axis=1)
 tab2['O3'] = o3_sum
+
+# %%
+o3_sum_old = table_c_old['O3']+table_c_old['O3_prime']
+tab2_old = table_c_old.copy(deep=True).drop(['O3','O3_prime','Total'], axis=1)
+tab2_old['O3'] = o3_sum_old
 
 # %% [markdown]
 # ## Replace GHG with N2O and HC
@@ -106,6 +162,25 @@ table_ed['N2O']=0
 table_ed.loc['N2O','N2O']=_ghg
 table_ed = table_ed.drop('GHG', axis=1)
 table_ed
+
+# %%
+table_ed_old = tab2_old.copy(deep=True)
+_ghg = tab2_old.loc['HC','GHG']
+table_ed_old.loc['HC','GHG'] = 0
+table_ed_old['HC'] = 0
+table_ed_old.loc['HC','HC']=_ghg
+table_ed_old
+_ghg = tab2_old.loc['N2O','GHG']
+table_ed_old.loc['N2O','GHG'] = 0
+table_ed_old['N2O']=0
+table_ed_old.loc['N2O','N2O']=_ghg
+table_ed_old = table_ed_old.drop('GHG', axis=1)
+table_ed_old
+
+# %%
+diff = table_ed-table_ed_old
+diff[np.abs(diff)<1e-15]=0
+diff
 
 # %% [markdown]
 #  No need to fix std because we only use the total (which is not influenced by the summation above). 
@@ -276,5 +351,11 @@ plt.savefig(fp, dpi=300)
 plt.savefig(fp.with_suffix('.pdf'), dpi=300)
 plt.show()
 
+
+# %%
+tab_plt
+
+# %%
+tab_plt
 
 # %%

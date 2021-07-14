@@ -36,7 +36,7 @@ from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
 # # Code + figures
 
 # %%
-output_name = 'fig_em_based_ERF_GSAT'
+output_name = 'fig_em_based_ERF_GSAT_period2010-2019_1850-1900'
 
 # %% [markdown]
 # ### Path input data
@@ -90,6 +90,9 @@ scenarios_fl = []
 # %%
 varn = ['co2','N2O','HC','HFCs','ch4','o3','H2O_strat','ari','aci']
 var_dir = ['CO2','N2O','HC','HFCs','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
+
+# %% [markdown]
+# Names for labeling:
 
 # %%
 rename_dic_cat = {
@@ -159,15 +162,10 @@ fig.savefig('hist_timeseries_ERF_dT.png', dpi=300)
 # %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
 
-
-# %%
 col_list = [cols[c] for c in df_deltaT.columns]
 
-
-# %%
 import seaborn as sns
 
-# %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
 
 fig, ax = plt.subplots(figsize=[10,5])
@@ -195,11 +193,6 @@ import seaborn as sns
 
 # %%
 from ar6_ch6_rcmipfigs.constants import BASE_DIR, OUTPUT_DATA_DIR
-# file path table of ERF 2019-1750
-
-
-
-# %%
 import pandas as pd
 
 # %%
@@ -214,19 +207,13 @@ kwargs = {'linewidth':.1,'edgecolor':'k'}
 
 
 # %% [markdown]
-# ## decompose GSAT as ERF 
+# ## Decompose GSAT signal as the ERF signal
 
 # %% [markdown]
-# ### Source of delta T equal to source of ERF
-
-# %%
-df_collins
-
-# %%
-
+# ### GSAT
 
 # %% [markdown]
-# #### GSAT
+# Get period mean difference for GSAT:
 
 # %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
@@ -237,13 +224,12 @@ mean_PI = df_deltaT.loc[ref_period[0]:ref_period[1]].mean()
 
 
 
-# %%
 dT_period_diff = pd.DataFrame(mean_PD-mean_PI, columns=['diff'])#df_deltaT.loc[2019])
 dT_period_diff.index= dT_period_diff.index.rename('emission_experiment')
 
 
 # %% [markdown]
-# Make normalized distribution of ERF to components
+# Make normalized decomposition of different components from emission based ERF. 
 
 # %%
 df_coll_t = df_collins.transpose()
@@ -257,24 +243,27 @@ df_col_normalized = df_coll_t/scale
 df_col_normalized.transpose().plot.barh(stacked=True)
 
 # %% [markdown]
-# We multiply the change in GSAT in 2019 by the matrix describing the source distribution from the ERF:
+# We multiply the change in GSAT in 2010-2019 vs 1850-1900 by the matrix describing the source distribution from the ERF:
+
+# %%
+dT_period_diff['diff'] 
 
 # %%
 df_dt_sep = dT_period_diff['diff'] * df_col_normalized
+
+
 df_dt_sep=df_dt_sep.transpose()
+df_dt_sep
 
 # %%
 df_dt_sep.plot.bar(stacked=True)
-
-# %% [markdown]
-# #### Double check that the sum is the same as before:
-
-# %%
-df_dt_sep.transpose().sum().plot.line()
-plt.show()
+dT_period_diff['diff'].reindex(df_dt_sep.index).plot()
 
 # %% [markdown]
 # ### ERF
+
+# %% [markdown]
+# Get period mean difference for ERF:
 
 # %%
 df_ERF = ds['ERF'].squeeze().to_dataframe().unstack('variable')['ERF']
@@ -284,54 +273,82 @@ mean_ERF_PI = df_ERF.loc[ref_period[0]:ref_period[1]].mean()
 
 
 # %%
-df_ERF['CO2'].loc[2019]
-
-# %%
-df_ERF['CO2'].loc[pd_period[0]:pd_period[1]].mean()-df_ERF['CO2'].loc[ref_period[0]:ref_period[1]].mean()
-
-
-
-# %%
-df_ERF['CO2'].loc[ref_period[0]:ref_period[1]].mean()
-
-
-# %%
 ERF_period_diff = pd.DataFrame(mean_ERF_PD-mean_ERF_PI, columns=['diff'])#df_deltaT.loc[2019])
 ERF_period_diff.index= ERF_period_diff.index.rename('emission_experiment')
 
 
 # %% [markdown]
-# We multiply the change in GSAT in 2019 by the matrix describing the source distribution from the ERF:
+#
+# We multiply the change in ERF in 2010-2019 vs 1850-1900 by the matrix describing the source distribution from the ERF:
 
 # %%
 df_erf_sep = ERF_period_diff['diff'] * df_col_normalized
 df_erf_sep=df_erf_sep.transpose()
 
 # %%
-df_erf_sep.plot.bar(stacked=True)
-
-# %% [markdown]
-# ## Accounting for non-linearities in ERFaci, we scale down the ERF aci contribution to fit with chapter 7 
+ERF_period_diff
 
 # %%
-scal_to = -0.38
-aci_tot = df_dt_sep.sum()['Cloud']
-scale_by = scal_to/aci_tot
-print(scal_to, aci_tot)
+df_erf_sep.plot.bar(stacked=True)
+ERF_period_diff['diff'].reindex(df_erf_sep.index).plot.line()
+plt.show()
 
-df_dt_sep['Cloud'] = df_dt_sep['Cloud']*scale_by
+# %% [markdown]
+# ## Accounting for non-linearities in ERFaci, we scale down the GSAT change from aci contribution to fit with chapter 7 
+
+# %% [markdown]
+# The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. When considering the 1750-2019 change in GSAT, we therefore scaled the GSAT change by aerosol cloud interactions to fit this total. This constituted a 25% reduction. 
+# For the GSAT averaged over the period 2010-2019 vs 1850-1900 we thus reduce by 25%. 
+#
+# Furthermore, ERFaci over the same period (2010-2019 vs 1850-1900) is also sligtly overestimated due to higher emissions in the period versus 2019. To scale this, we use the ratio between ERFaci and ERFari as estimated by CHRIS [INSERT PROPER REFS] in the two periods respectively. The logic is that these both originate from the same emissions, so their ratio reflects the dampening of ERFaci with increased emissions. 
+#
+# Let $\alpha$ be the ratio 
+#
+# \begin{equation}
+# \frac{ERF_{aci}}{ERF_{ari}} = \alpha 
+# \end{equation}
+
+# %% [markdown]
+# From the data (from FaIR, Chris) $\alpha_{period}=3.42$ for 1850-1900 vs 2010-2019, while for the standard period from 1750 to 2019, it is $\alpha_{standard} = 3.91$. 
+
+# %% [markdown]
+# Thus, the ratio is 
+# \begin{equation}
+# \frac{\alpha_{period}}{\alpha_{stanard}} = 0.874
+# \end{equation}
+
+# %% [markdown]
+# This results in a scaling down of approximately 12.5% of ERFaci. 
+#
+
+# %% tags=[]
+scale_down_by = 0.25
+aci_tot = df_dt_sep.sum()['Cloud']
+aci_tot
+df_dt_sep['Cloud'] = df_dt_sep['Cloud']*(1-scale_down_by)#scale_by
 df_dt_sep.sum()
+
+# %%
+df_erf_sep.sum()
+
+# %% tags=[]
+scale_down_by = 0.125
+aci_tot = df_erf_sep.sum()['Cloud']
+aci_tot
+df_erf_sep['Cloud'] = df_erf_sep['Cloud']*(1-scale_down_by)#scale_by
+df_erf_sep.sum()
 
 # %% [markdown]
 # ## Uncertainties
 
-# %%
+# %% tags=[]
 import pandas as pd
 num_mod_lab = 'Number of models (Thornhill 2020)'
 thornhill = pd.read_csv(fn_TAB2_THORNHILL, index_col=0)
 thornhill.index = thornhill.index.rename('Species')
 thornhill
 
+#ratio between standard deviation and 5-95th percentile. 
 std_2_95th = 1.645
 
 sd_tot = df_collins_sd['Total_sd']
@@ -344,22 +361,17 @@ df_err.loc['CO2','95-50_SE']= df_err.loc['CO2','std']
 df_err
 
 df_err['95-50'] = df_err['std']*std_2_95th
+# CO2 is already 95-50 percentile: 
 df_err.loc['CO2','95-50']= df_err.loc['CO2','std']
 df_err
 
 # %% [markdown]
-# #### Uncertainty on period mean ERF is scaled by uncertainty in 2019: 
+# #### Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
 #
 
-# %% [markdown]
-# ### CONTINUE HERE!!!
-
 # %%
-ERF_2019_tot = df_collins.mean(axis=1).reindex(df_err.index)
-ERF_period_diff_tot = df_erf_sep.mean(axis=1).reindex(df_err.index)
-
-# %%
-df_err#.reindex(ERF_2019_tot.)
+ERF_2019_tot = df_collins.sum(axis=1).reindex(df_err.index)
+ERF_period_diff_tot = df_erf_sep.sum(axis=1).reindex(df_err.index)
 
 # %% [markdown]
 # Scale by the period mean to the original 1750-2019 difference. 
@@ -387,13 +399,16 @@ df_err
 # \end{align*}
 
 # %%
+ERF_2019_tot
+
+# %%
 std_ERF =df_err['std']
 std_ECS_lw_rl = 0.5/3
 std_ECS_hg_rl = 1/3
 
-tot_ERF = ERF_2019_tot.reindex(std_ERF.index)#tab_plt_ERF.sum(axis=1)
+tot_ERF = ERF_2019_tot#df_collins.loc[::-1,var_dir].reindex(std_ERF.index).sum(axis=1)#tab_plt_ERF.sum(axis=1)
 std_erf_rl = np.abs(std_ERF/tot_ERF)
-std_erf_rl
+std_erf_rl#.rename(rename_dic_cols)
 
 
 # %%
@@ -417,6 +432,9 @@ neg_v =(tot_dT<0)#.squeeze()
 std_2_95th
 
 # %%
+rel_sig_hg
+
+# %%
 err_dT = pd.DataFrame(index=tot_dT.index)
 err_dT['min 1 sigma'] = np.abs(tot_dT*rel_sig_lw)#*tot_dT
 err_dT['plus 1 sigma'] =np.abs(tot_dT*rel_sig_hg)
@@ -429,7 +447,7 @@ err_dT['min 1 sigma'][neg_v]=np.abs(tot_dT*rel_sig_hg)[neg_v]#.iloc[neg_v].iloc[
 err_dT['p50-05'] = err_dT['min 1 sigma']*std_2_95th
 err_dT['p95-50'] = err_dT['plus 1 sigma']*std_2_95th
 err_dT
-
+err_dT = err_dT.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 #var_nn_dir = [rename_dic_cols[v] for v in varn]
 
 # %%
@@ -450,17 +468,23 @@ tab_plt_dT = tab_plt_dT.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, a
 tab_plt_erf = df_erf_sep.loc[::-1,var_dir]#.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 tab_plt_erf = tab_plt_erf.loc[exps_ls]
 tab_plt_erf = tab_plt_erf.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
+tab_plt_erf = tab_plt_erf#.T
 
 # %%
 cmap = get_cmap_dic(var_dir)
 col_ls = [cmap[c] for c in cmap.keys()]
 
 # %%
-tab_plt_dT.sum(axis=1)
-
-# %%
 from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 
+
+# %%
+ybar = np.arange(len(tab_plt_erf.T)+1)#, -1)
+
+
+# %%
+index_order = tab_plt_dT[::-1].index
+index_order
 
 # %%
 sns.set_style()
@@ -476,20 +500,21 @@ kws = {
 ax=axs[0]
 ax.axvline(x=0., color='k', linewidth=0.25)
 
-tab_plt_ERF.plot.barh(stacked=True, color=col_ls, ax=ax,**kws)
+tab_plt_erf.reindex(index_order).plot.barh(stacked=True, color=col_ls
+                                                  , ax=ax,**kws)
 #tot = table['Total'][::-1]
-tot = tab_plt_ERF.sum(axis=1)#tab_plt
-xerr = df_err['95-50'][::-1]
+tot = tab_plt_erf.reindex(index_order).sum(axis=1)#tab_plt
+xerr = df_err['95-50_period'].reindex(index_order)
 y = np.arange(len(tot))
 ax.errorbar(tot, y,xerr=xerr,marker='d', linestyle='None', color='k', label='Sum', )
 #ax.legend(frameon=False)
 ax.set_ylabel('')
 
 
-for lab, y in zip(tab_plt.index, ybar):
+for lab, y in zip(index_order, ybar):
         #plt.text(-1.55, ybar[i], species[i],  ha='left')#, va='left')
     ax.text(-1.9, y-0.1, lab,  ha='left')#, va='left')
-ax.set_title('Effective radiative forcing, 1750 to 2019')
+ax.set_title('Effective radiative forcing,  1850-1900 to 2010-2019')
 ax.set_xlabel(r'(W m$^{-2}$)')
 #ax.set_xlim(-1.5, 2.6)
     #plt.xlim(-1.6, 2.0)
@@ -508,13 +533,13 @@ ax.set_xticks(np.arange(-1.5,2,.1), minor=True)
 ax=axs[1]
 ax.axvline(x=0., color='k', linewidth=0.25)
 
-tab_plt_dT[::-1].plot.barh(stacked=True, color=col_ls, ax=ax,**kws)
-tot = tab_plt_dT.sum(axis=1)[::-1]
+tab_plt_dT.reindex(index_order).plot.barh(stacked=True, color=col_ls, ax=ax,**kws)
+tot = tab_plt_dT.reindex(index_order).sum(axis=1)
 #xerr =0# df_err['95-50'][::-1]
 y = np.arange(len(tot))
-
+xerr_dT = err_dT[['p50-05','p95-50']].reindex(index_order).transpose().values
 ax.errorbar(tot, y,
-            xerr=err_dT[['p50-05','p95-50']].loc[tot.index].transpose().values,
+            xerr=xerr_dT,
             #xerr=err_dT[['min 1 sigma','plus 1 sigma']].loc[tot.index].transpose().values,
             marker='d', linestyle='None', color='k', label='Sum', )
 #ax.legend(frameon=False)
@@ -549,7 +574,9 @@ plt.show()
 
 
 # %%
-tab_plt_ERF.sum(axis=0)
+
+# %%
+tab_plt_erf.T.sum(axis=0)
 
 # %%
 tab_plt_dT.sum(axis=1)
@@ -563,7 +590,7 @@ tab_plt_dT.sum()
 # %%
 fn = output_name+'_values_ERF.csv'
 fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
-tab_plt_ERF.to_csv(fp)
+tab_plt_erf.to_csv(fp)
 
 
 fn = output_name+'_values_ERF_uncertainty.csv'
