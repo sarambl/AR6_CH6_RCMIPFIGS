@@ -1,11 +1,12 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -93,7 +94,7 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 # %% [markdown]
 # ### Path input data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 #PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
@@ -111,7 +112,7 @@ PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
 # %% [markdown]
 # ## Path output data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 #PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
 PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.csv'
 
@@ -406,7 +407,7 @@ def calc_GSAT_all_scenarios(ds, ds_out, scenarios_l = None):
 
     return ds_out
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 dic_ds_old = {}
 for key in IRFpercentiles:
     dic_ds_old[key] = integrate_to_dT(ds, first_y, last_y, irf_consts.loc[key], int_var='ERF')
@@ -448,9 +449,6 @@ ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose().to_csv('D
 ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose()#.to_csv('Delta_T_timeseriies.csv')
 
 # %% [markdown]
-# ## Scale 
-
-# %% [markdown]
 # # Save dataset:
 
 # %%
@@ -459,59 +457,5 @@ print(f'Saved to ')
 print(PATH_DF_OUTPUT.with_suffix('.nc'))
 # ds_DT.to_array('percentile')
 # dic_ds[key]['Delta T']
-
-# %%
-from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
-
-# %%
-cols = get_cmap_dic(variables_all)
-
-# %%
-df_deltaT = ds[name_deltaT].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-
-# %%
-df_deltaT.to_csv(PATH_DF_OUTPUT)
-
-# %%
-fig, ax = plt.subplots(figsize=[10,5])
-for v in variables_all:
-    df_deltaT[variables_all][v].plot(linewidth=3,ax = ax, label=v, color=cols[v])#, color=cols.items())
-plt.legend(loc='upper left')
-plt.ylabel('$\Delta$ T ($^\circ$ C)')
-
-# %%
-df_deltaT = ds[name_deltaT].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-fig, ax = plt.subplots(figsize=[10,5])
-df_deltaT[variables_all].sum(axis=1).plot(linewidth=3,ax = ax, label=v, color=cols[v])#, color=cols.items())
-plt.legend(loc='upper left')
-plt.ylabel('$\Delta$ T ($^\circ$ C)')
-
-# %%
-df_deltaT = ds[name_deltaT].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-fig, ax = plt.subplots(figsize=[10,5])
-for v in variables_all:
-    df_deltaT[variables_all][v].plot(linewidth=3,ax = ax, label=v, color=cols[v])#, color=cols.items())
-plt.legend(loc='upper left')
-plt.ylabel('$\Delta$ T ($^\circ$ C)')
-
-# %%
-df_deltaT = ds[name_deltaT].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-fig, ax = plt.subplots(figsize=[10,5])
-df_deltaT[variables_all].sum(axis=1).plot(linewidth=3,ax = ax, label='sum', color=cols[v])#, color=cols.items())
-plt.legend(loc='upper left')
-plt.ylabel('$\Delta$ T ($^\circ$ C)')
-
-# %%
-df_deltaT
-
-# %%
-df_deltaT = ds[name_deltaT].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-fig, ax = plt.subplots(figsize=[10,5])
-for v in variables_all:
-    df_deltaT[variables_all][v].plot(linewidth=3,ax = ax, label=v, color=cols[v])#, color=cols.items())
-plt.legend(loc='upper left')
-plt.ylabel('$\Delta$ T ($^\circ$ C)')
-
-# %%
 
 # %%

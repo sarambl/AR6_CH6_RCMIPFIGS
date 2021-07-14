@@ -2,11 +2,12 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -18,6 +19,7 @@
 # We use timeseries for historical emissions/concentrations and then scale these with the 1750-2019 ERF from Thornhill (2019)/bill collins plot to derive ERF timeseries. 
 # For short lived components, we use change in emissions from CEDS:
 # - NOx, VOC/CO, SO2, OC, BC, NH3
+#
 # For longer lived components, we use change in concentrations from chap 2:
 # - CO2, CH4, N2O, HC
 #
@@ -64,6 +66,9 @@ path_emissions = INPUT_DATA_DIR / 'historical_delta_GSAT/CEDS_v2021-02-05_emissi
 # file path table of ERF 2019-1750
 fp_collins = RESULTS_DIR /'tables_historic_attribution/table_mean_smb_orignames.csv'
 
+# %%
+fl_CEDS =list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
+
 # %% [markdown]
 # ### Output file paths:
 
@@ -77,13 +82,19 @@ fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_de
 # ## Load concentration file and interpolate from 1750 to 1850
 
 # %%
-df_conc = pd.read_excel(fn_concentrations, header=22, index_col=0)
+
+df_conc = pd.read_excel(fn_concentrations, header=22, index_col=0, engine='openpyxl')
+# adds unecessary row with nans and unnamed columns
+df_conc = df_conc.loc[1750:2019]
+unnamed = [c for c in df_conc.columns if 'Unnamed:' in c]
+df_conc=df_conc.drop(unnamed,axis=1)
+
 # For C8F18 there appears to be an error in the spreadsheet where 2015 is entered as zero, presumably 0.09 but treat as missing
 df_conc.loc[2015, 'C8F18'] = np.nan
 
 
 # datetime index
-df_conc.index = pd.to_datetime(df_conc.index, format='%Y')
+df_conc.index = pd.to_datetime(df_conc.index.astype(int), format='%Y')
 
 # resample to yearly, i.e. NaNs will be filled between 1750 and 1850:
 df_conc = df_conc.resample('Y').first()#.interpolate()
@@ -100,12 +111,9 @@ df_conc
 # ## Emissions:
 
 # %%
-fl =list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
-
-# %%
 list_df_em=[]
 units_dic = {}
-for fn in fl:
+for fn in fl_CEDS:
     _df = pd.read_csv(fn)
     u_em = _df['em'].unique()
     if len(u_em)>1:

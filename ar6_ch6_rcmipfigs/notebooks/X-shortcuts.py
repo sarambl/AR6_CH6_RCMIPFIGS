@@ -61,7 +61,7 @@ print('done')
 # ## Figures ERF/GSAT emission based attribution:
 
 # %%
-runpy.run_path('GSAT_change_hist_attribution/01_Emission_based_ERFs.py')
-runpy.run_path('GSAT_change_hist_attribution/02_historical_deltaGSAT.py')
-runpy.run_path('GSAT_change_hist_attribution/03_plot.py')
+runpy.run_path('GSAT_change_hist_attribution/02_Emission_based_ERFs.py')
+runpy.run_path('GSAT_change_hist_attribution/03_historical_deltaGSAT.py')
+runpy.run_path('GSAT_change_hist_attribution/04_plot-period.py')
 print('done')
