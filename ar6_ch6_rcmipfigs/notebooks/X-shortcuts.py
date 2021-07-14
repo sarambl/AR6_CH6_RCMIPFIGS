@@ -23,34 +23,7 @@ import runpy
 # ## Preprocess:
 
 # %%
-runpy.run_path('01_preprocess.py')
-clear_output()
 
-# %% [markdown]
-# ## Create $\Delta$GSAT:
-
-# %%
-print('1')
-runpy.run_path('02-01_compute_delta_T_recommandation.py')
-print('2***********')
-
-runpy.run_path('02-01-02_compute_delta_T_recommandation-HFCs.py')
-
-runpy.run_path('02-02_uncertainty.py')
-
-runpy.run_path('02-03_uncertainty_sum_aerosols.py')
-print('done')
-
-
-# %% [markdown]
-#
-# ## Create plots etc:
-
-# %%
-runpy.run_path('03-01_delta_T_plot_recommendation.py')
-runpy.run_path('03-02_delta_T_plot_bar_stacked_recommendation.py')
-runpy.run_path('03-03_delta_T_plot_contribution_total_recommendation.py')
-print('done')
 # %% [markdown]
 # ## Figures ERF emission based attribution (from Bill Collins script)
 
