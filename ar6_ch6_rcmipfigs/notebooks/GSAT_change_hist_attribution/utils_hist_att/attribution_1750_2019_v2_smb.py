@@ -14,9 +14,9 @@ from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from pathlib import  Path
 import numpy as np
 import matplotlib.pyplot as plt
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.co2_forcing_AR6 import co2_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.ch4_forcing_AR6 import ch4_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.n2o_forcing_AR6 import n2o_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.co2_forcing_AR6 import co2_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.ch4_forcing_AR6 import ch4_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.n2o_forcing_AR6 import n2o_forcing_AR6
 import seaborn as sns
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 # All from table 7.8
