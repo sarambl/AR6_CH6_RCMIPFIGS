@@ -223,11 +223,11 @@ q2
 
 # %%
 
-# %%
-(a+da)(db)*dt = 
+# %% [markdown]
+# (a+da)(db)*dt =
 
-# %%
-(a+da)(b+db)-a*b != 
+# %% [markdown]
+# (a+da)(b+db)-a*b != 
 
 # %% [markdown]
 # $f(x) = x^2$
