@@ -294,7 +294,7 @@ ERF_period_diff['diff'].reindex(df_erf_sep.index).plot.line()
 plt.show()
 
 # %% [markdown]
-# ## Accounting for non-linearities in ERFaci, we scale down the GSAT change from aci contribution to fit with chapter 7 
+# # Accounting for non-linearities in ERFaci, we scale down the GSAT change from aci contribution to fit with chapter 7 
 
 # %% [markdown]
 # The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. When considering the 1750-2019 change in GSAT, we therefore scaled the GSAT change by aerosol cloud interactions to fit this total. 
@@ -313,7 +313,7 @@ df_dt_sep['Cloud'] = df_dt_sep['Cloud']*scale_by
 df_dt_sep.sum()
 
 # %% [markdown]
-# ## Uncertainties
+# # Uncertainties
 
 # %% tags=[]
 import pandas as pd
@@ -340,7 +340,7 @@ df_err.loc['CO2','95-50']= df_err.loc['CO2','std']
 df_err
 
 # %% [markdown]
-# #### Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
+# ## Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
 #
 
 # %%
@@ -433,7 +433,7 @@ err_dT = err_dT.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 df_err = df_err.rename(rename_dic_cols, axis=0)
 
 # %% [markdown]
-# ### Reorder and rename
+# # Reorder and rename
 
 # %%
 exps_ls = ['CO2', 'CH4', 'N2O', 'HC', 'NOx', 'VOC', 'SO2', 'OC', 'BC', 'NH3']
@@ -464,6 +464,9 @@ ybar = np.arange(len(tab_plt_erf.T)+1)#, -1)
 # %%
 index_order = tab_plt_dT[::-1].index
 index_order
+
+# %% [markdown]
+# # Plot
 
 # %%
 sns.set_style()
@@ -564,7 +567,7 @@ tab_plt_dT.sum(axis=1)
 tab_plt_dT.sum()
 
 # %% [markdown]
-# ### Write vales to csv
+# # Write vales to csv
 
 # %%
 fn = output_name+'_values_ERF.csv'

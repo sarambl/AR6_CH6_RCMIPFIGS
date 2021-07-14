@@ -41,7 +41,7 @@
 # ## Final ERFs in 2019 based on Thornhill 2021
 
 # %% [markdown]
-# <img src="../../results/figures_historic_attribution/attribution_1750_2019.png" alt="drawing" width="800"/>
+# <img src="../../results/figures_historic_attribution/attribution_1750_2019_5-95th.png" alt="drawing" width="800"/>
 #
 
 # %%
@@ -155,7 +155,7 @@ df_collins.sum()#.columns
 
 # %%
 forcing_total_collins = df_collins.sum(axis=1)#['Total']
-forcing_total_collins 
+forcing_total_collins
 
 # %%
 import matplotlib.pyplot as plt
@@ -192,8 +192,8 @@ for spec in ['NOx','SO2','BC','OC','NH3']:
     ERFs[spec]=forcing_spec
 
     forcing_spec.plot(label=spec)
-    
-    
+
+
 # VOC: scale with CO emissions because these are mostly the same
 spec = 'CO'
 
@@ -209,11 +209,11 @@ plt.ylabel('W m$^{-2}$')
 plt.legend(loc='upper left')
 
 # %% [markdown]
-# # HFCs:
+# ## HFCs:
 # For HFCs we use the RE from Hodnebrog et al 2019 and the concentrations from chapter two to calculate the ERF. 
 
 # %% [markdown]
-# ## Hodnebrog:
+# ### Hodnebrog et al:
 
 # %% [markdown]
 # Read in table 3 from Hodnebrog et al 
@@ -232,7 +232,7 @@ RE_df = df_HFC['RE (Wm-2ppb-1)'].transpose()
 RE_df#.transpose().loc['This work']*
 
 # %%
-df_conc[RE_df.columns] - df_conc[RE_df.columns].loc[1750] 
+df_conc[RE_df.columns] - df_conc[RE_df.columns].loc[1750]
 
 # %%
 ERF_HFCs = (df_conc[RE_df.columns] -   df_conc[RE_df.columns].loc[1750])*RE_df.loc['This work']*1e-3 #ppt to ppb
@@ -265,7 +265,7 @@ df_ERF.columns
 forcing_HC[2019]
 
 # %% [markdown]
-# ### Add HFC
+# ### Add HFC to datset
 
 # %%
 df_collins['HFCs']=0
@@ -294,7 +294,7 @@ df_col_normalized.transpose().plot.barh(stacked=True)
 plt.legend(bbox_to_anchor=(1,1))
 
 # %% [markdown]
-# ## Save ERFs
+# # Save ERFs
 
 # %%
 fn_output_ERF

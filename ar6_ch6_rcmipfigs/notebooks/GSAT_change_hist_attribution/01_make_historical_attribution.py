@@ -49,7 +49,7 @@ fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
 # ## Get tables from script from Bill
 
 # %% tags=[]
-from utils_hist_att import attribution_1750_2019_newBC_smb
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att import attribution_1750_2019_newBC_smb
 
 # %%
 table, table_sd = attribution_1750_2019_newBC_smb.main(plot=True)
