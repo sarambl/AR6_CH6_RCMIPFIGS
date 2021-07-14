@@ -14,9 +14,9 @@ from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from pathlib import  Path
 import numpy as np
 import matplotlib.pyplot as plt
-from ar6_ch6_rcmipfigs.notebooks.ERF_hist_attribution.co2_forcing_AR6 import co2_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.ERF_hist_attribution.ch4_forcing_AR6 import ch4_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.ERF_hist_attribution.n2o_forcing_AR6 import n2o_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.co2_forcing_AR6 import co2_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.ch4_forcing_AR6 import ch4_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.util_hist_att.n2o_forcing_AR6 import n2o_forcing_AR6
 import seaborn as sns
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 # All from table 7.8
@@ -54,6 +54,7 @@ def main(plot=False):
 
     # not used:
     erf_bc = 0.15 # Thornhill et al.
+    # used:
     irf_ari = -0.3 # AR6 FGD 1750-2014
     erf_aci = -1.0 # AR6 FGD 1750-2014
 
@@ -135,7 +136,7 @@ def main(plot=False):
 
     # Assume can attributed present day CO2 change by scaling cumulative emissions
     co2 = (em_co2/tot_em_co2)*(co2_2014-co2_1850)
-    co2[0]
+
     # %%
     rfco2=np.zeros(nspec)
     for ispec in np.arange(nspec):
@@ -174,18 +175,20 @@ def main(plot=False):
     i_nh3 = np.where(data['Experiment']=='NH3')[0][0]
     i_aer = np.array([i_bc, i_oc, i_so2, i_nh3]) # all aerosols
     i_scat = np.array([i_oc, i_so2, i_nh3]) # scattering aerosols
-
+    # %%
     #Set aerosol ari to be erf-ac to ensure components add to erf
     ari[i_aer] = erf[i_aer]-ac[i_aer]
     ari_sd[i_aer] = np.sqrt(erf_sd[i_aer]**2 +ac_sd[i_aer]**2)
 
+# %%
     # scale SO2+OC to get total ari
 
     irf_ari_scat = irf_ari-ari[i_bc] # Set non-BC ari to 7.3.3 FGD
     ari_scat = np.sum(ari[i_scat])
+    # %%
     ari[i_scat] = ari[i_scat]*irf_ari_scat/ari_scat
     ari_sd[i_scat] = ari_sd[i_scat]*irf_ari_scat/ari_scat
-
+# %%
     # scale aci to get total aci from 7.3.3
     total_aci = np.sum(ac[i_aer])
     ac[i_aer] = ac[i_aer]*erf_aci/total_aci
@@ -212,7 +215,7 @@ def main(plot=False):
     rfo3_sd *= scale_o3
     rfo3_prime    *= scale_o3
     rfo3_prime_sd *= scale_o3
-
+    # %%
     scale_ari = ari_erf_AR6/np.sum(ari)
     ari_sd *= scale_ari
     ari *= scale_ari
@@ -220,7 +223,7 @@ def main(plot=False):
     scale_aci = aci_erf_AR6/np.sum(ac[i_aer])
     ac[i_aer] *= scale_aci
     ac_sd[i_aer] *= scale_aci
-
+    # %%
     rfghg_sd = rfghg*0.14 # assume 14% for all WMGHGs
 
     table = np.zeros(nspec+1,
@@ -244,7 +247,7 @@ def main(plot=False):
     table_sd['Species'][0] = 'CO2'
     table_sd['CO2_sd'][0] = rfco2_co2*0.12 # 12% uncertainty
     table_sd['Total_sd'][0] = rfco2_co2*0.12
-
+    # %%
     # SMB fix:
     # Summarize CH4 lifetime and change in CH4 from change in emissions.
     rfch4[i_ch4] += rfghg[i_ch4]

@@ -2,11 +2,12 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.3
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -39,41 +40,33 @@ output_name = 'fig_em_based_ERF_GSAT'
 # %% [markdown]
 # ### Path input data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR, BASE_DIR
 
 #PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/dT_data_hist_recommendation.nc'
 
-
-
-
-
-
-fn_erf_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
 fn_ERF_2019= OUTPUT_DATA_DIR/'historic_delta_GSAT/2019_ERF_est.csv'
 #fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
 
+fn_ERF_timeseries = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
+
+fp_collins_sd = RESULTS_DIR/'tables_historic_attribution/table_std_smb_orignames.csv'
+
+fn_TAB2_THORNHILL = INPUT_DATA_DIR/'table2_thornhill2020.csv'
+
 
 # %% [markdown]
-# ## Path output data
+# ### Path output data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
-#PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.csv'
 
 print(PATH_DF_OUTPUT)
 
 
 # %% [markdown]
-# ## various definitions
-
-# %% [markdown]
-# Year to integrate from and to:
-
-# %%
-first_y = 1750
-last_y = 2019
+# ### various definitions
 
 # %% [markdown]
 # **Set reference year for temperature change:**
@@ -95,12 +88,51 @@ variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
 scenarios_fl = []
 
+# %%
+varn = ['co2','N2O','HC','HFCs','ch4','o3','H2O_strat','ari','aci']
+var_dir = ['CO2','N2O','HC','HFCs','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
+
+# %% [markdown]
+# Names for labeling:
+
+# %%
+rename_dic_cat = {
+    'CO2':'Carbon dioxide (CO$_2$)',
+    'GHG':'WMGHG',
+    'CH4_lifetime': 'Methane (CH$_4$)',
+    'O3': 'Ozone (O$_3$)',
+    'Strat_H2O':'H$_2$O (strat)',
+    'Aerosol':'Aerosol-radiation',
+    'Cloud':'Aerosol-cloud',
+    'N2O':'N$_2$O',
+    'HC':'CFC + HCFC',
+    'HFCs':'HFC'
+
+}
+rename_dic_cols ={
+    'co2':'CO$_2$',
+    'CO2':'CO$_2$',
+    'CH4':'CH$_4$',
+    'ch4':'CH$_4$',
+    'N2O':'N$_2$O',
+    'n2o':'N$_2$O',
+    'HC':'CFC + HCFC + HFC',
+    'HFCs':'HFC',
+    'NOx':'NO$_x$',
+    'VOC':'NMVOC + CO',
+    'SO2':'SO$_2$',
+    'OC':'Organic carbon',
+    'BC':'Black carbon',
+    'NH3':'Ammonia'
+}
+
+
 # %% [markdown]
 # ### Open ERF dataset:
 
 # %%
 ds = xr.open_dataset(PATH_DATASET)
-ds['Delta T']
+ds#['Delta T']
 
 # %%
 ds['variable']
@@ -213,21 +245,7 @@ plt.show()
 
 # %%
 from ar6_ch6_rcmipfigs.constants import BASE_DIR, OUTPUT_DATA_DIR
-# file path table of ERF 2019-1750
-
-fp_collins =RESULTS_DIR/'tables_historic_attribution/table_mean_smb_orignames.csv'
-fp_collins_sd = RESULTS_DIR/'tables_historic_attribution/table_std_smb_orignames.csv'
-
-# %%
-fn_est_ERF = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
-
-# %%
 import pandas as pd
-
-# %%
-fn_erf_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
-fn_ERF_2019= OUTPUT_DATA_DIR/'historic_delta_GSAT/2019_ERF_est.csv'
-
 
 # %%
 df_collins = pd.read_csv(fn_ERF_2019, index_col=0)
@@ -235,53 +253,14 @@ df_collins.index = df_collins.index.rename('emission_experiment')
 df_collins_sd = pd.read_csv(fp_collins_sd, index_col=0)
 df_collins
 
-# %% [markdown]
-# ## don't add HFCs together with HC
 
-# %%
-#hfcs = df_collins['HFCs']
-#df_collins = df_collins.drop('HFCs', axis=1)
-#df_collins['HC'] = df_collins['HC'] + hfcs
-#df_collins
-
-# %%
-varn = ['co2','N2O','HC','HFCs','ch4','o3','H2O_strat','ari','aci']
-var_dir = ['CO2','N2O','HC','HFCs','CH4_lifetime','O3','Strat_H2O','Aerosol','Cloud']
-
-# %%
-rename_dic_cat = {
-    'CO2':'Carbon dioxide (CO$_2$)',
-    'GHG':'WMGHG',
-    'CH4_lifetime': 'Methane (CH$_4$)',
-    'O3': 'Ozone (O$_3$)',
-    'Strat_H2O':'H$_2$O (strat)',
-    'Aerosol':'Aerosol-radiation',
-    'Cloud':'Aerosol-cloud',
-    'N2O':'N$_2$O',
-    'HC':'CFC + HCFC',
-    'HFCs':'HFC'
-
-}
-rename_dic_cols ={
-    'co2':'CO$_2$',
-    'CO2':'CO$_2$',
-    'CH4':'CH$_4$',
-    'ch4':'CH$_4$',
-    'N2O':'N$_2$O',
-    'n2o':'N$_2$O',
-    'HC':'CFC + HCFC + HFC',
-    'HFCs':'HFC',
-    'NOx':'NO$_x$',
-    'VOC':'NMVOC + CO',
-    'SO2':'SO$_2$',
-    'OC':'Organic carbon',
-    'BC':'Black carbon',
-    'NH3':'Ammonia'
-}
 tab_plt_ERF = df_collins.loc[::-1,var_dir].rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)#.transpose()
 tab_plt = tab_plt_ERF
 tab_plt_ERF
 
+
+# %%
+df_collins_sd
 
 # %%
 import pandas as pd
@@ -395,10 +374,17 @@ df_deltaT.loc[2019].plot.line()#bar(stacked=True)
 # %% [markdown]
 # ## Accounting for non-linearities in ERFaci, we scale down the ERF aci contribution to fit with chapter 7 
 
+# %% [markdown]
+# The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. We therefore scale the GSAT change by aerosol cloud interactions to fit this total: 
+
+# %%
+df_dt_sep.sum()
+
 # %%
 scal_to = -0.38
 aci_tot = df_dt_sep.sum()['Cloud']
 scale_by = scal_to/aci_tot
+print('Scaled down by ', (1-scale_by)*100,'%')
 print(scal_to, aci_tot)
 
 df_dt_sep['Cloud'] = df_dt_sep['Cloud']*scale_by
@@ -438,7 +424,6 @@ std_ERF
 # %%
 tot_ERF
 
-
 # %% [markdown]
 #
 # \begin{align*} 
@@ -453,6 +438,10 @@ tot_ERF
 # \end{align*}
 
 # %%
+std_erf_rl
+
+
+# %%
 def rel_sigma_prod(rel_sigmaX,rel_sigmaY):
     var_prod_rel =( (rel_sigmaX)**2 + (rel_sigmaY)**2)
     rel_sigma_prod = np.sqrt(var_prod_rel)
@@ -460,6 +449,9 @@ def rel_sigma_prod(rel_sigmaX,rel_sigmaY):
 
 rel_sig_lw =  rel_sigma_prod(std_erf_rl, std_ECS_lw_rl)
 rel_sig_hg =  rel_sigma_prod(std_erf_rl, std_ECS_hg_rl)
+
+# %%
+rel_sig_lw
 
 # %%
 tot_dT = tab_plt_dT.sum(axis=1)[::-1]
@@ -531,9 +523,9 @@ ax.get_legend().remove()
 ax.set_xticks(np.arange(-1.5,2.1,.5))
 ax.set_xticks(np.arange(-1.5,2,.1), minor=True)
 
+ 
 
-
-
+ 
 ax=axs[1]
 ax.axvline(x=0., color='k', linewidth=0.25)
 
@@ -612,6 +604,7 @@ err_dT.to_csv(fp)
 
 
 # %%
+0.12370661922337993-0.0608782788085836
 
 # %%
 
