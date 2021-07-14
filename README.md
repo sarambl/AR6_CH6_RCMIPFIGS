@@ -35,9 +35,8 @@ The correct source citations will be updated soon.
 
 In this work we use: 
 1) Impulse response function (IRF) from AR6 [ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
-2) SSP scenario ERF from FAIR [ar6_ch6_rcmipfigs/data_in/SSPs/](ar6_ch6_rcmipfigs/data_in/SSPs)
-3) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv)
-4) Radiative forcing for HFCs from Hodnebrog et al (2020) [ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv)
+2) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv)
+3) Radiative forcing for HFCs from Hodnebrog et al (2020) [ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv)
 5) Historical emissions of SLCFs from CEDS [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions)
 6) Historical concentrations from AR6 [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx)
 7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv](ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv)
@@ -47,17 +46,7 @@ In this work we use:
 
 ## Usage:  
 
-  
-### Preprocess data
-
 1. Simply run [X_shortcuts.ipynb](./ar6_ch6_rcmipfigs/notebooks/X-shortcuts.ipynb)
-
-## Plot figures:
-The figures are produced in notebooks:
-- [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
-- [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
-- [03-03_delta_T_plot_contribution_total_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-03_delta_T_plot_contribution_total_recommendation.ipynb)
-
 
 ## Directory overview: 
  - [ar6_ch6_rcmipfigs](./ar6_ch6_rcmipfigs)
