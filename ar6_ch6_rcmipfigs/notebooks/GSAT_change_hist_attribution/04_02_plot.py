@@ -345,15 +345,15 @@ df_err
 
 # %%
 ERF_2019_tot = df_collins.sum(axis=1).reindex(df_err.index)
-ERF_period_diff_tot = df_erf_sep.sum(axis=1).reindex(df_err.index)
+#ERF_period_diff_tot = df_erf_sep.sum(axis=1).reindex(df_err.index)
 
 # %% [markdown]
 # Scale by the period mean to the original 1750-2019 difference. 
 
-# %%
-_scale = np.abs(ERF_period_diff_tot/ERF_2019_tot)
-df_err['95-50_period'] = df_err['95-50']*_scale
-_scale
+# %% [markdown]
+# _scale = np.abs(ERF_period_diff_tot/ERF_2019_tot)
+# df_err['95-50_period'] = df_err['95-50']*_scale
+# _scale
 
 # %% [markdown]
 # (In the case of period=2019 vs 1750, the scaling is 1, i.e. no scaling)
@@ -486,7 +486,7 @@ tab_plt_erf.reindex(index_order).plot.barh(stacked=True, color=col_ls
                                                   , ax=ax,**kws)
 #tot = table['Total'][::-1]
 tot = tab_plt_erf.reindex(index_order).sum(axis=1)#tab_plt
-xerr = df_err['95-50_period'].reindex(index_order)
+xerr = df_err['95-50'].reindex(index_order)
 y = np.arange(len(tot))
 ax.errorbar(tot, y,xerr=xerr,marker='d', linestyle='None', color='k', label='Sum', )
 #ax.legend(frameon=False)
@@ -590,3 +590,11 @@ fn = output_name+'_values_dT_uncertainty.csv'
 fp = RESULTS_DIR /'figures_historic_attribution_DT'/fn
 err_dT.to_csv(fp)
 
+
+# %%
+err_dT
+
+# %%
+df_err
+
+# %%
