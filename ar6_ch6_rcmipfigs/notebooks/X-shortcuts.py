@@ -49,7 +49,6 @@ print('done')
 # %%
 runpy.run_path('03-01_delta_T_plot_recommendation.py')
 runpy.run_path('03-02_delta_T_plot_bar_stacked_recommendation.py')
-runpy.run_path('03-03_delta_T_plot_contribution_total_recommendation.py')
 print('done')
 # %% [markdown]
 # ## Figures ERF emission based attribution (from Bill Collins script)

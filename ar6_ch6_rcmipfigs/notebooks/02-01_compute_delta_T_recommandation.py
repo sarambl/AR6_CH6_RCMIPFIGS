@@ -1,13 +1,14 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -32,15 +33,16 @@ import matplotlib.pyplot as plt
 
 # %load_ext autoreload
 # %autoreload 2
-from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
-
-# %%
+from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC
 
 # %%
 from openscm_twolayermodel import ImpulseResponseModel, TwoLayerModel, constants  # pip install openscm-twolayermodel
 from openscm_units import unit_registry  # pip install openscm-units
-from scmdata import ScmRun  # pip install scmdata
+from scmdata import ScmRun  # pip installINPUT_DATA_DIR_BADC
 
+
+# %%
+from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
 # %% [markdown]
 # ### General about computing $\Delta T$:
@@ -73,9 +75,9 @@ from scmdata import ScmRun  # pip install scmdata
 # # Code + figures
 
 # %%
-fn_IRF_constants = INPUT_DATA_DIR /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
+fn_IRF_constants = INPUT_DATA_DIR_BADC /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
 
-irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
+irf_consts = read_csv_badc(fn_IRF_constants).set_index('id')
 
 ld1 = 'd1 (yr)'
 ld2 = 'd2 (yr)'
@@ -98,6 +100,11 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 
 
 # %%
+# lets get the irf values from 0 until i
+d1 = float(irf_consts[ld1])
+d2 = float(irf_consts[ld2])
+q1 = float(irf_consts[lq1])
+q2 = float(irf_consts[lq2])
 
 print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 
@@ -105,7 +112,7 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 # %% [markdown]
 # ### Path input data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
@@ -114,7 +121,7 @@ PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 # %% [markdown]
 # ## Path output data
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
 PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
 
@@ -422,12 +429,12 @@ def calc_GSAT_all_scenarios(ds, ds_out, scenarios_l = None):
 
     return ds_out
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 dic_ds_old = {}
 for key in IRFpercentiles:
     dic_ds_old[key] = integrate_to_dT(ds, first_y, last_y, irf_consts.loc[key], int_var='ERF')
 
-# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": true}
+# %% pycharm={"name": "#%%\n"} tags=[]
 dic_ds = {}
 ds_out = ds.copy(deep=True)
 for key in IRFpercentiles:
@@ -500,6 +507,8 @@ plt.show()
 
 # %%
 ds.close()
+
+# %%
 
 # %%
 

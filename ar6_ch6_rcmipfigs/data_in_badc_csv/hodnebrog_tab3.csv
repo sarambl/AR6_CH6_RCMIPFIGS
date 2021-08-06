@@ -1,0 +1,51 @@
+Conventions,G,BADC-CSV,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+title,G,"Lifetimes (τ), Radiative Efficiencies and Direct Effect GWPs (Relative to CO2) for the 40 Most Abundant Halocarbons and Related Compounds in the Atmosphere",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+reference,G,Table 3 in Hodnebrog et al 2020 (https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019RG000691),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+last_revised_date,G,2021-01-20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+source,G,https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2019RG000691,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+location,G,global,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+data
+Info,Info,Info,Info,tau (yr),tau (yr),RE (Wm-2ppb-1),RE (Wm-2ppb-1),GWP(100),GWP(100)
+Identifier/name,Identifier/name,Formula,CASRN,H2013a,WMO (2019),H2013,This work,H2013,This work
+Chlorofluorocarbons,CFC-11,CCl3F,75-69-4,45.0,52.0,0.26,0.26,4660,5870
+Chlorofluorocarbons,CFC-12, CCl2F2, 75-71-8, 100.0, 102.0, 0.32, 0.32, 10200, 11800
+Chlorofluorocarbons,CFC-113, CCl2FCClF2, 76-13-1, 85.0, 93.0, 0.30, 0.30, 5820, 6900
+Chlorofluorocarbons,CFC-114, CClF2CClF2, 76-14-2, 190.0, 189.0, 0.31, 0.31, 8590, 9990
+Chlorofluorocarbons,CFC-115,CClF2CF3,76-15-3,1020.0,540.0,0.20,0.25,7670,10200
+Hydrochlorofluorocarbons,HCFC-22,CHClF2,75-45-6,11.9,11.9,0.21,0.21,1770,2060
+Hydrochlorofluorocarbons,HCFC-141b,CH3CCl2F,1717-00-6,9.2,9.4,0.16,0.16,782,903
+Hydrochlorofluorocarbons,HCFC-142b,CH3CClF2,75-68-3,17.2,18.0,0.19,0.19,1980,2410
+Hydrofluorocarbons,HFC-23,CHF3,75-46-7,222.0,228.0,0.17,0.19,12400,15500
+Hydrofluorocarbons,HFC-32,CH2F2,75-10-5,5.2,5.4,0.11,0.11,677,809
+Hydrofluorocarbons,HFC-125,CHF2CF3,354-33-6,28.2,30.0,0.23,0.23,3170,3940
+Hydrofluorocarbons,HFC-134a,CH2FCF3,811-97-2,13.4,14.0,0.16,0.17,1300,1600
+Hydrofluorocarbons,HFC-143a,CH3CF3,420-46-2,47.1,51.0,0.16,0.17,4800,6130
+Hydrofluorocarbons,HFC-152a,CH3CHF2,75-37-6,1.5,1.6,0.10,0.10,138,172
+Hydrofluorocarbons,HFC-227ea,CF3CHFCF3,431-89-0,38.9,36.0,0.26,0.27,3350,3800
+Hydrofluorocarbons,HFC-236fa, CF3CH2CF3, 690-39-1, 242.0, 213.0, 0.24, 0.25,8060,9210
+Hydrofluorocarbons,HFC-245fa, CHF2CH2CF3, 460-73-1, 7.7, 7.9, 0.24, 0.24, 858, 1010
+Hydrofluorocarbons,HFC-365mfc,CH3CF2CH2CF3,406-58-6,8.7,8.9,0.22,0.23,804,959
+Hydrofluorocarbons,HFC-43-10mee,CF3CHFCHFCF2CF3,138495-42-8,16.1,17.0,0.42,0.36,1650,1680
+Chlorocarbons and hydrochlorocarbons,"1,1,1-Trichloroethane",CH3CCl3,71-55-6,5.0,5.0,0.07,0.06,160,16
+Chlorocarbons and hydrochlorocarbons,Tetrachloromethane, CCl4, 56-23-5, 26.0, 32.0, 0.17, 0.17, 1730, 231
+Chlorocarbons and hydrochlorocarbons,Chloromethane, CH3Cl, 74-87-3, 1.0, 0.9, 0.010, 0.005, 12, 6
+Chlorocarbons and hydrochlorocarbons,Dichloromethane,CH2Cl2,75-09-2,0.4,0.5,0.03,0.03,9,12
+Chlorocarbons and hydrochlorocarbons,Trichloromethane,CHCl3,67-66-3,0.4,0.5,0.08,0.07,16,22
+Chlorocarbons and hydrochlorocarbons,"Bromocarbons, hydrobromocarbons and halons",,,,,,,,
+Chlorocarbons and hydrochlorocarbons,Bromomethane,CH3Br,74-83-9,0.8,0.8,0.005,0.004,2,3
+Chlorocarbons and hydrochlorocarbons,Halon-1211,CBrClF2,353-59-3,16.0,16.0,0.29,0.30,1750,2030
+Chlorocarbons and hydrochlorocarbons,Halon-1301, CBrF3, 75-63-8, 65.0, 72.0, 0.30, 0.30, 6290 7,600
+Chlorocarbons and hydrochlorocarbons,Halon-2402, CBrF2CBrF2, 124-73-2, 20.0, 28.0, 0.31, 0.31, 1470, 2280
+Fully fluorinated species,Nitrogen trifluoride,NF3,7783-54-2,500.0,569.0,0.20,0.20,16100,18500
+Fully fluorinated species,Sulfur hexafluoride,SF6, 2551-62-4,3200.0,3200.0,0.57,0.57,23500,26700
+Fully fluorinated species,Sulfuryl fluoride,SO2F2,2699-79-8,36.0,36.0,0.20,0.21,4100,4880
+Fully fluorinated species,PFC-14,CF4,75-73-0,50000.0,50000.0,0.10,0.10,66307830
+Fully fluorinated species,PFC-116,C2F6,76–16-4,10000.0,10000.0,0.25,0.26,11100,13200
+Fully fluorinated species,PFC-218,C3F8,76-19-7,2600.0,2600.0,0.28,0.27,8900,9850
+Fully fluorinated species,PFC-C-318,c-C4F8,115-25-3,3200.0,3200.0,0.32,0.31,9550,10800
+Fully fluorinated species,PFC-31-10,n-C4F10,355-25-9,2600.0,2600.0,0.36,0.37,9200,10600
+Fully fluorinated species,PFC-41-12,n-C5F12,678-26-2,4100.0,4100.0,0.41,0.41,8550,9780
+Fully fluorinated species,PFC-51-14,n-C6F14,355-42-0,3100.0,3100.0,0.44,0.45,7910,9140
+Fully fluorinated species,PFC-61-16,n-C7F16,335-57-9,3000.0,3000.0,0.50,0.50,7820,8920
+Fully fluorinated species,PFC-71-18,n-C8F18,307-34-6,3000.0,3000.0,0.55,0.56,7620,8760
+end data

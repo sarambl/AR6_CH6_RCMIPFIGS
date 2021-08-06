@@ -1,0 +1,18 @@
+Conventions,G,BADC-CSV,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+title,G,"Number of models extracted from Thornhill et al 2021",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+reference,G,Extracted from Table 2 in Thornhill et al 2021 (https://acp.copernicus.org/articles/21/853/2021/),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+last_revised_date,G,2021-01-20,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+source,G,https://acp.copernicus.org/articles/21/853/2021/,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+location,G,global,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+data
+Experiment ID,n,Number of models (Thornhill 2020)
+BC,6,7
+CH4,7,8
+N2O,4,5
+HC,4,6
+NOx,4,5
+VOC,4,5
+SO2,5,6
+OC,5,6
+NH3,2,2
+

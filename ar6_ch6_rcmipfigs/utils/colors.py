@@ -4,7 +4,6 @@ from ar6_ch6_rcmipfigs.constants import BASE_DIR
 # %%
 divby = 255
 fn = BASE_DIR / 'misc/categorical_colors.csv'
-print('hallo')
 R ='r'
 G='g'
 B='b'

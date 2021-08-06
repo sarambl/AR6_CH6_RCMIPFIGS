@@ -134,7 +134,7 @@ from ar6_ch6_rcmipfigs.constants import BASE_DIR
 
 
 # %%
-def get_scenario_c_dic(new=True):
+def get_scenario_c_dic(new=True) -> object:
     colormap_dic = {}
     if new:
         for scn in scenario_list_new:
