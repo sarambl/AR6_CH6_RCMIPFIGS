@@ -1,5 +1,6 @@
 import sys
 
+import numpy as np
 import pandas as pd
 from ar6_ch6_rcmipfigs.constants import BASE_DIR
 
@@ -43,8 +44,13 @@ def read_csv_badc(fp, **kwargs):
     # %%
     if kwargs is None:
         kwargs = {'index_col': 0}
-    # %%
     length_header = get_header_length(fp)
+    if 'header' in kwargs.keys():
+        hd = kwargs['header']
+        if type(hd) is list:
+            hd: list
+            length_header = list(np.array(hd) + length_header - hd[0])
+        del kwargs['header']
     df = pd.read_csv(fp, skipfooter=1, header=length_header, **kwargs, engine='python')
     if df.index[-1] == 'end_data':
         df = df.drop('end_data', axis=0)

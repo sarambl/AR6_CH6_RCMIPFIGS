@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.3
+#       jupytext_version: 1.11.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -20,30 +20,27 @@
 # ### Imports
 #
 
+import numpy as np
 # %%
 import pandas as pd
 import xarray as xr
 from IPython.display import clear_output
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# %load_ext autoreload
-# %autoreload 2
-from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
-
 # %%
-from openscm_twolayermodel import ImpulseResponseModel, TwoLayerModel, constants  # pip install openscm-twolayermodel
+from openscm_twolayermodel import ImpulseResponseModel  # pip install openscm-twolayermodel
 from openscm_units import unit_registry  # pip install openscm-units
 from scmdata import ScmRun  # pip install scmdata
 
+# %load_ext autoreload
+# %autoreload 2
+from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC
+# %%
+from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
 # %% [markdown]
 # ### General about computing $\Delta T$:
 # %% [markdown]
 # We compute the change in GSAT temperature ($\Delta T$) from the effective radiative forcing (ERF) from MAGICC?????? (#TODO: check model and reference), by integrating with the impulse response function (IRF(t-t'))
 #
-# #todo: check for ref for IRF
 # (Geoffroy at al 2013).
 #
 # For any forcing agent $x$, with estimated ERF$_x$, the change in temperature $\Delta T$ is calculated as:
@@ -59,16 +56,15 @@ from scmdata import ScmRun  # pip install scmdata
 # IRF(t) = \frac{q_1}{d_1} \exp\Big(\frac{-t}{d_1}\Big) + \frac{q_2}{d_2} \exp\Big(\frac{-t}{d_2}\Big)
 # \end{align*}
 #
-# Where the constants, $q_i$ and $d_i$ are shown below. 
+# Where the constants, $q_i$ and $d_i$ are shown below.
 #
 #
 # %% [markdown]
 # # Code + figures
+fn_IRF_constants = INPUT_DATA_DIR_BADC /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
 
-# %%
-fn_IRF_constants = INPUT_DATA_DIR /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
-
-irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
+#irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')
+irf_consts = read_csv_badc(fn_IRF_constants).set_index('id')
 
 ld1 = 'd1 (yr)'
 ld2 = 'd2 (yr)'
@@ -95,9 +91,8 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 # ### Path input data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR
 
-#PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
 
 
