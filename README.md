@@ -1,16 +1,15 @@
 ## Description
-Contact: Sara Marie Blichner, University of Oslo 
+Contact: Sara Marie Blichner, University of Oslo
 
-[s.m.blichner@geo.uio.no](mailto:s.m.blichner@geo.uio.no) or [sara.blichner@aces.su.no](mailto:sara.blichner@aces.su.se)
-
-
-Code for analyzing and plotting for AR6 IPCC. 
+[s.m.blichner@geo.uio.no](mailto:s.m.blichner@geo.uio.no)
 
 
-Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
+Code for analyzing and plotting RCMIP data for AR6 IPCC.
 
-Also, code in [ar6_ch6_rcmipfigs/notebooks/GSAT_change_hist_attribution/utils_hist_att/attribution_1750_2019_newBC_smb.py](ar6_ch6_rcmipfigs/notebooks/GSAT_change_hist_attribution/utils_hist_att/attribution_1750_2019_newBC_smb.py) is is only slightly modified version of code Bill Collins has written (only technical changes).
- 
+
+Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions.
+
+
 
 ## RESULTS:
 
@@ -30,10 +29,10 @@ cd ar6_ch6_rcmipfigs/notebooks/
 python X-shortcuts.py
 ``` 
 
-## Input data: 
-The correct source citations will be updated soon. 
+## Input data:
+The correct source citations will be updated soon.
 
-In this work we use: 
+In this work we use:
 1) Impulse response function (IRF) from AR6 [ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
 2) SSP scenario ERF from FAIR [ar6_ch6_rcmipfigs/data_in/SSPs/](ar6_ch6_rcmipfigs/data_in/SSPs)
 3) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv)
@@ -55,7 +54,6 @@ In this work we use:
 ## Plot figures:
 The figures are produced in notebooks:
 - [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
-- [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
 
 
 ## Directory overview: 

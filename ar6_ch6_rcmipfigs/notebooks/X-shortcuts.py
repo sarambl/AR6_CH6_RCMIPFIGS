@@ -22,14 +22,14 @@ import runpy
 # %% [markdown]
 # ## Preprocess:
 
-# %%
+# %% jupyter={"outputs_hidden": true} tags=[]
 runpy.run_path('01_preprocess.py')
 clear_output()
 
 # %% [markdown]
 # ## Create $\Delta$GSAT:
 
-# %%
+# %% tags=[]
 print('1')
 runpy.run_path('02-01_compute_delta_T_recommandation.py')
 print('2***********')
@@ -48,23 +48,6 @@ print('done')
 
 # %%
 runpy.run_path('03-01_delta_T_plot_recommendation.py')
-runpy.run_path('03-02_delta_T_plot_bar_stacked_recommendation.py')
-print('done')
-# %% [markdown]
-# ## Figures ERF emission based attribution (from Bill Collins script)
-
-# %%
-runpy.run_path('GSAT_change_hist_attribution/01_make_historical_attribution.py')
-print('done')
-
-# %% [markdown]
-# ## Figures ERF/GSAT emission based attribution:
-
-# %% tags=[]
-runpy.run_path('GSAT_change_hist_attribution/02_Emission_based_ERFs.py')
-runpy.run_path('GSAT_change_hist_attribution/03_historical_deltaGSAT.py')
-runpy.run_path('GSAT_change_hist_attribution/04_01_plot-period.py')
-runpy.run_path('GSAT_change_hist_attribution/04_02_plot.py')
 print('done')
 
 # %%
