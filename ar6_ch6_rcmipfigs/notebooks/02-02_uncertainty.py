@@ -29,11 +29,6 @@ import matplotlib.pyplot as plt
 # %load_ext autoreload
 # %autoreload 2
 
-# %%
-
-# %load_ext autoreload
-# %autoreload 2
-
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC
 
 # %%
