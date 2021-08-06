@@ -159,6 +159,7 @@ cdic = get_scenario_c_dic()
 # ### Plot data:
 
 # %%
+cdic: dict
 
 for var in ['o3', 'ch4', 'aerosol-total', 'bc_on_snow', 'HFCs']:
     for scn in scenarios_fl:

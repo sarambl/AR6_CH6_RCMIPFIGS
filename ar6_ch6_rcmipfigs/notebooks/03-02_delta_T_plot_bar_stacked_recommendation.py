@@ -32,12 +32,6 @@ output_name = 'fig_dT_2040_2100_stacked_bar'
 import matplotlib.pyplot as plt
 
 # %%
-from ar6_ch6_rcmipfigs.utils.plot import nice_name_var as nice_name_var_dic
-
-# %%
-from ar6_ch6_rcmipfigs.utils.plot import scn_dic
-
-# %%
 import pandas as pd
 
 # %%

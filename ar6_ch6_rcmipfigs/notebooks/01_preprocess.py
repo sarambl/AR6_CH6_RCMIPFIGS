@@ -38,7 +38,6 @@ from ar6_ch6_rcmipfigs import constants
 
 # %%
 import matplotlib.pyplot as plt
-import pandas as pd
 
 # %% [markdown]
 # ### Define output paths

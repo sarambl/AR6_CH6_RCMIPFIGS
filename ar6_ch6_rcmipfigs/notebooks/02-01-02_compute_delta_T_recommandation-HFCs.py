@@ -21,28 +21,23 @@
 
 # %% [markdown]
 # ### Imports
-#
-
 # %%
-import pandas as pd
-import xarray as xr
-from IPython.display import clear_output
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# %%
+import xarray as xr
+from IPython.display import clear_output
+# %%
+from openscm_twolayermodel import ImpulseResponseModel  # pip install openscm-twolayermodel
+from openscm_units import unit_registry  # pip install openscm-units
+from scmdata import ScmRun  # pip install scmdata
 
 # %load_ext autoreload
 # %autoreload 2
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC
-
 # %%
 from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
-
-# %%
-from openscm_twolayermodel import ImpulseResponseModel, TwoLayerModel, constants  # pip install openscm-twolayermodel
-from openscm_units import unit_registry  # pip install openscm-units
-from scmdata import ScmRun  # pip install scmdata
-
 
 # %% [markdown]
 # ### General about computing $\Delta T$:

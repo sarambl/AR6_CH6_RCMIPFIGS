@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.3
+#       jupytext_version: 1.11.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -66,5 +66,8 @@ runpy.run_path('GSAT_change_hist_attribution/03_historical_deltaGSAT.py')
 runpy.run_path('GSAT_change_hist_attribution/04_01_plot-period.py')
 runpy.run_path('GSAT_change_hist_attribution/04_02_plot.py')
 print('done')
+
+# %%
+'Done'
 
 # %%

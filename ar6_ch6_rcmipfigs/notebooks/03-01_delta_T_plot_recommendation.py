@@ -19,11 +19,6 @@
 
 # %% [markdown]
 # ## Imports:
-#
-# import numpy as np
-# %%
-# from matplotlib import gridspec
-
 # %%
 import xarray as xr
 from pandas.plotting import register_matplotlib_converters
@@ -68,7 +63,6 @@ output_name = 'fig_timeseries_dT'
 # %%
 FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/' / output_name
 
-TABLE_DIR = RESULTS_DIR / 'tables_recommendation/'
 
 # %% [markdown]
 # ## Set values:
@@ -84,7 +78,6 @@ last_y = 2100
 from pathlib import Path
 
 Path(FIGURE_DIR).mkdir(parents=True, exist_ok=True)
-Path(TABLE_DIR).mkdir(parents=True, exist_ok=True)
 
 # %% [markdown]
 # ### Various definitions

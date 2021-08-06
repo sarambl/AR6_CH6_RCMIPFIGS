@@ -178,6 +178,7 @@ plt.show()
 # ### Write to netcdf
 
 # %%
+# noinspection PyDeprecation
 ds_unc_upd = xr.concat([ds_unc.drop([es_sig]), ds_sum], dim='variable')
 ds_unc_upd.variable
 ds_unc_upd.to_netcdf(PATH_UNCERT_DT_OUTPUT)

@@ -13,13 +13,12 @@
 #     name: python3
 # ---
 
-# %% [markdown]
+# %% [markdown] tags=[]
 # # Compute $\Delta T$
 
 # %% [markdown]
 # ### Imports
-#
-
+# %%
 import numpy as np
 # %%
 import pandas as pd
@@ -59,8 +58,10 @@ from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 # Where the constants, $q_i$ and $d_i$ are shown below.
 #
 #
-# %% [markdown]
+# %% [markdown] tags=[]
 # # Code + figures
+
+# %% jp-MarkdownHeadingCollapsed=true tags=[]
 fn_IRF_constants = INPUT_DATA_DIR_BADC /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
 
 #irf_consts = pd.read_csv(fn_IRF_constants).set_index('id')

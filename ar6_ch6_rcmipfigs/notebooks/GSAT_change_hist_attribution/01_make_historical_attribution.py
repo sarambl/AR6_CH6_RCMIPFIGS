@@ -14,7 +14,7 @@
 #     name: python3
 # ---
 
-# %% [markdown]
+# %% [markdown] tags=[]
 # ## Make plot ERF 2019
 #
 #
@@ -22,8 +22,7 @@
 #
 #
 # Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
-#
-
+# %% tags=[]
 import matplotlib.pyplot as plt
 import numpy as np
 # %%
@@ -36,9 +35,9 @@ from ar6_ch6_rcmipfigs.constants import RESULTS_DIR, INPUT_DATA_DIR_BADC
 
 # %%
 # standard deviation filename:
-fn_sd = RESULTS_DIR/'tables_historic_attribution/table_uncertainties_smb_plt.csv'
+fn_sd = RESULTS_DIR / 'tables_historic_attribution/table_uncertainties_smb_plt.csv'
 # mean filename
-fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
+fn_mean = RESULTS_DIR / 'tables_historic_attribution/table_mean_smb_plt.csv'
 
 
 # %% [markdown]
