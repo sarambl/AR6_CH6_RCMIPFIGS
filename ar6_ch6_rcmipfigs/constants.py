@@ -9,6 +9,7 @@ print(BASE_DIR)
 
 # %%
 INPUT_DATA_DIR = BASE_DIR/ 'data_in'
+INPUT_DATA_DIR_BADC = BASE_DIR/ 'data_in_badc_csv'
 OUTPUT_DATA_DIR = BASE_DIR / 'data_out'
 print(INPUT_DATA_DIR)
 RESULTS_DIR = BASE_DIR/'results'

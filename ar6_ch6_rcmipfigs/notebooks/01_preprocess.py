@@ -1,13 +1,14 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.3.3
+#       jupytext_version: 1.11.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -31,11 +32,12 @@
 # %%
 from ar6_ch6_rcmipfigs import constants
 
+# %%
 # %load_ext autoreload
 # %autoreload 2
 
+# %%
 import matplotlib.pyplot as plt
-import pandas as pd
 
 # %% [markdown]
 # ### Define output paths
@@ -55,22 +57,29 @@ SAVEPATH_DATASET
 # Data for ERF historical period:
 
 # %%
-path_AR_hist = constants.INPUT_DATA_DIR /'AR6_ERF_1750-2019.csv'
-path_AR_hist_minorGHG = constants.INPUT_DATA_DIR /'AR6_ERF_minorGHGs_1750-2019.csv'
+from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
+
+# %%
+path_AR_hist = constants.INPUT_DATA_DIR_BADC /'AR6_ERF_1750-2019.csv'
+
+path_AR_hist_minorGHG = constants.INPUT_DATA_DIR_BADC /'AR6_ERF_minorGHGs_1750-2019.csv'
 # use historical up to 2019:
 use_hist_to_year = 2019
 
 
 
-df_hist = pd.read_csv(path_AR_hist, index_col=0).copy()
-df_hist_minor_GHG = pd.read_csv(path_AR_hist_minorGHG, index_col=0).copy()
+df_hist = read_csv_badc(path_AR_hist, index_col=0).copy()
+df_hist_minor_GHG = read_csv_badc(path_AR_hist_minorGHG, index_col=0).copy()
 df_hist.columns
+
+# %%
+df_hist
 
 # %% [markdown]
 # Find SSP files:
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-path_ssps = constants.INPUT_DATA_DIR / 'SSPs'
+path_ssps = constants.INPUT_DATA_DIR_BADC / 'SSPs'
 paths = path_ssps.glob('*')  # '^(minor).)*$')
 files = [x for x in paths if x.is_file()]
 files
@@ -90,9 +99,9 @@ for file in files:
     print(nm)
     print(file)
     if 'minorGHGs' in fn:
-        ERFs_minor[nm] = pd.read_csv(file, index_col=0).copy()
+        ERFs_minor[nm] = read_csv_badc(file, index_col=0).copy()
     else:
-        ERFs[nm] = pd.read_csv(file, index_col=0).copy()
+        ERFs[nm] = read_csv_badc(file, index_col=0).copy()
     nms.append(nm)
 
 
@@ -102,6 +111,9 @@ for file in files:
 # %% [markdown]
 # #### Controle plot before:
 #
+
+# %%
+ERFs['ssp119']#['co2'][1750]#.loc[2010]
 
 # %%
 for scn in ERFs.keys():

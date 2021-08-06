@@ -2,7 +2,7 @@ import logging
 import os
 
 import pandas as pd
-#from scmdata import ScmDataFrame
+# from scmdata import ScmDataFrame
 
 climatemodel = 'climatemodel'
 logger = logging.getLogger()
@@ -62,28 +62,6 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
     db_out = db_in.append(v_to_agg_df)
 
     return db_out
-
-
-def fix_BC_name(db_in,
-                from_v='Effective Radiative Forcing|Anthropogenic|Albedo Change|Other|Deposition of Black Carbon on Snow',
-                to_v='Effective Radiative Forcing|Anthropogenic|Other|BC on Snow',
-                model="*OSCAR*"):
-    """
-    Changes variable name in db
-    :param db_in:
-    :param from_v: Original name
-    :param to_v: output name
-    :param model:
-    :return: db with from_v changed to to_v
-    """
-    # Convert to dataframe:
-    db = db_in.timeseries().reset_index()
-    # Replace name:
-    db["variable"] = db["variable"].apply(lambda x: to_v if x == from_v else x)
-    # convert back to ScmDataFrame
-    db = ScmDataFrame(db)
-    return db
-
 
 def get_protocol_vars(DATA_PROTOCOL, sheet_name="variable_definitions"):
     """

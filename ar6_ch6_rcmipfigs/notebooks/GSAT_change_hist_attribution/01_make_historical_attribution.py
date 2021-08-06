@@ -7,14 +7,14 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.3
+#       jupytext_version: 1.11.4
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-# %% [markdown]
+# %% [markdown] tags=[]
 # ## Make plot ERF 2019
 #
 #
@@ -22,27 +22,22 @@
 #
 #
 # Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
-#
-
+# %% tags=[]
+import matplotlib.pyplot as plt
+import numpy as np
 # %%
 import pandas as pd
-import numpy.testing
-from numpy.testing import assert_allclose
-from ar6_ch6_rcmipfigs.utils.plot import get_chem_col
-from ar6_ch6_rcmipfigs.constants import RESULTS_DIR, INPUT_DATA_DIR
-from pathlib import  Path
-import numpy as np
-import matplotlib.pyplot as plt
 
+from ar6_ch6_rcmipfigs.constants import RESULTS_DIR, INPUT_DATA_DIR_BADC
 
 # %% [markdown]
 # ### Output filenames.
 
 # %%
 # standard deviation filename:
-fn_sd = RESULTS_DIR/'tables_historic_attribution/table_uncertainties_smb_plt.csv'
+fn_sd = RESULTS_DIR / 'tables_historic_attribution/table_uncertainties_smb_plt.csv'
 # mean filename
-fn_mean = RESULTS_DIR/'tables_historic_attribution/table_mean_smb_plt.csv'
+fn_mean = RESULTS_DIR / 'tables_historic_attribution/table_mean_smb_plt.csv'
 
 
 # %% [markdown]
@@ -58,8 +53,6 @@ table, table_sd = attribution_1750_2019_newBC_smb.main(plot=True)
 table.sum()#_sd
 
 # %%
-import matplotlib.pyplot as plt
-import numpy as np
 
 # %% [markdown]
 # ## Make one category with both CH4 from emissions and change in lifetime 
@@ -166,9 +159,9 @@ cols = [get_chem_col(var) for var in varn]
 std_2_95th = 1.645
 
 # %%
-import pandas as pd
+from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 num_mod_lab = 'Number of models (Thornhill 2020)'
-thornhill = pd.read_csv(INPUT_DATA_DIR/'table2_thornhill2020.csv', index_col=0)
+thornhill = read_csv_badc(INPUT_DATA_DIR_BADC/'table2_thornhill2020.csv', index_col=0)
 thornhill.index = thornhill.index.rename('Species')
 thornhill
 

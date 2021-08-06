@@ -56,7 +56,6 @@ In this work we use:
 The figures are produced in notebooks:
 - [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
 - [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
-- [03-03_delta_T_plot_contribution_total_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-03_delta_T_plot_contribution_total_recommendation.ipynb)
 
 
 ## Directory overview: 
