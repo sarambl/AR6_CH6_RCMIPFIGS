@@ -1,16 +1,15 @@
 ## Description
-Contact: Sara Marie Blichner, University of Oslo 
+Contact: Sara Marie Blichner, University of Oslo
 
 [s.m.blichner@geo.uio.no](mailto:s.m.blichner@geo.uio.no) or [sara.blichner@aces.su.no](mailto:sara.blichner@aces.su.se)
 
 
-Code for analyzing and plotting for AR6 IPCC. 
+Code for analyzing and plotting RCMIP data for AR6 IPCC. 
 
 
-Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
+Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions.
 
-Also, code in [ar6_ch6_rcmipfigs/notebooks/GSAT_change_hist_attribution/utils_hist_att/attribution_1750_2019_newBC_smb.py](ar6_ch6_rcmipfigs/notebooks/GSAT_change_hist_attribution/utils_hist_att/attribution_1750_2019_newBC_smb.py) is is only slightly modified version of code Bill Collins has written (only technical changes).
- 
+
 
 ## RESULTS:
 
@@ -54,20 +53,19 @@ In this work we use:
 
 ## Plot figures:
 The figures are produced in notebooks:
-- [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
 - [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
 
 
-## Directory overview: 
- - [ar6_ch6_rcmipfigs](./ar6_ch6_rcmipfigs)
- 
-    - [data_in](./ar6_ch6_rcmipfigs/data_in) Input data
-    - [data_out](./ar6_ch6_rcmipfigs/data_out) Output data
-    - [misc](./ar6_ch6_rcmipfigs/misc) Various non-code utils
-    - [notebooks](./ar6_ch6_rcmipfigs/data_out) Notebooks
-    - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and tables 
-    - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities  
-    
+## Directory overview:
+- [ar6_ch6_rcmipfigs](./ar6_ch6_rcmipfigs)
+
+   - [data_in](./ar6_ch6_rcmipfigs/data_in) Input data
+   - [data_out](./ar6_ch6_rcmipfigs/data_out) Output data
+   - [misc](./ar6_ch6_rcmipfigs/misc) Various non-code utils
+   - [notebooks](./ar6_ch6_rcmipfigs/data_out) Notebooks
+   - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and tables
+   - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities
+
 
 ## Libraries, software etc:
 A list of the required packages for these figures can be found in [env_rcmip_ch6.yml](env_rcmip_ch6.yml)
