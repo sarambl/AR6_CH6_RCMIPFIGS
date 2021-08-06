@@ -1,0 +1,39 @@
+Conventions,G,BADC-CSV,1,
+activity,G,IPCC AR6,,
+comments,G,The header of this file was edited by Sara Blichner (s.m.blichner@geo.uio.no),,
+title,G,"Data for Figure 6.12, uncertainty in emission based warming and warming for the historical period",,
+last_revised_date,G,2021-06-29,,
+location,G,global,,
+reference,G,https://github.com/sarambl/AR6_CH6_RCMIPFIGS/,,
+source,G,IPCC AR6 output,,
+creator,G,Sara Marie Blichner (s.m.blichner@geo.uio.no),,
+comments,G,"This data is based on various input datasets,",,
+comments,G,please see https://github.com/sarambl/AR6_CH6_RCMIPFIGS for methods,,
+metdb_short_name,Species,Species,degrees C,
+long_name,Species,Species,degrees C,
+type,Species,float,,
+metdb_short_name,min 1 sigma,min 1 sigma,degrees C,
+long_name,min 1 sigma,min 1 sigma,degrees C,
+type,min 1 sigma,float,,
+metdb_short_name,plus 1 sigma,plus 1 sigma,degrees C,
+long_name,plus 1 sigma,plus 1 sigma,degrees C,
+type,plus 1 sigma,float,,
+metdb_short_name,p50-05,p50-05,degrees C,
+long_name,p50-05,p50-05,degrees C,
+type,p50-05,float,,
+metdb_short_name,p95-50,p95-50,degrees C,
+long_name,p95-50,p95-50,degrees C,
+type,p95-50,float,,
+data,,,,
+Species,min 1 sigma,plus 1 sigma,p50-05,p95-50
+CO2,0.16188546713135007,0.2792589512874412,0.26630159343107085,0.4593809748678408
+ch4,0.1328382479493901,0.1989899819696583,0.21851891787674668,0.3273385203400879
+n2o,0.02806920195519105,0.03858870704299033,0.04617383721628928,0.0634784230857191
+HC,0.056906365926690385,0.06364869286487797,0.09361097194940568,0.10470209976272425
+NOx,0.09863058897127916,0.09035031677610514,0.16224731885775423,0.14862627109669296
+VOC,0.07875346161109878,0.10181258352301789,0.1295494443502575,0.16748169989536443
+SO2,0.27091928779778307,0.23184136792604962,0.44566222842735315,0.3813790502383516
+OC,0.05196627874121395,0.04793745165915633,0.08548452852929694,0.07885710797931217
+BC,0.0985016392355097,0.09982218261247883,0.16203519654241344,0.16420749039752766
+NH3,0.00526694949046547,0.0031880463287616502,0.008664131911815698,0.0052443362108129145
+end_data,,,,

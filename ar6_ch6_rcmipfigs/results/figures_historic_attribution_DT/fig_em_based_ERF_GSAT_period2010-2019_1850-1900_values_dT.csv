@@ -1,0 +1,54 @@
+Conventions,G,BADC-CSV,1,,,,,,
+activity,G,IPCC AR6,,,,,,,
+comments,G,The header of this file was edited by Sara Blichner (s.m.blichner@geo.uio.no),,,,,,,
+title,G,"Data for Figure 6.12,  emission based warming for the historical period",,,,,,,
+last_revised_date,G,2021-06-29,,,,,,,
+location,G,global,,,,,,,
+reference,G,https://github.com/sarambl/AR6_CH6_RCMIPFIGS/,,,,,,,
+source,G,IPCC AR6 output,,,,,,,
+creator,G,Sara Marie Blichner (s.m.blichner@geo.uio.no),,,,,,,
+comments,G,"This data is based on various input datasets,",,,,,,,
+comments,G,please see https://github.com/sarambl/AR6_CH6_RCMIPFIGS for methods,,,,,,,
+metdb_short_name,emission_experiment,emission_experiment,degrees C,,,,,,
+long_name,emission_experiment,emission_experiment,degrees C,,,,,,
+type,emission_experiment,float,,,,,,,
+metdb_short_name,CO2,CO2,degrees C,,,,,,
+long_name,CO2,CO2,degrees C,,,,,,
+type,CO2,float,,,,,,,
+metdb_short_name,N2O,N2O,degrees C,,,,,,
+long_name,N2O,N2O,degrees C,,,,,,
+type,N2O,float,,,,,,,
+metdb_short_name,HC,HC,degrees C,,,,,,
+long_name,HC,HC,degrees C,,,,,,
+type,HC,float,,,,,,,
+metdb_short_name,HFCs,HFCs,degrees C,,,,,,
+long_name,HFCs,HFCs,degrees C,,,,,,
+type,HFCs,float,,,,,,,
+metdb_short_name,CH4_lifetime,CH4_lifetime,degrees C,,,,,,
+long_name,CH4_lifetime,CH4_lifetime,degrees C,,,,,,
+type,CH4_lifetime,float,,,,,,,
+metdb_short_name,O3,O3,degrees C,,,,,,
+long_name,O3,O3,degrees C,,,,,,
+type,O3,float,,,,,,,
+metdb_short_name,Strat_H2O,Strat_H2O,degrees C,,,,,,
+long_name,Strat_H2O,Strat_H2O,degrees C,,,,,,
+type,Strat_H2O,float,,,,,,,
+metdb_short_name,Aerosol,Aerosol,degrees C,,,,,,
+long_name,Aerosol,Aerosol,degrees C,,,,,,
+type,Aerosol,float,,,,,,,
+metdb_short_name,Cloud,Cloud,degrees C,,,,,,
+long_name,Cloud,Cloud,degrees C,,,,,,
+type,Cloud,float,,,,,,,
+data,,,,,,,,,
+emission_experiment,CO2,N2O,HC,HFCs,CH4_lifetime,O3,Strat_H2O,Aerosol,Cloud
+CO2,0.7882536957540464,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+ch4,0.007569379850355248,0.0,0.0,0.0,0.3642364084818429,0.11505019666942902,0.02156631956208552,-0.0011444202276242935,0.005959052830612038
+n2o,0.0,0.0837746528384364,0.0,0.0,-0.01434832605017866,0.010421496602015974,0.0,-0.0008339350170322174,0.012716687522591462
+HC,2.4304037101874954e-05,0.0,0.1877064576135166,0.018208614300357112,-0.023315322985106697,-0.07418188969357213,0.0,-0.0036993632039692154,-0.005981170651320901
+NOx,0.0,0.0,0.0,0.0,-0.19805734358102156,0.07145360885098308,0.0,-0.0047769370368090985,-0.005651295566860465
+VOC,0.035454376985645866,0.0,0.0,0.0,0.08288878382125534,0.10309713296404396,0.0,-0.0013126802110153665,0.0033994169639159208
+SO2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.14923904931128903,-0.336314333365048
+OC,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.028677771789805056,-0.04081998540873438
+BC,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.06946321763895766,-0.013403048951744548
+NH3,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-0.014523271342552477,0.0
+end_data,,,,,,,,,
