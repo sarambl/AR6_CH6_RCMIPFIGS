@@ -6,8 +6,8 @@ channels:
 dependencies:
   - python=3.7
   - pip>19
-  - ipywidgets==7.5.1
-  - nb_black==1.0.6
+  - ipywidgets
+  - nb_black
   - iris
   - numpy >=1.11.0
   - xarray >=0.10.8
@@ -22,21 +22,16 @@ dependencies:
   - jupyter
   - ipykernel
   - pyam
+  - nbconvert
   - pip:
-    - netcdf-scm==2.0.0b5
-    - pyam-iamc==0.3.0
-    - git+https://github.com/sarambl/AR6_CH6_RCMIPFIGS
-    - git+https://github.com/znicholls/nbflow.git@b3f58bfcb6adb24b522f51481c49c03d54795ff1
-    - scons==3.0.5
-    - black==19.3b0
-    - notebook==5.7.8
-    - nbconvert==5.5.0
-    - jupyter_contrib_nbextensions==0.5.1
-    - nbdime==1.0.6
-    - nbresuse==0.3.2
-    - tqdm==4.32.2
-    - scmdata=0.11.0
-    - openscm-twolayermodel==0.2.1
-    - openscm-units==0.2.0
+    - scons
+    - black
+    - notebook
+    - nbdime
+    - nbresuse
+    - tqdm
+    - scmdata>=0.9
+    - openscm-twolayermodel
+    - openscm-units
 
 
