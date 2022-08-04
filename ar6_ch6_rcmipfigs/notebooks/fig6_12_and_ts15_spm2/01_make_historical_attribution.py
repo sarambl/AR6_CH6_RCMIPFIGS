@@ -268,13 +268,13 @@ plt.xlim(-1.5, 2.6)
 sns.despine(fig, left=True, trim=True)
 plt.legend(loc='lower right', frameon=False)
 plt.axvline(x=0., color='k', linewidth=0.25)
-fn = 'attribution_1750_2019_5-95th.png'
-fp = RESULTS_DIR /'figures_historic_attribution'/fn
-fp.parent.mkdir(parents=True, exist_ok=True)
+#fn = 'attribution_1750_2019_5-95th.png'
+#fp = RESULTS_DIR /'figures_historic_attribution'/fn
+#fp.parent.mkdir(parents=True, exist_ok=True)
 ax.set_yticks([])
 
-plt.savefig(fp, dpi=300)
-plt.savefig(fp.with_suffix('.pdf'), dpi=300)
+#plt.savefig(fp, dpi=300)
+#plt.savefig(fp.with_suffix('.pdf'), dpi=300)
 plt.show()
 
 

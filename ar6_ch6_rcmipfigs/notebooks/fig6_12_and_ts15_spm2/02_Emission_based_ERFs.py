@@ -37,13 +37,6 @@
 #
 # Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
 
-# %% [markdown]
-# ## Final ERFs in 2019 based on Thornhill 2021
-
-# %% [markdown]
-# <img src="../../results/figures_historic_attribution/attribution_1750_2019_5-95th.png" alt="drawing" width="800"/>
-#
-
 # %%
 import numpy as np
 import pandas as pd

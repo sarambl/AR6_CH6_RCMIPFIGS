@@ -14,7 +14,7 @@
 #     name: python3
 # ---
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 import pandas as pd
 import xarray as xr
 import numpy as np
@@ -25,20 +25,20 @@ import seaborn as sns
 # %autoreload 2
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC, BASE_DIR
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Code + figures
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 output_name = 'fig_em_based_ERF_GSAT_period2010-2019_1850-1900'
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Path input data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
@@ -55,24 +55,24 @@ fp_collins_sd = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/table_std_th
 
 fn_TAB2_THORNHILL = INPUT_DATA_DIR_BADC / 'table2_thornhill2020.csv'
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Path output data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 
 PATH_FIGURE_OUT = RESULTS_DIR / 'fig_SPM2_data'
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### various definitions
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # **Set reference year for temperature change:**
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
 ref_period = [1850, 1900]
 pd_period = [2010, 2019]
-# %%
+# %% pycharm={"name": "#%%\n"}
 # variables to plot:
 variables_erf_comp = [
     'CO2', 'N2O', 'CH4', 'HC', 'NOx', 'SO2', 'BC', 'OC', 'NH3', 'VOC'
@@ -83,14 +83,14 @@ variables_all = variables_erf_comp + variables_erf_tot
 # Scenarios to plot:
 scenarios_fl = []
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 varn = ['co2', 'N2O', 'HC', 'HFCs', 'ch4', 'o3', 'H2O_strat', 'ari', 'aci']
 var_dir = ['CO2', 'N2O', 'HC', 'HFCs', 'CH4_lifetime', 'O3', 'Strat_H2O', 'Aerosol', 'Cloud']
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Names for labeling:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 rename_dic_cat = {
     'CO2': 'Carbon dioxide (CO$_2$)',
     'GHG': 'WMGHG',
@@ -121,7 +121,7 @@ rename_dic_cols = {
     'NH3': 'Ammonia'
 }
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 rn_dic_cat_o = {}
 for key in rename_dic_cat.keys():
     rn_dic_cat_o[rename_dic_cat[key]]=key
@@ -129,20 +129,20 @@ rn_dic_cols_o = {}
 for key in rename_dic_cols.keys():
     rn_dic_cols_o[rename_dic_cols[key]]=key
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Open ERF dataset:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds = xr.open_dataset(PATH_DATASET)
 ds  # ['Delta T']
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Overview plots
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 cols = get_cmap_dic(ds['variable'].values)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 fig, axs = plt.subplots(2, sharex=True, figsize=[6, 6])
 
 ax_erf = axs[0]
@@ -162,7 +162,7 @@ ax_dT.legend(ncol=4, loc='upper left', frameon=False)
 plt.tight_layout()
 #fig.savefig('hist_timeseries_ERF_dT.png', dpi=300)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
 
 col_list = [cols[c] for c in df_deltaT.columns]
@@ -180,39 +180,39 @@ plt.ylabel('$\Delta$ GSAT ($^\circ$ C)')
 ax.set_xlim([1740, 2028])
 sns.despine()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Split up ERF/warming into sources by using data from Thornhill
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # We use the original split up in ERF from Thornhill/Bill Collin's plot 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Open dataset from Bill Collin's script:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_collins = pd.read_csv(fn_ERF_2019, index_col=0)
 df_collins.index = df_collins.index.rename('emission_experiment')
 df_collins_sd = pd.read_csv(fp_collins_sd, index_col=0)
 df_collins
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 width = 0.7
 kwargs = {'linewidth': .1, 'edgecolor': 'k'}
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Decompose GSAT signal as the ERF signal
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### GSAT
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Get period mean difference for GSAT:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
 mean_PD = df_deltaT.loc[pd_period[0]:pd_period[1]].mean()
 mean_PD
@@ -222,10 +222,10 @@ mean_PI = df_deltaT.loc[ref_period[0]:ref_period[1]].mean()
 dT_period_diff = pd.DataFrame(mean_PD - mean_PI, columns=['diff'])  # df_deltaT.loc[2019])
 dT_period_diff.index = dT_period_diff.index.rename('emission_experiment')
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Make normalized decomposition of different components from emission based ERF. 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_coll_t = df_collins.transpose()
 if 'Total' in df_coll_t.index:
     df_coll_t = df_coll_t.drop('Total')
@@ -236,58 +236,58 @@ df_col_normalized = df_coll_t / scale
 #
 df_col_normalized.transpose().plot.barh(stacked=True)
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # We multiply the change in GSAT in 2010-2019 vs 1850-1900 by the matrix describing the source distribution from the ERF:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 dT_period_diff['diff']
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_dt_sep = dT_period_diff['diff'] * df_col_normalized
 
 df_dt_sep = df_dt_sep.transpose()
 df_dt_sep
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_dt_sep.plot.bar(stacked=True)
 dT_period_diff['diff'].reindex(df_dt_sep.index).plot()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### ERF
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Get period mean difference for ERF:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_ERF = ds['ERF'].squeeze().to_dataframe().unstack('variable')['ERF']
 mean_ERF_PD = df_ERF.loc[pd_period[0]:pd_period[1]].mean()
 
 mean_ERF_PI = df_ERF.loc[ref_period[0]:ref_period[1]].mean()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ERF_period_diff = pd.DataFrame(mean_ERF_PD - mean_ERF_PI, columns=['diff'])  # df_deltaT.loc[2019])
 ERF_period_diff.index = ERF_period_diff.index.rename('emission_experiment')
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 #
 # We multiply the change in ERF in 2010-2019 vs 1850-1900 by the matrix describing the source distribution from the ERF:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_erf_sep = ERF_period_diff['diff'] * df_col_normalized
 df_erf_sep = df_erf_sep.transpose()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ERF_period_diff
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_erf_sep.plot.bar(stacked=True)
 ERF_period_diff['diff'].reindex(df_erf_sep.index).plot.line()
 plt.show()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Accounting for non-linearities in ERFaci, we scale down the GSAT change from aci contribution to fit with chapter 7 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. When considering the 1750-2019 change in GSAT, we therefore scaled the GSAT change by aerosol cloud interactions to fit this total. This constituted a 25% reduction. 
 # For the GSAT averaged over the period 2010-2019 vs 1850-1900 we thus reduce by 25%. 
 #
@@ -299,40 +299,40 @@ plt.show()
 # \frac{ERF_{aci}}{ERF_{ari}} = \alpha 
 # \end{equation}
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # From the data (from FaIR, Chris) $\alpha_{period}=3.42$ for 1850-1900 vs 2010-2019, while for the standard period from 1750 to 2019, it is $\alpha_{standard} = 3.91$. 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Thus, the ratio is 
 # \begin{equation}
 # \frac{\alpha_{period}}{\alpha_{stanard}} = 0.874
 # \end{equation}
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # This results in a scaling down of approximately 12.5% of ERFaci. 
 #
 
-# %% tags=[]
+# %% tags=[] pycharm={"name": "#%%\n"}
 scale_down_by = 0.25
 aci_tot = df_dt_sep.sum()['Cloud']
 aci_tot
 df_dt_sep['Cloud'] = df_dt_sep['Cloud'] * (1 - scale_down_by)  # scale_by
 df_dt_sep.sum()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_erf_sep.sum()
 
-# %% tags=[]
+# %% tags=[] pycharm={"name": "#%%\n"}
 scale_down_by = 0.125
 aci_tot = df_erf_sep.sum()['Cloud']
 aci_tot
 df_erf_sep['Cloud'] = df_erf_sep['Cloud'] * (1 - scale_down_by)  # scale_by
 df_erf_sep.sum()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Uncertainties
 
-# %% tags=[]
+# %% tags=[] pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
 num_mod_lab = 'Number of models (Thornhill 2020)'
@@ -357,43 +357,43 @@ df_err['95-50'] = df_err['std'] * std_2_95th
 df_err.loc['CO2', '95-50'] = df_err.loc['CO2', 'std']
 df_err
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
 #
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ERF_2019_tot = df_collins.sum(axis=1).reindex(df_err.index)
 ERF_period_diff_tot = df_erf_sep.sum(axis=1).reindex(df_err.index)
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Scale by the period mean to the original 1750-2019 difference. 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_err['95-50_period'] = df_err['95-50'] * np.abs(ERF_period_diff_tot / ERF_2019_tot)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_err
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Uncertainties $\Delta$ GSAT
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 #
 # \begin{align*} 
 # \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
 # \end{align*}
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # most of the uncertainty in the IRF derives from the uncertainty in the climate sensitivity which is said 3 (2.5-4), i.e. relative std 0.5/3 for the lower and 1/3 for the higher. If we treat this as two independent normally distributed variables multiplied together, $X$ and $Y$ and $X \cdot Y$, we may propagate the uncertainty: 
 #
 # \begin{align*} 
 # \frac{\sigma_{XY}^2}{(XY)^2} = \Big[(\frac{\sigma_X}{X})^2 + (\frac{\sigma_Y}{Y})^2 \Big]
 # \end{align*}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ERF_2019_tot
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 std_ERF = df_err['std']
 std_ECS_lw_rl = 0.5 / 3
 std_ECS_hg_rl = 1 / 3
@@ -403,9 +403,9 @@ std_erf_rl = np.abs(std_ERF / tot_ERF)
 std_erf_rl  # .rename(rename_dic_cols)
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 def rel_sigma_prod(rel_sigmaX, rel_sigmaY):
     var_prod_rel = (rel_sigmaX ** 2 + rel_sigmaY ** 2)
     rel_sigma_product = np.sqrt(var_prod_rel)
@@ -415,18 +415,18 @@ def rel_sigma_prod(rel_sigmaX, rel_sigmaY):
 rel_sig_lw = rel_sigma_prod(std_erf_rl, std_ECS_lw_rl)
 rel_sig_hg = rel_sigma_prod(std_erf_rl, std_ECS_hg_rl)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tot_dT = df_dt_sep.sum(axis=1).reindex(std_ERF.index)
 
 neg_v = (tot_dT < 0)  # .squeeze()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 std_2_95th
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 rel_sig_hg
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 err_dT = pd.DataFrame(index=tot_dT.index)
 err_dT['min 1 sigma'] = np.abs(tot_dT * rel_sig_lw)  # *tot_dT
 err_dT['plus 1 sigma'] = np.abs(tot_dT * rel_sig_hg)
@@ -442,44 +442,44 @@ err_dT
 err_dT = err_dT.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 # var_nn_dir = [rename_dic_cols[v] for v in varn]
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 df_err = df_err.rename(rename_dic_cols, axis=0)
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Reorder and rename
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 exps_ls = ['CO2', 'CH4', 'N2O', 'HC', 'NOx', 'VOC', 'SO2', 'OC', 'BC', 'NH3']
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tab_plt_dT = df_dt_sep.loc[::-1, var_dir]  # .rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 tab_plt_dT = tab_plt_dT.loc[exps_ls]
 tab_plt_dT = tab_plt_dT.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tab_plt_erf = df_erf_sep.loc[::-1, var_dir]  # .rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 tab_plt_erf = tab_plt_erf.loc[exps_ls]
 tab_plt_erf = tab_plt_erf.rename(rename_dic_cat, axis=1).rename(rename_dic_cols, axis=0)
 tab_plt_erf = tab_plt_erf  # .T
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 cmap = get_cmap_dic(var_dir)
 col_ls = [cmap[c] for c in cmap.keys()]
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ybar = np.arange(len(tab_plt_erf.T) + 1)  # , -1)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 index_order = tab_plt_dT[::-1].index
 index_order
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Plot
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 sns.set_style()
 fig, axs = plt.subplots(1, 2, dpi=300, figsize=[10, 4])  # , dpi=150)
 width = .8
@@ -557,24 +557,24 @@ plt.savefig(fp.with_suffix('.pdf'), dpi=300, bbox_inches='tight')
 plt.savefig(fp.with_suffix('.png'), dpi=300, bbox_inches='tight')
 plt.show()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tab_plt_erf.T.sum(axis=0)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tab_plt_dT.sum(axis=1)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 tab_plt_dT.sum()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Write vales to csv
 
-# %% [markdown] tags=[]
+# %% [markdown] tags=[] pycharm={"name": "#%% md\n"}
 # ### Write plotted data to file
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 dic_head = dict(
     title='Data for Figure 2 SPM, emission based ERF and warming for the historical period',
     last_revised_date='2021-06-29',
@@ -625,7 +625,7 @@ def get_title(perc,var):
 
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 fn = output_name + '_values_ERF.csv'
 fp = PATH_FIGURE_OUT / fn
 
