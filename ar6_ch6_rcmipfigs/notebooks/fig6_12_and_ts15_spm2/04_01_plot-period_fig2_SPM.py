@@ -60,7 +60,7 @@ fn_TAB2_THORNHILL = INPUT_DATA_DIR_BADC / 'table2_thornhill2020.csv'
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 
-PATH_FIGURE_OUT = RESULTS_DIR / 'fig_SMP2_data'
+PATH_FIGURE_OUT = RESULTS_DIR / 'fig_SPM2_data'
 
 # %% [markdown]
 # ### various definitions
@@ -571,31 +571,12 @@ tab_plt_dT.sum()
 # %% [markdown]
 # # Write vales to csv
 
-# %% [markdown]
-# fn = output_name + '_values_ERF.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# tab_plt_erf.to_csv(fp)
-#
-# fn = output_name + '_values_ERF_uncertainty.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# df_err.to_csv(fp)
-#
-# fn = output_name + '_values_dT.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# tab_plt_dT.to_csv(fp)
-#
-# fn = output_name + '_values_dT_uncertainty.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# err_dT.to_csv(fp)
-#
-# from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
-
 # %% [markdown] tags=[]
 # ### Write plotted data to file
 
 # %%
 dic_head = dict(
-    title='Data for Figure 2 SMP, emission based ERF and warming for the historical period',
+    title='Data for Figure 2 SPM, emission based ERF and warming for the historical period',
     last_revised_date='2021-06-29',
     location='global',
     reference='https://github.com/sarambl/AR6_CH6_RCMIPFIGS/',

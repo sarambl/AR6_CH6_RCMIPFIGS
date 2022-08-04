@@ -27,11 +27,8 @@ from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC, BASE_DIR
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
-# %%
+# %% pycharm={"name": "#%%\n"} jupyter={"outputs_hidden": false}
 from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
-
-# %% [markdown]
-# # Code + figures
 
 # %%
 output_name = 'fig_em_based_ERF_GSAT_period_1750-2019'
@@ -550,23 +547,6 @@ tab_plt_erf
 
 # %%
 df_err
-
-# %% [markdown]
-# fn = output_name + '_values_ERF.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# tab_plt_erf.to_csv(fp)
-#
-# fn = output_name + '_values_ERF_uncertainty.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# df_err.to_csv(fp)
-#
-# fn = output_name + '_values_dT.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# tab_plt_dT.to_csv(fp)
-#
-# fn = output_name + '_values_dT_uncertainty.csv'
-# fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
-# err_dT.to_csv(fp)
 
 # %%
 from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header

@@ -9,7 +9,7 @@ Code for analyzing and plotting for AR6 IPCC.
 
 Note: Thanks to Zebedee Nicholls Zebedee Nicholls ([zebedee.nicholls@climate-energy-college.org](mailto:zebedee.nicholls@climate-energy-college.org)) and Chris Smith [https://github.com/chrisroadmap](https://github.com/chrisroadmap) for supplying data and answering questions. 
 
-Also, code in [ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15/utils_hist_att/attribution_1750_2019_newBC_smb.py](ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15/utils_hist_att/attribution_1750_2019_newBC_smb.py) is is only slightly modified version of code Bill Collins has written (only technical changes).
+Also, code in [ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/utils_hist_att/attribution_1750_2019_newBC_smb.py](ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/utils_hist_att/attribution_1750_2019_newBC_smb.py) is is only slightly modified version of code Bill Collins has written (only technical changes).
  
 
 ## RESULTS:

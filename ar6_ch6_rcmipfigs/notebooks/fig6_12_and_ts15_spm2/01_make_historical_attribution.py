@@ -52,7 +52,7 @@ fn_mean_orig_names.parent.mkdir(parents=True, exist_ok=True)
 # ## Get tables from script from Bill
 
 # %% tags=[] pycharm={"name": "#%%\n"}
-from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15.utils_hist_att import attribution_1750_2019_newBC_smb
+from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15_spm2.utils_hist_att import attribution_1750_2019_newBC_smb
 
 # %% pycharm={"name": "#%%\n"}
 table, table_sd = attribution_1750_2019_newBC_smb.main(plot=True)
