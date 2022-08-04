@@ -64,7 +64,7 @@ fn_concentrations = INPUT_DATA_DIR / 'historical_delta_GSAT/LLGHG_history_AR6_v9
 path_emissions = INPUT_DATA_DIR / 'historical_delta_GSAT/CEDS_v2021-02-05_emissions/'
 
 # file path table of ERF 2019-1750
-fp_collins = RESULTS_DIR / 'tables_historic_attribution/table_mean_smb_orignames.csv'
+fp_collins = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/table_mean_thornhill_collins_orignames.csv'
 
 # %%
 fl_CEDS = list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.csv'))
@@ -73,9 +73,9 @@ fl_CEDS = list(path_emissions.glob('*global_CEDS_emissions_by_sector_2021_02_05.
 # ### Output file paths:
 
 # %%
-fn_output_ERF = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est.csv'
-fn_output_ERF_2019 = OUTPUT_DATA_DIR / 'historic_delta_GSAT/2019_ERF_est.csv'
-fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
+fn_output_ERF = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est.csv'
+fn_output_ERF_2019 = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/2019_ERF_est.csv'
+fn_output_decomposition = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est_decomp.csv'
 
 # %% [markdown]
 # ## Load concentration file and interpolate from 1750 to 1850

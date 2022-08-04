@@ -44,14 +44,14 @@ output_name = 'fig_em_based_ERF_GSAT_period2010-2019_1850-1900'
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 
 # PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
-PATH_DATASET = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.nc'
+PATH_DATASET = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/dT_data_hist_recommendation.nc'
 
-fn_ERF_2019 = OUTPUT_DATA_DIR / 'historic_delta_GSAT/2019_ERF_est.csv'
+fn_ERF_2019 = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/2019_ERF_est.csv'
 # fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
 
-fn_ERF_timeseries = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est.csv'
+fn_ERF_timeseries = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est.csv'
 
-fp_collins_sd = RESULTS_DIR / 'tables_historic_attribution/table_std_smb_orignames.csv'
+fp_collins_sd = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/table_std_thornhill_collins_orignames.csv'
 
 fn_TAB2_THORNHILL = INPUT_DATA_DIR_BADC / 'table2_thornhill2020.csv'
 
@@ -59,7 +59,7 @@ fn_TAB2_THORNHILL = INPUT_DATA_DIR_BADC / 'table2_thornhill2020.csv'
 # ### Path output data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.csv'
+PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/dT_data_hist_recommendation.csv'
 
 print(PATH_DF_OUTPUT)
 
@@ -161,7 +161,7 @@ ax_dT.set_ylabel('$\Delta$ GSAT [$^{\circ}$C]')
 ax_erf.set_xlabel('')
 ax_dT.legend(ncol=4, loc='upper left', frameon=False)
 plt.tight_layout()
-fig.savefig('hist_timeseries_ERF_dT.png', dpi=300)
+#fig.savefig('hist_timeseries_ERF_dT.png', dpi=300)
 
 # %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']

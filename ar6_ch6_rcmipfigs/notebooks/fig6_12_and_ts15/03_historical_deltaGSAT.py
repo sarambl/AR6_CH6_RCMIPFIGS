@@ -92,17 +92,9 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 # ### Path input data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
-PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
-
-
-
-
-
-
-
-
+PATH_DATASET = OUTPUT_DATA_DIR/'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est.csv'
 
 
 # %% [markdown]
@@ -110,8 +102,16 @@ PATH_DATASET = OUTPUT_DATA_DIR/'historic_delta_GSAT/hist_ERF_est.csv'
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 #PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
-PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'historic_delta_GSAT/dT_data_hist_recommendation.csv'
+PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/dT_data_hist_recommendation.nc'
 
+
+# %% [markdown] jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+# #### Extra output 
+
+
+# %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
+PATH_DT_TIMESERIES =  RESULTS_DIR /'tables_historical_attribution' / 'Delta_T_timeseries.csv' 
+PATH_ERF_TIMESERIES =  RESULTS_DIR /'tables_historical_attribution' / 'ERF_timeseries.csv' 
 print(PATH_DF_OUTPUT)
 
 
@@ -201,7 +201,7 @@ ds
 #da_ERF = ds['ERF']
 
 # %%
-ds['ERF'].to_pandas().transpose().to_csv('ERF_timeseries.csv')
+ds['ERF'].to_pandas().transpose().to_csv(PATH_ERF_TIMESERIES)#'ERF_timeseries.csv')
 
 # %% [markdown]
 # #### Simple pre-processing
@@ -439,10 +439,10 @@ for key in IRFpercentiles:
 ds['Delta T'] = ds_tmp.to_array('percentile')
 
 # %%
-ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose().to_csv('Delta_T_timeseriies.csv')
+ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose().to_csv(PATH_DT_TIMESERIES) 
 
 # %%
-ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose()#.to_csv('Delta_T_timeseriies.csv')
+ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose()
 
 # %% [markdown]
 # # Save dataset:

@@ -14,9 +14,9 @@ from ar6_ch6_rcmipfigs.constants import RESULTS_DIR
 from pathlib import  Path
 import numpy as np
 import matplotlib.pyplot as plt
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.co2_forcing_AR6 import co2_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.ch4_forcing_AR6 import ch4_forcing_AR6
-from ar6_ch6_rcmipfigs.notebooks.GSAT_change_hist_attribution.utils_hist_att.n2o_forcing_AR6 import n2o_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15.utils_hist_att.co2_forcing_AR6 import co2_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15.utils_hist_att.ch4_forcing_AR6 import ch4_forcing_AR6
+from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15.utils_hist_att.n2o_forcing_AR6 import n2o_forcing_AR6
 import seaborn as sns
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR
 # All from table 7.8
@@ -25,8 +25,8 @@ ch4_erf_AR6 = 0.54
 n2o_erf_AR6 = 0.21
 hc_erf_AR6 = 0.41
 o3_erf_AR6 = 0.47
-ari_erf_AR6 = -0.22 # for 2019
-aci_erf_AR6 = -0.84 # for 2019
+ari_erf_AR6 = -0.22
+aci_erf_AR6 = -0.84
 
 
 co2_1850 = 286.7 # LLGHG_history_AR6_v8a
@@ -47,14 +47,15 @@ n2o_ra = 0.07 # FGD
 tot_em_co2 = 582. # Cumulative C since 1850 - from MAGICC input files
 # %%
 def main(plot=False):
-# %%
     ch4_erf = ch4_forcing_AR6(ch4_2014, ch4_1850, n2o_1850)*(1+ch4_ra)
     n2o_erf = n2o_forcing_AR6(n2o_2014, n2o_1850, co2_1850, ch4_1850)*(1+n2o_ra)
     hc_erf = 0.40 # 1850-2014 Interpolated between 2011 (0.39) and 2019 (0.41)
 
+    # not used:
     erf_bc = 0.15 # Thornhill et al.
-    irf_ari = -0.3 # AR6 for 2014
-    erf_aci = -1.0 # AR6 for 2014
+    # used:
+    irf_ari = -0.3 # AR6 FGD 1750-2014
+    erf_aci = -1.0 # AR6 FGD 1750-2014
 
     ncols = 5 # columns in csv file
     nspec = 9 # number of species
@@ -85,12 +86,12 @@ def main(plot=False):
     total_o3 = np.sum(rfo3)
 
     alpha = 1.30 # From chapter 6
-    # %%
+
     #print(alpha)
     ch4 = ch4_2014*(1+lifech4)**alpha
     ch4_sd = (ch4-ch4_2014)*lifech4_sd/lifech4
     ch4_sd = np.where(lifech4 == 0, 0., ch4_sd)
-    # %%
+
     # Ozone primary mode
     rfo3perch4 = rfo3[i_ch4]/(ch4_2014-ch4_1850) # Use CH4 expt
     rfo3perch4_sd = rfo3_sd[i_ch4]/(ch4_2014-ch4_1850) # Use CH4 expt
@@ -99,11 +100,12 @@ def main(plot=False):
             (rfo3perch4_sd*(ch4-ch4_2014))**2+
     # add 15% uncertainty in radiative transfer - from Ragnhild
             (rfo3perch4*(ch4-ch4_2014)*0.15)**2)
-    # Set ch4 o3 prime to be minus sum of non-ch4 terms
-    # - ensures total sum of prime terms is zero
-    rfo3_prime[i_ch4] = -np.sum(rfo3_prime[i_non_ch4])
-    rfo3_prime_sd[i_ch4] = np.sqrt(np.sum(np.square(rfo3_prime_sd[[i_non_ch4]])))
-
+    # Subtract total o3 prime from direct o3i_hc
+    # - ensures total sum of direct and prime terms is unchanged
+    rfo3[i_ch4] -= np.sum(rfo3_prime)
+    #############################################################
+    # CH4 start
+    #############################################################
     # CH4 forcing
     rfch4 = np.zeros(nspec)
     rfch4_sd = np.zeros(nspec)
@@ -114,13 +116,16 @@ def main(plot=False):
         rfch4_sd[ispec] = \
             ch4_forcing_AR6(ch4[ispec]+ch4_sd[ispec], ch4_2014, n2o_2014)*\
             (1+ch4_ra)-rfch4[ispec]
-    # rfch4 due to ch4 is minus sum of non-ch4 terms
-    # - ensures total sum of rfch4 changes is zero
-    rfch4[i_ch4] = -np.sum(rfch4[i_non_ch4])
-    rfch4_sd[i_ch4] = np.sqrt(np.sum(np.square(rfch4_sd[[i_non_ch4]])))
     # Add in 14% spectral uncertainty
     rfch4_sd=np.sqrt((rfch4*0.14)**2+(rfch4_sd)**2)
 
+    #############################################################
+    # CH4 end
+    #############################################################
+
+    #############################################################
+    # co2 start
+    #############################################################
 
     em_co2 = np.zeros(nspec)
     em_co2[[i_ch4, i_hc, i_voc]] = [6.6, 0.02, 26.]
@@ -141,12 +146,26 @@ def main(plot=False):
     rfco2_co2 = co2_forcing_AR6(co2_2014, co2_1850, n2o_2014)*(1+co2_ra) \
                 -np.sum(rfco2) # Subtract off non-co2 carbon contributions
 
+    #############################################################
+    # co2 end
+    #############################################################
+
+    #############################################################
+    # GHG start
+    #############################################################
     #Set up WMGHG direct ERFs
     rfghg = np.zeros(nspec)
+    #rfghg[i_ch4] = 0 # smb edit ch4_erf
+    rfghg[i_ch4] = ch4_erf
     rfghg[i_ch4] = ch4_erf
     rfghg[i_n2o] = n2o_erf
     rfghg[i_hc] = hc_erf
-
+# %%
+    # subtract sum of lifetime terms from rfghg[i_ch4]
+    # - ensures total sum of methane rf is ch4_erf
+    #rfghg[i_ch4] -= np.sum(rfch4) # smb
+    rfghg[i_ch4] -= np.sum(rfch4)
+    # %%
     #Aerosols
     #Set indicies
     i_bc = np.where(data['Experiment']=='BC')[0][0]
@@ -155,61 +174,55 @@ def main(plot=False):
     i_nh3 = np.where(data['Experiment']=='NH3')[0][0]
     i_aer = np.array([i_bc, i_oc, i_so2, i_nh3]) # all aerosols
     i_scat = np.array([i_oc, i_so2, i_nh3]) # scattering aerosols
-
-    #Overwrite Ghan ari for aerosols. Ghan ari still used for gases
+    # %%
     #Set aerosol ari to be erf-ac to ensure components add to erf
     ari[i_aer] = erf[i_aer]-ac[i_aer]
     ari_sd[i_aer] = np.sqrt(erf_sd[i_aer]**2 +ac_sd[i_aer]**2)
 
-    #Don't need 2014 scaling anymore since BC excluded from both, and gases included in both
-    #Product of two scalings is equal to a single scalng to 2019
+# %%
+    # scale SO2+OC to get total ari
 
-    #Scale BC separately from 2014 to 2019
-    # Use ratio of Ch 7 ari values for *both* ari and ac
-    # This assumes that for BC ac scales with the direct effect rather than indirect
-    ari_sd[i_bc] *= ari_erf_AR6/irf_ari # 2019/2014
-    ari[i_bc] *= ari_erf_AR6/irf_ari # 2019/2014
-    ac_sd[i_bc] *= ari_erf_AR6/irf_ari # 2019/2014
-    ac[i_bc] *= ari_erf_AR6/irf_ari # 2019/2014
+    irf_ari_scat = irf_ari-ari[i_bc] # Set non-BC ari to 7.3.3 FGD
+    ari_scat = np.sum(ari[i_scat])
+    # %%
+    ari[i_scat] = ari[i_scat]*irf_ari_scat/ari_scat
+    ari_sd[i_scat] = ari_sd[i_scat]*irf_ari_scat/ari_scat
+# %%
+    # scale aci to get total aci from 7.3.3
+    total_aci = np.sum(ac[i_aer])
+    ac[i_aer] = ac[i_aer]*erf_aci/total_aci
+    ac_sd[i_aer] = ac_sd[i_aer]*erf_aci/total_aci
+    # %%
 
-    #Now Scale everything to 2019 as in table 7.8
-    #Scale the denominator last otherwise you get 1.0 for subsequent scalings!
-    rfco2_co2 *= co2_erf_AR6/(rfco2_co2+np.sum(rfco2))
+    #Scale everything to table 7.8
+    scale_co2 = co2_erf_AR6/(rfco2_co2+np.sum(rfco2))
+    rfco2_co2 *= scale_co2
 
-    rfch4         *= ch4_erf_AR6/rfghg[i_ch4]
-    rfch4_sd      *= ch4_erf_AR6/rfghg[i_ch4]
-    rfo3_prime    *= ch4_erf_AR6/rfghg[i_ch4]
-    rfo3_prime_sd *= ch4_erf_AR6/rfghg[i_ch4]
-    rfghg[i_ch4]  *= ch4_erf_AR6/rfghg[i_ch4]
+    scale_ch4 = ch4_erf_AR6/(rfghg[i_ch4]+np.sum(rfch4))
+    rfghg[i_ch4]  *= scale_ch4
+    rfch4         *= scale_ch4
+    rfch4_sd      *= scale_ch4
 
-    rfghg[i_n2o] *= n2o_erf_AR6/rfghg[i_n2o]
+    scale_n2o = n2o_erf_AR6/rfghg[i_n2o]
+    rfghg[i_n2o] *= scale_n2o
 
-    rfghg[i_hc] *= hc_erf_AR6/rfghg[i_hc]
+    scale_hc = hc_erf_AR6/rfghg[i_hc]
+    rfghg[i_hc] *= scale_hc
 
-    rfo3_sd *= o3_erf_AR6/np.sum(rfo3)
-    rfo3    *= o3_erf_AR6/np.sum(rfo3)
+    scale_o3 = o3_erf_AR6/(np.sum(rfo3)+np.sum(rfo3_prime))
+    rfo3    *= scale_o3
+    rfo3_sd *= scale_o3
+    rfo3_prime    *= scale_o3
+    rfo3_prime_sd *= scale_o3
+    # %%
+    scale_ari = ari_erf_AR6/np.sum(ari)
+    ari_sd *= scale_ari
+    ari *= scale_ari
 
-
-
-    #Need to subtract off BC values from Ch 7 to get non-BC ari and aci
-    ari_erf_AR6_nonBC = ari_erf_AR6-ari[i_bc]
-    aci_erf_AR6_nonBC = aci_erf_AR6-ac[i_bc]
-
-    #Scale non-BC aerosols
-    #This includes ari from gas precursors
-    ari_nonBC = np.sum(ari[i_scat])+np.sum(ari[i_gas])
-
-    ari_sd[i_scat] *= ari_erf_AR6_nonBC/ari_nonBC # Scale scattering aerosols
-    ari[i_scat] *= ari_erf_AR6_nonBC/ari_nonBC
-    ari_sd[i_gas] *= ari_erf_AR6_nonBC/ari_nonBC # Scale gases
-    ari[i_gas] *= ari_erf_AR6_nonBC/ari_nonBC
-
-    #Aci scaling excludes ac from gas precursors
-    ac_nonBC = np.sum(ac[i_scat])
-
-    ac_sd[i_scat] *= aci_erf_AR6_nonBC/ac_nonBC # Scale scattering aerosols
-    ac[i_scat] *= aci_erf_AR6_nonBC/ac_nonBC
-
+    scale_aci = aci_erf_AR6/np.sum(ac[i_aer])
+    ac[i_aer] *= scale_aci
+    ac_sd[i_aer] *= scale_aci
+    # %%
     rfghg_sd = rfghg*0.14 # assume 14% for all WMGHGs
 
     table = np.zeros(nspec+1,
@@ -233,6 +246,11 @@ def main(plot=False):
     table_sd['Species'][0] = 'CO2'
     table_sd['CO2_sd'][0] = rfco2_co2*0.12 # 12% uncertainty
     table_sd['Total_sd'][0] = rfco2_co2*0.12
+    # %%
+    # SMB fix:
+    # Summarize CH4 lifetime and change in CH4 from change in emissions.
+    rfch4[i_ch4] += rfghg[i_ch4]
+    rfghg[i_ch4] = 0
 
     for ispec in np.arange(nspec):
         table['Species'][ispec+1] = data['Experiment'][ispec]
@@ -264,19 +282,19 @@ def main(plot=False):
                  rfo3_sd[i_ch4]+rfo3_prime_sd[i_ch4], 0.05,
                  ari_sd[i_ch4], ac_sd[i_ch4]])))
 
-    #np.savetxt("attribution_output_1750_2019_newBC.csv", table, delimiter=',',
+    #np.savetxt("attribution_output_1750_2019.csv", table, delimiter=',',
     #           fmt='%15s'+9*', %8.3f',
     #           header=','.join(table.dtype.names))
-    #np.savetxt("attribution_output_1750_2019.csv_sd_newBC.csv", table_sd, delimiter=',',
+    #np.savetxt("attribution_output_1750_2019_sd.csv", table_sd, delimiter=',',
     #           fmt='%15s'+9*', %8.3f',
     #           header=','.join(table_sd.dtype.names))
     # %%
     df_tab = pd.DataFrame(table).set_index('Species')
     #df_tab.loc[df_tab.index[::-1]].drop('Total', axis=1).plot.barh(stacked =True)
     # %%
-    fn = 'attribution_1750_2019_newBC.csv'
+    fn = 'attribution_1750_2019.csv'
 
-    fp = RESULTS_DIR /'tables_historic_attribution'/fn
+    fp = RESULTS_DIR /'tables_historical_attribution'/fn
     fp.parent.mkdir(parents=True, exist_ok=True)
 
     df_tab.to_csv(fp)
@@ -286,10 +304,10 @@ def main(plot=False):
     df_tab_sd = pd.DataFrame(table_sd).set_index('Species')
 
     df_tab
-    # %%
-    fn = 'attribution_1750_2019_newBC_standard_deviation.csv'
+# %%
+    fn = 'attribution_1750_2019_standard_deviation.csv'
 
-    fp = RESULTS_DIR /'tables_historic_attribution'/fn
+    fp = RESULTS_DIR /'tables_historical_attribution'/fn
     fp.parent.mkdir(parents=True, exist_ok=True)
 
     df_tab_sd.to_csv(fp)
@@ -306,7 +324,7 @@ def main(plot=False):
     exp_list = \
         np.array([i_ch4, i_n2o, i_hc, i_nox, i_voc, i_so2, i_oc, i_bc, i_nh3])
     ybar = np.arange(nspec+1, 0, -1)
-    labels = [r'CO$_2$', 'WMGHG',  r'CH$_4$ lifetime', r'O$_3$', 'Aerosol (ari)', 'Cloud']
+    labels = [r'Carbon dioxide (CO$_2$)', 'WMGHG',  r'Methane (CH$_4$)', r'Ozone (O$_3$)', 'Aerososl-radiation','Aerosol-Cloud']
 
     pos_ghg = np.zeros(nspec+1)
     pos_ch4 = np.zeros(nspec+1)
@@ -324,7 +342,8 @@ def main(plot=False):
     pos_co2[0] =rfco2_co2 ; pos_ghg[0] = pos_co2[0] ; pos_ch4[0] = pos_co2[0]
     pos_o3[0]=pos_co2[0]; pos_h2o[0] = pos_co2[0]
     pos_aer[0] = pos_co2[0]; pos_cloud[0] = pos_co2[0]
-    #print(pos_ghg)
+    print(pos_ghg)
+    # %%
     # Gases
 
     pos_co2[i_gas+1] = rfco2[i_gas]
@@ -358,7 +377,7 @@ def main(plot=False):
 
     # %%
     error = np.zeros(nspec+1)
-    error[0] = rfco2_co2*0.12 # 12% uncertainty
+    error[0] = co2[0]*0.12 # 12% uncertainty
     error[i_ch4+1] = np.sqrt((rfghg_sd[i_ch4]+rfch4_sd[i_ch4])**2+ # CH4
                         (rfo3_sd[i_ch4]+rfo3_prime_sd[i_ch4])**2+  # O3
                         0.05**2+                                   # Strat H2O
@@ -371,30 +390,49 @@ def main(plot=False):
                         ac_sd[i_non_ch4]**2)
     error[i_aer+1] = np.sqrt(ari_sd[i_aer]**2+
                         ac_sd[i_aer]**2)
+    # %%
+    kwargs = {'linewidth':.1,'edgecolor':'k'}
+    plt.barh(ybar, pos_co2, width, color=get_chem_col('co2'), label=labels[0],**kwargs)
+    #plt.barh(ybar, pos_ghg-pos_co2, width, left=pos_co2, color=get_chem_col('WMGHG'), label=labels[1],**kwargs)
+    plt.barh(ybar, pos_ghg-pos_co2, width,
+         left=pos_co2,
+         color=get_chem_col('WMGHG'),
+         label=labels[1],
+         #linewidth=2,
+         #facecolor= 'w',
+         #edgecolor='k'
+         **kwargs
+         )
+    plt.barh(ybar, pos_ch4-pos_ghg, width, left=pos_ghg, color=get_chem_col('ch4'), label=labels[2],**kwargs)
+    plt.barh(ybar, pos_o3-pos_ch4, width, left=pos_ch4, color=get_chem_col('o3'), label=labels[3],**kwargs)
+    plt.barh(ybar, pos_h2o-pos_o3, width, left=pos_o3, color=get_chem_col('H2O_strat'), label=r'H$_2$O (strat)',**kwargs)
+    plt.barh(ybar, pos_aer-pos_h2o, width, left=pos_h2o, color=get_chem_col('ari'), label=labels[4],**kwargs)
+    plt.barh(ybar, pos_cloud-pos_aer, width, left=pos_aer, color=get_chem_col('aci'), label=labels[5],**kwargs)
+    plt.barh(ybar, neg_ch4, width, color=get_chem_col('ch4'),**kwargs)
+    plt.barh(ybar, neg_o3-neg_ch4, width, left=neg_ch4, color=get_chem_col('o3'),**kwargs)
+    plt.barh(ybar, neg_aer-neg_o3, width, left=neg_o3, color=get_chem_col('ari'),**kwargs)#'blue,**kwargs')
+    plt.barh(ybar, neg_cloud-neg_aer, width, left=neg_aer, color=get_chem_col('aci'),**kwargs)
+    plt.errorbar(pos_cloud+neg_cloud,ybar, marker='d', linestyle='None', color='k', label='Sum', xerr=error)
+    plt.yticks([])#species)
 
-    plt.barh(ybar, pos_co2, width, color='grey', label=labels[0])
-    plt.barh(ybar, pos_ghg-pos_co2, width, left=pos_co2, color='darkred', label=labels[1])
-    plt.barh(ybar, pos_ch4-pos_ghg, width, left=pos_ghg, color='red', label=labels[2])
-    plt.barh(ybar, pos_o3-pos_ch4, width, left=pos_ch4, color='green', label=labels[3])
-    plt.barh(ybar, pos_h2o-pos_o3, width, left=pos_o3, color='darkblue', label=r'H$_2$O(strat)')
-    plt.barh(ybar, pos_aer-pos_h2o, width, left=pos_h2o, color='blue', label=labels[4])
-    plt.barh(ybar, pos_cloud-pos_aer, width, left=pos_aer, color='lightblue', label=labels[5])
-    plt.barh(ybar, neg_ch4, width, color='red')
-    plt.barh(ybar, neg_o3-neg_ch4, width, left=neg_ch4, color='green')
-    plt.barh(ybar, neg_aer-neg_o3, width, left=neg_o3, color='blue')
-    plt.barh(ybar, neg_cloud-neg_aer, width, left=neg_aer, color='lightblue')
-    plt.errorbar(pos_cloud+neg_cloud,ybar, marker='x', linestyle='None', color='k', label='sum', xerr=error)
-    plt.yticks([])
+    # %%
     for i in np.arange(nspec+1):
-        plt.text(-1.55, ybar[i], species[i])
-    plt.title('Components of 1750 to 2019 forcing')
-    plt.xlabel(r'W m$^{-2}$')
-    plt.xlim(-1.6, 2.0)
-    plt.legend(loc='lower right')
+        #plt.text(-1.55, ybar[i], species[i],  ha='left')#, va='left')
+        plt.text(-1.6, ybar[i]-0.1, species[i],  ha='left')#, va='left')
+    plt.title('Change in effective radiative forcing from  1750 to 2019')
+    plt.xlabel(r'Effective radiative forcing, W m$^{-2}$')
+    plt.xlim(-1.6, 2.3)
+    #plt.xlim(-1.6, 2.0)
+    sns.despine(fig, left=True)
+    plt.legend(loc='lower right', frameon=False)
     plt.axvline(x=0., color='k', linewidth=0.25)
+    fn = 'attribution_1750_2019.png'
+    fp = RESULTS_DIR /'figures_historic_attribution'/fn
+    fp.parent.mkdir(parents=True, exist_ok=True)
+    #plt.savefig(fp, dpi=300)
+    #plt.savefig(fp.with_suffix('.pdf'), dpi=300)
 
     plt.show()
-
     return df_tab, df_tab_sd
 
 if __name__ == '__main__':
