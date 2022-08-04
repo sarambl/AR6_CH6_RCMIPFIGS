@@ -41,6 +41,7 @@ In this work we use:
 5) Historical emissions of SLCFs from CEDS from here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4509372.svg)](https://doi.org/10.5281/zenodo.4509372) [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions)
 6) Historical concentrations from AR6 [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx)
 7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges](ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges)
+8) ERF derived from FAiR and downloaded from (github.com/chrisroadmap/ar6)[https://github.com/chrisroadmap/ar6/tree/main/data_output]
 
 
 
