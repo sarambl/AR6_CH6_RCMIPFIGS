@@ -53,14 +53,14 @@ from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR, BASE_DIR
 # PATH_DATASET = OUTPUT_DATA_DIR + '/forcing_data_rcmip_models.nc'
 # PATH_DT = OUTPUT_DATA_DIR / '/dT_data_rcmip_models.nc'
 # PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP.nc'
-PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
+PATH_DT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/'dT_data_RCMIP_recommendation.nc'
 
 # %% [markdown]
 # #### Uncertainty data:
 
 # %%
 # PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
-PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
+PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR /'fig6_22_and_6_24' /  'dT_uncertainty_data_FaIR_chris_ed02-02-02.nc'
 
 # %% [markdown]
 # ## Set values:
@@ -77,8 +77,7 @@ ref_year = 2019
 ref_year_uncertainty = 2020
 
 # %%
-FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/' / output_name
-
+FIGURE_DIR = RESULTS_DIR / 'fig6_24'
 
 
 # %% [markdown]

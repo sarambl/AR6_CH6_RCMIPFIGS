@@ -13,22 +13,22 @@
 #     name: python3
 # ---
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Compute change in temperature from ERF
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # This notebook takes the ERF dataset created in notebook 1 and computes the change in temperature from each forcing according to an impulse response function
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Imports
-# %%
+# %% pycharm={"name": "#%%\n"}
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-# %%
+# %% pycharm={"name": "#%%\n"}
 import xarray as xr
 from IPython.display import clear_output
-# %%
+# %% pycharm={"name": "#%%\n"}
 from openscm_twolayermodel import ImpulseResponseModel  # pip install openscm-twolayermodel
 from openscm_units import unit_registry  # pip install openscm-units
 from scmdata import ScmRun  # pip installINPUT_DATA_DIR_BADC
@@ -36,12 +36,12 @@ from scmdata import ScmRun  # pip installINPUT_DATA_DIR_BADC
 # %load_ext autoreload
 # %autoreload 2
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC
-# %%
+# %% pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### General about computing $\Delta T$:
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # We compute the change in GSAT temperature ($\Delta T$) from the effective radiative forcing (ERF) from MAGICC?????? (#TODO: check model and reference), by integrating with the impulse response function (IRF(t-t'))
 #
 # #todo: check for ref for IRF
@@ -49,11 +49,11 @@ from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 #
 # For any forcing agent $x$, with estimated ERF$_x$, the change in temperature $\Delta T$ is calculated as:
 #
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # \begin{align*}
 # \Delta T_x (t) &= \int_0^t ERF_x(t') IRF(t-t') dt' \\
 # \end{align*}
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # #### The Impulse response function (IRF):
 # In these calculations we use:
 # \begin{align*}
@@ -63,13 +63,13 @@ from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 # Where the constants, $q_i$ and $d_i$ are shown below. 
 #
 #
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Input data:
 # See [README.md](../../README.md)
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Code + figures
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 fn_IRF_constants = INPUT_DATA_DIR_BADC /'recommended_irf_from_2xCO2_2021_02_25_222758.csv'
 
 irf_consts = read_csv_badc(fn_IRF_constants).set_index('id')
@@ -84,7 +84,7 @@ perc95 = '95th percentile'
 recommendation = 'recommendation'
 irf_consts  # [d1]
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # lets get the irf values from 0 until i
 d1 = float(irf_consts[ld1])
 d2 = float(irf_consts[ld2])
@@ -94,7 +94,7 @@ eff = float(irf_consts['efficacy (dimensionless)'])
 print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # lets get the irf values from 0 until i
 d1 = float(irf_consts[ld1])
 d2 = float(irf_consts[ld2])
@@ -104,29 +104,29 @@ q2 = float(irf_consts[lq2])
 print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Path input data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
-PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
+PATH_DATASET = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/ 'ERF_data.nc'
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Path output data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
-PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
+
+PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/'dT_data_RCMIP_recommendation.nc'
 
 print(PATH_DT_OUTPUT)
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## various definitions
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # name of output variable
 name_deltaT = 'Delta T'
 
@@ -136,39 +136,39 @@ variable = 'variable'
 time = 'time'
 percentile = 'percentile'
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Set values:
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # We only compute for the recommendation (not e.g. percentiles):
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 IRFpercentiles = [recommendation]
 # {'ECS = 2K':0.526, 'ECS = 3.4K':0.884, 'ECS = 5K': 1.136 }
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # Year to integrate from and to:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 first_y = 1750
 last_y = 2100
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # **Set reference year for temperature change:**
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ref_year = 2019
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # **Years to output change in**
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 years = [2040, 2100]
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Define variables to look at:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # variables to plot:
 variables_erf_comp = [
     'ch4',
@@ -193,10 +193,10 @@ scenarios_fl = ['ssp534-over', 'ssp119', 'ssp334','ssp460', 'ssp585', 'ssp370',
                 ]
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## IRF function: 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
 def IRF(t, d1, q1, d2, q2):
     """
@@ -214,32 +214,32 @@ def IRF(t, d1, q1, d2, q2):
     # l * (alpha1 * np.exp(-t / tau1) + alpha2 * np.exp(-t / tau2))
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Open ERF dataset:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds = xr.open_dataset(PATH_DATASET).sel(year=slice(1700, 2200))  # we need only years until 1700
 da_ERF = ds['ERF']
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # #### Simple pre-processing
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds['time'] = pd.to_datetime(ds['year'].to_pandas().index.map(str), format='%Y')
 
 # delta_t is 1 (year)
 ds['delta_t'] = xr.DataArray(np.ones(len(ds['year'])), dims='year', coords={'year': ds['year']})
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Integrate and compute $\Delta T$:
 # The code below integrates the read in ERFs with the pre defined impulse response function (IRF).
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # \begin{align*} 
 # \Delta T (t) &= \int_0^t ERF(t') IRF(t-t') dt' \\
 # \end{align*}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
 
 def integrate_(i, _var, _nvar, ds_in: xr.Dataset, ds_DT, irf_cnst: dict):
@@ -334,13 +334,13 @@ def integrate_to_dT(_ds, from_t, to_t, irf_cnsts, int_var='ERF'):
     return ds_DT
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 int(ds.isel(year=0)['year'].values)
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 def calc_dGSAT(var, ds, ds_out, scenario='scenario'):
     s_y = int(ds.isel(year=0)['year'].values)
     _erf_tmp = ds['ERF'].sel(variable=var).to_pandas()
@@ -383,7 +383,7 @@ def calc_dGSAT(var, ds, ds_out, scenario='scenario'):
     return ds_out
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 def calc_GSAT_all_vars(_ds, ds_out, variables=None, scenario='scenario'):
     
 
@@ -404,7 +404,7 @@ def calc_GSAT_all_vars(_ds, ds_out, variables=None, scenario='scenario'):
     return ds_DT
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 def calc_GSAT_all_scenarios(ds, ds_out, scenarios_l = None):
     
 
@@ -435,56 +435,56 @@ ds_out = ds.copy(deep=True)
 for key in IRFpercentiles:
     dic_ds[key] = calc_GSAT_all_scenarios(ds,ds_out)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 dic_ds
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## check:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 for per in IRFpercentiles:
     dic_ds[per].isel(scenario=0, variable=0)[name_deltaT].plot()
 plt.show()
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ### Make datset with percentile as dimension:
 # Does really only make sense with percentiles...
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds_tmp = xr.Dataset(coords=dic_ds[recommendation].coords)
 ds_tmp
 for key in IRFpercentiles:
     ds_tmp[key] = dic_ds[key]['Delta T']  # .dims,dic_ds[key],)
 ds['Delta T'] = ds_tmp.to_array('percentile')
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Save dataset:
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds.sel(year=slice(first_y, last_y)).to_netcdf(PATH_DT_OUTPUT)
 print(f'Saved to {PATH_DT_OUTPUT}')
 # ds_DT.to_array('percentile')
 # dic_ds[key]['Delta T']
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Double check historical $\Delta$ T: 
 #
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 from matplotlib.ticker import (MultipleLocator)
 
 from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ls_vars = ['aerosol-total', 'ch4', 'co2', 'other_wmghg', 'o3','HFCs']
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 cdic = get_cmap_dic(ls_vars)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
 fig, ax = plt.subplots(figsize=[6, 7])
 
@@ -500,11 +500,11 @@ ax.set_ylim([-0.9, 1.25])
 plt.title('')
 plt.show()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 ds.close()
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 
-# %%
+# %% pycharm={"name": "#%%\n"}

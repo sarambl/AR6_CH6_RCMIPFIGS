@@ -13,6 +13,9 @@
 #     name: python3
 # ---
 
+# %% [markdown]
+# ## Runs all the scripts to produce all figures
+
 # %%
 from IPython.display import clear_output
 
@@ -20,54 +23,73 @@ from IPython.display import clear_output
 import runpy
 
 # %% [markdown]
-# ## Preprocess:
+# ## Figure 6.22 and 6.24:
+
+# %% [markdown]
+# ### Preprocess:
 
 # %%
-runpy.run_path('01_preprocess.py')
+runpy.run_path('fig6_22_and_fig6_24/01_preprocess.py')
 clear_output()
 
 # %% [markdown]
-# ## Create $\Delta$GSAT:
+# ### Create $\Delta$GSAT:
 
 # %%
 print('1')
-runpy.run_path('02-01_compute_delta_T_recommandation.py')
+runpy.run_path('fig6_22_and_fig6_24/02-01-01_compute_delta_T_recommandation.py')
 print('2***********')
 
-runpy.run_path('02-01-02_compute_delta_T_recommandation-HFCs.py')
+runpy.run_path('fig6_22_and_fig6_24/02-01-02_compute_delta_T_recommandation-HFCs.py')
 
-runpy.run_path('02-02_uncertainty.py')
+runpy.run_path('fig6_22_and_fig6_24/02-02-01_uncertainty.py')
 
-runpy.run_path('02-03_uncertainty_sum_aerosols.py')
+runpy.run_path('fig6_22_and_fig6_24/02-02-02_uncertainty_sum_aerosols.py')
 print('done')
 
 
-# %% [markdown]
+# %% [markdown] jp-MarkdownHeadingCollapsed=true
 #
-# ## Create plots etc:
-
-# %%
-runpy.run_path('03-01_delta_T_plot_recommendation.py')
-runpy.run_path('03-02_delta_T_plot_bar_stacked_recommendation.py')
-print('done')
-# %% [markdown]
-# ## Figures ERF emission based attribution (from Bill Collins script)
-
-# %%
-runpy.run_path('GSAT_change_hist_attribution/01_make_historical_attribution.py')
-print('done')
+# ### Create plots etc:
 
 # %% [markdown]
-# ## Figures ERF/GSAT emission based attribution:
+# #### Figure 6.22
+
+# %%
+runpy.run_path('fig6_22_and_fig6_24/03-01_plot_fig6_22_dT_lineplot.py')
+print('done')
+# %% [markdown]
+# #### Figure 6.24
+
+# %%
+runpy.run_path('fig6_22_and_fig6_24/03-02_plot_fig6_24_dT_stacked_scenario.py')
+print('done')
+# %% [markdown]
+# ## Fig. 6.12, TS15 and data for SMP2: Figures ERF emission based attribution (from Bill Collins script)
+
+# %%
+runpy.run_path('fig6_12_and_ts15_spm2/01_make_historical_attribution.py')
+print('done')
+
+# %% [markdown]
+# ### Emission based ERFs and calculate historical GSAT:
 
 # %% tags=[]
 runpy.run_path('fig6_12_and_ts15_spm2/02_Emission_based_ERFs.py')
 runpy.run_path('fig6_12_and_ts15_spm2/03_historical_deltaGSAT.py')
-runpy.run_path('fig6_12_and_ts15_spm2/04_01_plot-period.py')
-runpy.run_path('fig6_12_and_ts15_spm2/04_02_plot.py')
+
+# %% [markdown]
+# ### Plot data for figure 2 (SPM) 
+
+# %% tags=[]
+runpy.run_path('fig6_12_and_ts15_spm2/04_01_plot-period_fig2_SPM.py')
+
+# %% [markdown]
+# ### Plot data for figure 6.12 TS15
+
+# %% tags=[]
+runpy.run_path('fig6_12_and_ts15_spm2/04_02_plot_fig6_12_TS15.py')
 print('done')
 
 # %%
-'Done'
-
-# %%
+print('Done')

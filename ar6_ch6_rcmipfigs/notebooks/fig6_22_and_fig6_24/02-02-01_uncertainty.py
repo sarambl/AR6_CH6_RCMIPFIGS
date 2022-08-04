@@ -51,7 +51,7 @@ fp_uncertainty = INPUT_DATA_DIR_BADC / 'slcf_warming_ranges/'
 # ### Output:
 
 # %%
-PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
+PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/'dT_uncertainty_data_FaIR_chris.nc'
 
 # %% [markdown] tags=[]
 # # Code + figures
@@ -137,7 +137,7 @@ for p in percentiles:
 # %%
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR
 
-PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
+PATH_DT = OUTPUT_DATA_DIR /'fig6_22_and_6_24'/'dT_data_RCMIP_recommendation.nc'
 
 ds_DT = xr.open_dataset(PATH_DT)
 

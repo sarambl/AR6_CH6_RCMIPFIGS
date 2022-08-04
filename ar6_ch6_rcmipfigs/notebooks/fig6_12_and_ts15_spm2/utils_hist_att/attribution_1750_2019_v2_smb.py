@@ -297,7 +297,7 @@ def main(plot=False):
     fp = RESULTS_DIR /'tables_historical_attribution'/fn
     fp.parent.mkdir(parents=True, exist_ok=True)
 
-    df_tab.to_csv(fp)
+    #df_tab.to_csv(fp)
     #df_tab.loc[df_tab.index[::-1]].drop('Total', axis=1).plot.barh(stacked =True)
 
     # %%
@@ -310,7 +310,7 @@ def main(plot=False):
     fp = RESULTS_DIR /'tables_historical_attribution'/fn
     fp.parent.mkdir(parents=True, exist_ok=True)
 
-    df_tab_sd.to_csv(fp)
+    #df_tab_sd.to_csv(fp)
     if not plot:
         return df_tab, df_tab_sd
 

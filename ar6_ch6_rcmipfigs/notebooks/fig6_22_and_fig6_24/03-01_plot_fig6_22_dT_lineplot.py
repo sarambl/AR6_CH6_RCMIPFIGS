@@ -42,13 +42,13 @@ from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
 # %%
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR, BASE_DIR
 
-PATH_DT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
+PATH_DT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/'dT_data_RCMIP_recommendation.nc'
 
 # %% [markdown]
 # #### Paths uncertainties/percentiles
 
 # %%
-PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
+PATH_DT_UNCERTAINTY = OUTPUT_DATA_DIR /'fig6_22_and_6_24' /  'dT_uncertainty_data_FaIR_chris_ed02-02-02.nc'
 
 # %%
 base_year_uncertainty = 2020  # this is the base year used for the uncertainties.
@@ -61,8 +61,11 @@ base_year_uncertainty = 2020  # this is the base year used for the uncertainties
 output_name = 'fig_timeseries_dT'
 
 # %%
-FIGURE_DIR = RESULTS_DIR / 'figures_recommendation/' / output_name
+FIGURE_DIR = RESULTS_DIR / 'fig6_22' 
 
+
+# %%
+FIGURE_DIR.mkdir
 
 # %% [markdown]
 # ## Set values:

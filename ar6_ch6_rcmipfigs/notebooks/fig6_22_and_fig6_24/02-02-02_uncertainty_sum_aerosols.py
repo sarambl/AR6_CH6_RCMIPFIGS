@@ -81,11 +81,11 @@ aero_tot_wbc = 'aerosol-total-with_bc-snow'
 # %% pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR
 
-PATH_DT_INPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
-PATH_DT_INPUT_minor = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation_minor.nc'
+PATH_DT_INPUT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/'dT_data_RCMIP_recommendation.nc'
+PATH_DT_INPUT_minor = OUTPUT_DATA_DIR / 'fig6_22_and_6_24' / 'dT_data_RCMIP_recommendation_minor.nc'
 
-PATH_UNCERT_DT_INPUT = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris.nc'
-PATH_UNCERT_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_uncertainty_data_FaIR_chris_ed02-3.nc'
+PATH_UNCERT_DT_INPUT = OUTPUT_DATA_DIR /'fig6_22_and_6_24' /  'dT_uncertainty_data_FaIR_chris.nc'
+PATH_UNCERT_DT_OUTPUT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24' / 'dT_uncertainty_data_FaIR_chris_ed02-02-02.nc'
 
 # %%
 ds_unc = xr.open_dataset(PATH_UNCERT_DT_INPUT)

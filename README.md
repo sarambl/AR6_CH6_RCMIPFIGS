@@ -34,13 +34,13 @@ python X-shortcuts.py
 The correct source citations will be updated soon. 
 
 In this work we use: 
-1) Impulse response function (IRF) from AR6 [ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
-2) SSP scenario ERF from FAIR [ar6_ch6_rcmipfigs/data_in/SSPs/](ar6_ch6_rcmipfigs/data_in/SSPs)
-3) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in/table2_thornhill2020.csv)
-4) Radiative forcing for HFCs from Hodnebrog et al (2020) [ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in/hodnebrog_tab3.csv)
-5) Historical emissions of SLCFs from CEDS [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions)
+1) Impulse response function (IRF) from AR6 [ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
+2) SSP scenario ERF from FAIR [ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs/](ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs)
+3) ERF from Thornhill et al (2021) [ar6_ch6_rcmipfigs/data_in_badc_csv/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/table2_thornhill2020.csv)
+4) Radiative forcing for HFCs from Hodnebrog et al (2020) [ar6_ch6_rcmipfigs/data_in_badc_csv/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/hodnebrog_tab3.csv)
+5) Historical emissions of SLCFs from CEDS from here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4509372.svg)](https://doi.org/10.5281/zenodo.4509372) [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/CEDS_v2021-02-05_emissions)
 6) Historical concentrations from AR6 [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/LLGHG_history_AR6_v9_updated.xlsx)
-7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv](ar6_ch6_rcmipfigs/data_in/chris_slcf_warming_ranges.csv)
+7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in/slcf_warming_ranges.csv](ar6_ch6_rcmipfigs/data_in/slcf_warming_ranges.csv)
 
 
 
@@ -54,18 +54,22 @@ In this work we use:
 
 ## Plot figures:
 The figures are produced in notebooks:
-- [03-01_delta_T_plot_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-01_delta_T_plot_recommendation.ipynb)
-- [03-02_delta_T_plot_bar_stacked_recommendation.ipynb](./ar6_ch6_rcmipfigs/notebooks/03-02_delta_T_plot_bar_stacked_recommendation.ipynb)
+- [Figure 6.12 (TS15)](./ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/04_02_plot_fig6_12_TS15.ipynb)
+- [Data for SMP fig 2](./ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/04_01_plot-period_fig2_SPM.ipynb)
+- [Figure 6.22](./ar6_ch6_rcmipfigs/notebooks/fig6_22_and_fig6_24/03-01_plot_fig6_22_dT_lineplot.ipynb)
+- - [Figure 6.24](./ar6_ch6_rcmipfigs/notebooks/fig6_22_and_fig6_24/03-02_plot_fig6_24_dT_stacked_scenario.ipynb)
+
 
 
 ## Directory overview: 
  - [ar6_ch6_rcmipfigs](./ar6_ch6_rcmipfigs)
- 
+
     - [data_in](./ar6_ch6_rcmipfigs/data_in) Input data
-    - [data_out](./ar6_ch6_rcmipfigs/data_out) Output data
+    - [data_in_badc_csv](./ar6_ch6_rcmipfigs/data_in) Input data with added metadata. This is done for the data where it was reasonable and is used when it exists (otherwise the data in data_in is used). See notebook [notebooks/convert2badc_csv/convert2badc_csv.ipynb](ar6_ch6_rcmipfigs/notebooks/convert2badc_csv/convert2badc_csv.ipynb) for the conversion between input data and badc_csv. 
+    - [data_out](./ar6_ch6_rcmipfigs/data_out) Data products produced through the notebooks, but not the final plotted data. 
     - [misc](./ar6_ch6_rcmipfigs/misc) Various non-code utils
-    - [notebooks](./ar6_ch6_rcmipfigs/data_out) Notebooks
-    - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and tables 
+    - [notebooks](./ar6_ch6_rcmipfigs/notebooks) Notebooks
+    - [results](./ar6_ch6_rcmipfigs/results) Results in terms of figures and data plotted. 
     - [utils](./ar6_ch6_rcmipfigs/utils) Code utilities  
     
 

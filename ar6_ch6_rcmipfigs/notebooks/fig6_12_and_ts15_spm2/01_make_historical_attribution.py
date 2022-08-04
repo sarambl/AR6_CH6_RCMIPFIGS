@@ -14,7 +14,7 @@
 #     name: python3
 # ---
 
-# %% [markdown] tags=[] pycharm={"name": "#%% md\n"}
+# %% [markdown] pycharm={"name": "#%% md\n"} tags=[]
 # ## Make plot ERF 2019
 #
 #
@@ -22,7 +22,7 @@
 #
 #
 # Thornhill, Gillian D., William J. Collins, Ryan J. Kramer, Dirk Olivié, Ragnhild B. Skeie, Fiona M. O’Connor, Nathan Luke Abraham, et al. “Effective Radiative Forcing from Emissions of Reactive Gases and Aerosols – a Multi-Model Comparison.” Atmospheric Chemistry and Physics 21, no. 2 (January 21, 2021): 853–74. https://doi.org/10.5194/acp-21-853-2021.
-# %% tags=[] pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} tags=[]
 import matplotlib.pyplot as plt
 import numpy as np
 # %% pycharm={"name": "#%%\n"}
@@ -51,7 +51,7 @@ fn_mean_orig_names.parent.mkdir(parents=True, exist_ok=True)
 # %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Get tables from script from Bill
 
-# %% tags=[] pycharm={"name": "#%%\n"}
+# %% pycharm={"name": "#%%\n"} tags=[]
 from ar6_ch6_rcmipfigs.notebooks.fig6_12_and_ts15_spm2.utils_hist_att import attribution_1750_2019_newBC_smb
 
 # %% pycharm={"name": "#%%\n"}

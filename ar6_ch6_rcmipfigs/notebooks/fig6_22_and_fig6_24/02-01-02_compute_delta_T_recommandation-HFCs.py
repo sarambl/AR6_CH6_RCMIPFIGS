@@ -105,22 +105,15 @@ print(f'd1={d1}, d2={d2}, q1={q1}, q2={q2}')
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
 from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
-PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
-PATH_DATASET_minor = OUTPUT_DATA_DIR / 'ERF_minorGHGs_data.nc'
-
-
-
-
-
+PATH_DATASET = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/ 'ERF_data.nc'
+PATH_DATASET_minor = OUTPUT_DATA_DIR / 'fig6_22_and_6_24'/  'ERF_minorGHGs_data.nc'
 
 
 # %% [markdown]
 # ## Path output data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-PATH_DT_TAB_OUTPUT = RESULTS_DIR / 'tables' / 'table_sens_dT_cs_recommandetion.csv'
-#PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation.nc'
-PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'dT_data_RCMIP_recommendation_minor.nc'
+PATH_DT_OUTPUT = OUTPUT_DATA_DIR / 'fig6_22_and_6_24' / 'dT_data_RCMIP_recommendation_minor.nc'
 
 print(PATH_DT_OUTPUT)
 

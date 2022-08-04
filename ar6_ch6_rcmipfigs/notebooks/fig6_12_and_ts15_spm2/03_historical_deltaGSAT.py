@@ -201,7 +201,7 @@ ds
 #da_ERF = ds['ERF']
 
 # %%
-ds['ERF'].to_pandas().transpose().to_csv(PATH_ERF_TIMESERIES)#'ERF_timeseries.csv')
+#ds['ERF'].to_pandas().transpose().to_csv(PATH_ERF_TIMESERIES)#'ERF_timeseries.csv')
 
 # %% [markdown]
 # #### Simple pre-processing
@@ -439,7 +439,7 @@ for key in IRFpercentiles:
 ds['Delta T'] = ds_tmp.to_array('percentile')
 
 # %%
-ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose().to_csv(PATH_DT_TIMESERIES) 
+#ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose().to_csv(PATH_DT_TIMESERIES)
 
 # %%
 ds['Delta T'].sel(percentile='recommendation').to_pandas().transpose()
