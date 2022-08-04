@@ -24,30 +24,27 @@ import seaborn as sns
 # %load_ext autoreload
 # %autoreload 2
 from ar6_ch6_rcmipfigs.constants import INPUT_DATA_DIR_BADC, BASE_DIR
-
-# %%
-from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
+from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
+from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
 # %%
 from ar6_ch6_rcmipfigs.utils.plot import get_cmap_dic
-from ar6_ch6_rcmipfigs.constants import OUTPUT_DATA_DIR, RESULTS_DIR
 
 # %% [markdown]
 # # Code + figures
 
 # %%
-output_name = 'fig_em_based_ERF_GSAT_period2010-2019_1850-1900'
+output_name = 'fig_em_based_ERF_GSAT_period_1750-2019'
 
 # %% [markdown]
 # ### Path input data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-
 # PATH_DATASET = OUTPUT_DATA_DIR / 'ERF_data.nc'
 PATH_DATASET = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/dT_data_hist_recommendation.nc'
 
 fn_ERF_2019 = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/2019_ERF_est.csv'
-# fn_output_decomposition = OUTPUT_DATA_DIR / 'historic_delta_GSAT/hist_ERF_est_decomp.csv'
+# fn_output_decomposition = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est_decomp.csv'
 
 fn_ERF_timeseries = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/hist_ERF_est.csv'
 
@@ -59,9 +56,7 @@ fn_TAB2_THORNHILL = INPUT_DATA_DIR_BADC / 'table2_thornhill2020.csv'
 # ### Path output data
 
 # %% jupyter={"outputs_hidden": false} pycharm={"name": "#%%\n"}
-PATH_DF_OUTPUT = OUTPUT_DATA_DIR / 'fig6_12_ts15_historic_delta_GSAT/dT_data_hist_recommendation.csv'
-
-print(PATH_DF_OUTPUT)
+PATH_FIGURE_OUT = RESULTS_DIR / 'fig6_12_ts15'
 
 # %% [markdown]
 # ### various definitions
@@ -70,9 +65,9 @@ print(PATH_DF_OUTPUT)
 # **Set reference year for temperature change:**
 
 # %%
+ref_year = 1750
+pd_year = 2019
 
-ref_period = [1850, 1900]
-pd_period = [2010, 2019]
 # %%
 # variables to plot:
 variables_erf_comp = [
@@ -215,12 +210,12 @@ kwargs = {'linewidth': .1, 'edgecolor': 'k'}
 
 # %%
 df_deltaT = ds['Delta T'].squeeze().drop('percentile').to_dataframe().unstack('variable')['Delta T']
-mean_PD = df_deltaT.loc[pd_period[0]:pd_period[1]].mean()
-mean_PD
+PD = df_deltaT.loc[pd_year]
+PD
 
-mean_PI = df_deltaT.loc[ref_period[0]:ref_period[1]].mean()
+PI = df_deltaT.loc[ref_year]  # .mean()
 
-dT_period_diff = pd.DataFrame(mean_PD - mean_PI, columns=['diff'])  # df_deltaT.loc[2019])
+dT_period_diff = pd.DataFrame(PD - PI, columns=['diff'])  # df_deltaT.loc[2019])
 dT_period_diff.index = dT_period_diff.index.rename('emission_experiment')
 
 # %% [markdown]
@@ -261,12 +256,12 @@ dT_period_diff['diff'].reindex(df_dt_sep.index).plot()
 
 # %%
 df_ERF = ds['ERF'].squeeze().to_dataframe().unstack('variable')['ERF']
-mean_ERF_PD = df_ERF.loc[pd_period[0]:pd_period[1]].mean()
+ERF_PD = df_ERF.loc[pd_year]
 
-mean_ERF_PI = df_ERF.loc[ref_period[0]:ref_period[1]].mean()
+ERF_PI = df_ERF.loc[ref_year]
 
 # %%
-ERF_period_diff = pd.DataFrame(mean_ERF_PD - mean_ERF_PI, columns=['diff'])  # df_deltaT.loc[2019])
+ERF_period_diff = pd.DataFrame(ERF_PD - ERF_PI, columns=['diff'])  # df_deltaT.loc[2019])
 ERF_period_diff.index = ERF_period_diff.index.rename('emission_experiment')
 
 # %% [markdown]
@@ -289,52 +284,25 @@ plt.show()
 # # Accounting for non-linearities in ERFaci, we scale down the GSAT change from aci contribution to fit with chapter 7 
 
 # %% [markdown]
-# The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. When considering the 1750-2019 change in GSAT, we therefore scaled the GSAT change by aerosol cloud interactions to fit this total. This constituted a 25% reduction. 
-# For the GSAT averaged over the period 2010-2019 vs 1850-1900 we thus reduce by 25%. 
-#
-# Furthermore, ERFaci over the same period (2010-2019 vs 1850-1900) is also sligtly overestimated due to higher emissions in the period versus 2019. To scale this, we use the ratio between ERFaci and ERFari as estimated by CHRIS [INSERT PROPER REFS] in the two periods respectively. The logic is that these both originate from the same emissions, so their ratio reflects the dampening of ERFaci with increased emissions. 
-#
-# Let $\alpha$ be the ratio 
-#
-# \begin{equation}
-# \frac{ERF_{aci}}{ERF_{ari}} = \alpha 
-# \end{equation}
+# The GSAT change from aerosol cloud interactions in 2019 vs 1750 is estimated to -0.38 degrees by chapter 7, which accounts for non-linearities in ERFaci. When considering the 1750-2019 change in GSAT, we therefore scaled the GSAT change by aerosol cloud interactions to fit this total. 
 
-# %% [markdown]
-# From the data (from FaIR, Chris) $\alpha_{period}=3.42$ for 1850-1900 vs 2010-2019, while for the standard period from 1750 to 2019, it is $\alpha_{standard} = 3.91$. 
-
-# %% [markdown]
-# Thus, the ratio is 
-# \begin{equation}
-# \frac{\alpha_{period}}{\alpha_{stanard}} = 0.874
-# \end{equation}
-
-# %% [markdown]
-# This results in a scaling down of approximately 12.5% of ERFaci. 
-#
-
-# %% tags=[]
-scale_down_by = 0.25
-aci_tot = df_dt_sep.sum()['Cloud']
-aci_tot
-df_dt_sep['Cloud'] = df_dt_sep['Cloud'] * (1 - scale_down_by)  # scale_by
+# %%
 df_dt_sep.sum()
 
 # %%
-df_erf_sep.sum()
+scal_to = -0.38
+aci_tot = df_dt_sep.sum()['Cloud']
+scale_by = scal_to / aci_tot
+print('Scaled down by ', (1 - scale_by) * 100, '%')
+print(scal_to, aci_tot)
 
-# %% tags=[]
-scale_down_by = 0.125
-aci_tot = df_erf_sep.sum()['Cloud']
-aci_tot
-df_erf_sep['Cloud'] = df_erf_sep['Cloud'] * (1 - scale_down_by)  # scale_by
-df_erf_sep.sum()
+df_dt_sep['Cloud'] = df_dt_sep['Cloud'] * scale_by
+df_dt_sep.sum()
 
 # %% [markdown]
 # # Uncertainties
 
 # %% tags=[]
-from ar6_ch6_rcmipfigs.utils.badc_csv import read_csv_badc
 
 num_mod_lab = 'Number of models (Thornhill 2020)'
 thornhill = read_csv_badc(fn_TAB2_THORNHILL, index_col=0)
@@ -359,7 +327,7 @@ df_err.loc['CO2', '95-50'] = df_err.loc['CO2', 'std']
 df_err
 
 # %% [markdown]
-# ### Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
+# ## Uncertainty on period mean ERF is scaled from uncertainty in 2019: 
 #
 
 # %%
@@ -370,13 +338,18 @@ ERF_period_diff_tot = df_erf_sep.sum(axis=1).reindex(df_err.index)
 # Scale by the period mean to the original 1750-2019 difference. 
 
 # %%
-df_err['95-50_period'] = df_err['95-50'] * np.abs(ERF_period_diff_tot / ERF_2019_tot)
+_scale = np.abs(ERF_period_diff_tot / ERF_2019_tot)
+df_err['95-50_period'] = df_err['95-50'] * _scale
+_scale
+
+# %% [markdown]
+# (In the case of period=2019 vs 1750, the scaling is 1, i.e. no scaling)
 
 # %%
 df_err
 
 # %% [markdown]
-# ### Uncertainties $\Delta$ GSAT
+# ## Uncertainties $\Delta$ GSAT
 
 # %% [markdown]
 #
@@ -506,7 +479,7 @@ ax.set_ylabel('')
 for lab, y in zip(index_order, ybar):
     # plt.text(-1.55, ybar[i], species[i],  ha='left')#, va='left')
     ax.text(-1.9, y - 0.1, lab, ha='left')  # , va='left')
-ax.set_title('Effective radiative forcing,  1850-1900 to 2010-2019')
+ax.set_title('Effective radiative forcing,  1750 to 2019')
 ax.set_xlabel(r'(W m$^{-2}$)')
 # ax.set_xlim(-1.5, 2.6)
 # plt.xlim(-1.6, 2.0)
@@ -534,7 +507,7 @@ ax.errorbar(tot, y,
 # ax.legend(frameon=False)
 ax.set_ylabel('')
 
-ax.set_title('Change in GSAT, 1850-1900 to 2010-2019')
+ax.set_title('Change in GSAT, 1750 to 2019')
 ax.set_xlabel(r'($^{\circ}$C)')
 ax.set_xlim(-1.3, 1.8)
 
@@ -549,7 +522,7 @@ ax.set_xticks(np.arange(-1, 1.6, .5))
 ax.set_xticks(np.arange(-1, 1.5, .1), minor=True)
 
 fn = output_name + '.png'
-fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
+fp = PATH_FIGURE_OUT / fn
 fp.parent.mkdir(parents=True, exist_ok=True)
 ax.set_yticks([])
 fig.tight_layout()
@@ -572,6 +545,12 @@ tab_plt_dT.sum()
 # %% [markdown]
 # # Write vales to csv
 
+# %%
+tab_plt_erf
+
+# %%
+df_err
+
 # %% [markdown]
 # fn = output_name + '_values_ERF.csv'
 # fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
@@ -588,10 +567,11 @@ tab_plt_dT.sum()
 # fn = output_name + '_values_dT_uncertainty.csv'
 # fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
 # err_dT.to_csv(fp)
-#
-# from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
 
-# %% [markdown] tags=[]
+# %%
+from ar6_ch6_rcmipfigs.utils.badc_csv import write_badc_header
+
+# %% [markdown]
 # ### Write plotted data to file
 
 # %%
@@ -647,23 +627,25 @@ def get_title(perc,var):
 
 # %%
 fn = output_name + '_values_ERF.csv'
-fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
+fp = PATH_FIGURE_OUT / fn
 
 to_csv_w_header(tab_plt_erf, 'ERF', 'mean', '', '', fp, 
                    'W/m2')
 
 fn = output_name + '_values_ERF_uncertainty.csv'
-fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
+fp = PATH_FIGURE_OUT / fn
 df_err.to_csv(fp)
 to_csv_w_header(df_err, 'ERF', 'uncertainty', '', '', fp, 
                    'W/m2')
 
 fn = output_name + '_values_dT.csv'
-fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
+fp = PATH_FIGURE_OUT/ fn
 to_csv_w_header(tab_plt_dT, 'warming', 'mean', '', '', fp, 
                    'degrees C')
 
 fn = output_name + '_values_dT_uncertainty.csv'
-fp = RESULTS_DIR / 'figures_historic_attribution_DT' / fn
+fp = PATH_FIGURE_OUT / fn
 to_csv_w_header(err_dT, 'warming', 'uncertainty', '', '', fp, 
                    'degrees C')
+
+# %%
