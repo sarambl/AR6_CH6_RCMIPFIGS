@@ -2,6 +2,7 @@ import logging
 import os
 
 import pandas as pd
+
 # from scmdata import ScmDataFrame
 
 climatemodel = 'climatemodel'
@@ -35,11 +36,11 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
     # The variables to aggregate:
     v_to_agg_df = (
         _db.filter(variable=v_to_agg, keep=False)  # remove v_to_agg
-            .filter(
+        .filter(
             variable="{}|*".format(v_to_agg),  # pick out subgroups.
             level=0,  # make sure we don't pick up e.g. HFC23|50th Percentile by accident
         )
-            .timeseries()
+        .timeseries()
     )
     # Check if variables found:
     if len(v_to_agg_df) == 0:
@@ -62,6 +63,7 @@ def aggregate_variable(db_in, v_to_agg, cmodel, remove_quantiles=True):
     db_out = db_in.append(v_to_agg_df)
 
     return db_out
+
 
 def get_protocol_vars(DATA_PROTOCOL, sheet_name="variable_definitions"):
     """
@@ -87,11 +89,11 @@ def get_protocol_scenarios(DATA_PROTOCOL, sheet_name='scenario_info'):
 def prep_str_for_filename(ins):
     return (
         ins.replace("_", "-")
-            .replace("|", "-")
-            .replace(" ", "-")
-            .replace("(", "")
-            .replace(")", "")
-            .lower()
+        .replace("|", "-")
+        .replace(" ", "-")
+        .replace("(", "")
+        .replace(")", "")
+        .lower()
     )
 
 

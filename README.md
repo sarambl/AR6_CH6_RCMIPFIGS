@@ -78,7 +78,7 @@ The figures are produced in notebooks:
 - [Figure 6.12 (TS15)](./ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/04_02_plot_fig6_12_TS15.ipynb)
 - [Data for SMP fig 2](./ar6_ch6_rcmipfigs/notebooks/fig6_12_and_ts15_spm2/04_01_plot-period_fig2_SPM.ipynb)
 - [Figure 6.22](./ar6_ch6_rcmipfigs/notebooks/fig6_22_and_fig6_24/03-01_plot_fig6_22_dT_lineplot.ipynb)
-- - [Figure 6.24](./ar6_ch6_rcmipfigs/notebooks/fig6_22_and_fig6_24/03-02_plot_fig6_24_dT_stacked_scenario.ipynb)
+- [Figure 6.24](./ar6_ch6_rcmipfigs/notebooks/fig6_22_and_fig6_24/03-02_plot_fig6_24_dT_stacked_scenario.ipynb)
 
 
 
