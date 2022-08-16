@@ -161,7 +161,7 @@ def redo_SSPs_to_badc_csv(path_orig, path_out, ):
 
 
 def make_badc_csvs_for_slcf_warming_ranges(
-        fn_orig=(BASE_DIR / 'data_in/chris_slcf_warming_ranges.csv'),
+        fn_orig=(BASE_DIR / 'data_in/slcf_warming_ranges.csv'),
         fn_base='slcf_warming_ranges',
         path_out=(BASE_DIR / 'data_in_badc_csv' / 'slcf_warming_ranges'),
 ):

@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 
 from ar6_ch6_rcmipfigs.utils.colors import get_chem_col, get_scn_col
 from ar6_ch6_rcmipfigs.utils.misc_func import climatemodel
+from ar6_ch6_rcmipfigs.constants import BASE_DIR
+
 
 scn_dic = {
     'ssp534-over': 'SSP5-3.4-Over',
@@ -14,7 +16,7 @@ scn_dic = {
     'ssp585': 'SSP5-8.5',
     'ssp370': 'SSP3-7.0',
     'ssp370-lowNTCF-aerchemmip': 'SSP3-7.0-LowSLCF-HighCH$_4$',
-    'ssp370-lowNTCF\n-aerchemmip':'SSP3-7.0-LowSLCF\n-HighCH$_4$',
+    'ssp370-lowNTCF\n-aerchemmip': 'SSP3-7.0-LowSLCF\n-HighCH$_4$',
     'ssp126': 'SSP1-2.6',
     'ssp245': 'SSP2-4.5',
     'ssp434': 'SSP4-3.4',
@@ -23,7 +25,7 @@ scn_dic = {
 }
 
 
-def plot_available_out(db, variables, scenarios, figsize=[30, 30]):
+def plot_available_out(db, variables, scenarios, figsize=None):
     """
     Plots specified variables and scenarios to get overview over available data
     :param db: scmdata.dataframe input data
@@ -32,6 +34,8 @@ def plot_available_out(db, variables, scenarios, figsize=[30, 30]):
     :param figsize: figure size
     :return:
     """
+    if figsize is None:
+        figsize = [30, 30]
     fig, axs = plt.subplots(len(variables), len(scenarios), figsize=figsize, sharex=True)
     j = -1
     for var in variables:
@@ -130,7 +134,6 @@ color_map_scenarios_base = {
 }
 
 # %%
-from ar6_ch6_rcmipfigs.constants import BASE_DIR
 
 
 # %%
@@ -142,7 +145,7 @@ def get_scenario_c_dic(new=True) -> object:
         colormap_dic[ssp370low_on] = colormap_dic['ssp370']
         colormap_dic[ssp370low_nn] = colormap_dic[ssp370low_on]  # 'ssp370-lowNTCF']
         colormap_dic[ssp370low_gidd] = colormap_dic[ssp370low_on]  # 'ssp370-lowNTCF']
-        #colormap_dic['ssp370-LowNTCF'] = colormap_dic[ssp370low_on]
+        # colormap_dic['ssp370-LowNTCF'] = colormap_dic[ssp370low_on]
         colormap_dic['historical'] = 'black'
         return colormap_dic
     if new:
@@ -181,7 +184,7 @@ def get_scenario_ls_dic():
 
 scenario_list = ['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp370-LowNTCF',
                  'ssp435', 'ssp460', 'ssp534os', 'ssp585']
-scenario_list_new = ['ssp119', 'ssp126', 'ssp245', 'ssp334','ssp370', 'ssp370-LowNTCF',
+scenario_list_new = ['ssp119', 'ssp126', 'ssp245', 'ssp334', 'ssp370', 'ssp370-LowNTCF',
                      'ssp435', 'ssp460', 'ssp534os', 'ssp585']
 ssp370low_nn = "ssp370-lowNTCF-aerchemmip"
 ssp370low_on = 'ssp370-LowNTCF'

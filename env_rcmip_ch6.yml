@@ -21,7 +21,6 @@ dependencies:
   - notebook >=5.6.0
   - jupyter
   - ipykernel
-  - pyam
   - nbconvert
   - pip:
     - scons
