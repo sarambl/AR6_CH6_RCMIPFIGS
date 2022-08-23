@@ -43,9 +43,23 @@ In this work we use:
 7) Uncertainties in $\Delta$ GSAT from FAIR [ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges](ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges)
 8) ERF derived from FAiR and downloaded from (github.com/chrisroadmap/ar6)[https://github.com/chrisroadmap/ar6/tree/main/data_output]
 
+### Data used in each figure
 
+#### Figure 6.12/TS15 and data for SMP2:
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/hodnebrog_tab3.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/hodnebrog_tab3.csv)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/table2_thornhill2020.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/table2_thornhill2020.csv)
+- [ar6_ch6_rcmipfigs/data_in/input_from_bill_collins/*](ar6_ch6_rcmipfigs/data_in/input_from_bill_collins)
+- [ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT/*](ar6_ch6_rcmipfigs/data_in/historical_delta_GSAT)
 
+#### Figures 6.22 and 6.24
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/AR6_ERF_1750-2019.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/AR6_ERF_1750-2019.csv)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/AR6_ERF_minorGHGs_1750-2019.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/AR6_ERF_minorGHGs_1750-2019.csv)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv](ar6_ch6_rcmipfigs/data_in_badc_csv/recommended_irf_from_2xCO2_2021_02_25_222758.csv)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs/*](ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs)
+- [ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges/*](ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges)
 
+- 
 ## Usage:  
 
   
