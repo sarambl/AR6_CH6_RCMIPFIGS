@@ -59,7 +59,6 @@ In this work we use:
 - [ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs/*](ar6_ch6_rcmipfigs/data_in_badc_csv/SSPs)
 - [ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges/*](ar6_ch6_rcmipfigs/data_in_badc_csv/slcf_warming_ranges)
 
-- 
 ## Usage:  
 
   
