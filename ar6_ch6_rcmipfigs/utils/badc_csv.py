@@ -82,7 +82,8 @@ def write_badc_header(
         # read_csv_kwargs=None,
         fp_global_default=path_FaIR_header_general_info,
         fp_var_default=path_FaIR_header_general_info,
-        default_unit='W/m2'
+        default_unit='W/m2',
+        scenario=None,
 ):
     # fp_global_default = path_FaIR_header_general_info
     # add_global_info = [['comments','G','Scenario: SSP1-1.9'],]
@@ -92,12 +93,19 @@ def write_badc_header(
 
     df_glob = get_global_FaIR(fp=fp_global_default)
     df_var = get_variable_FaIR(fp=fp_var_default)
-    df_glob.head()
     # if global_info_dic is not None:
     #    df_glob
 
     df_extra_glob = pd.DataFrame(add_global_info)
     df_glob = df_glob.append(df_extra_glob)
+    if scenario is not None:
+        index_title = df_glob[df_glob.iloc[:,0] == 'title'].index
+        orig_txt = df_glob.iloc[index_title,2].values
+        new_txt = orig_txt + scenario
+        df_glob.iloc[index_title,2] = new_txt
+
+
+
 
     df_orig = pd.read_csv(fp_orig, index_col=0, header=None)
     var_labs = [df_orig.index[0]] + list(df_orig.iloc[0, :])
@@ -105,7 +113,7 @@ def write_badc_header(
     # var_labs
 
     _df = pd.read_csv(fp_orig, index_col=None, header=None)
-    _df
+
     df_header = df_glob
     for var in var_labs:
         lines = df_var.iloc[:, 1] == var
@@ -156,6 +164,7 @@ def redo_SSPs_to_badc_csv(path_orig, path_out, ):
             # read_csv_kwargs=None,
             # fp_global_default = path_FaIR_header_general_info,
             # fp_var_default = path_FaIR_header_general_info
+            scenario=scenario_name
         )
     return
 
@@ -195,7 +204,8 @@ def make_badc_csvs_for_slcf_warming_ranges(
                 # variable_dic,
                 # read_csv_kwargs=None,
                 fp_global_default=path_FaIR_warming_header_general_info,
-                # fp_var_default = path_FaIR_header_general_info
+                # fp_var_default = path_FaIR_header_general_info,
+                #scenario=scn,
             )
 
         #    df_sub_scn_p = df_sub_scn
